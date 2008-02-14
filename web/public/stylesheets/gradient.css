@@ -1,0 +1,39 @@
+
+
+
+
+.grad img {
+  height: 100%;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  z-index: 0;
+}
+.box {
+  border: solid orange 2px;
+  float: left;
+  margin: 1px;
+  position: relative;
+  width: 165px;
+  padding: 5px;
+}
+.box * {
+  margin: 0px;
+  position: relative;
+  z-index: 1;
+}
+* html .grad {
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='grad_white.png', sizingMethod='scale');
+}
+* html .grad img {
+  display: none;
+}
+* html .box {
+    position:static;
+}
+.black { 
+  background-color: #000	; 
+}
+
+
