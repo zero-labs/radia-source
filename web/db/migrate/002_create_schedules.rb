@@ -1,7 +1,6 @@
 class CreateSchedules < ActiveRecord::Migration
   def self.up
     create_table :schedules do |t|
-
       t.timestamps
     end
   end

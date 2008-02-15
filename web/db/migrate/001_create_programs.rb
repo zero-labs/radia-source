@@ -1,7 +1,7 @@
 class CreatePrograms < ActiveRecord::Migration
   def self.up
     create_table :programs do |t|
-      
+      t.boolean :active
       t.timestamps
     end
   end

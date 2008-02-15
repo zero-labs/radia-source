@@ -6,6 +6,12 @@ class SchedulesController < ApplicationController
   end
   
   def create
-    render :action => 'index'
+    @schedule = Schedule.new
+    @schedule.calendar = params[:calendar]
+    if @schedule.save
+      render :action => 'index'
+    else
+      render :action => 'new'
+    end
   end
 end
