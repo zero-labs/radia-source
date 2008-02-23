@@ -8,7 +8,7 @@
 	<%= stylesheet_link_tag 'tabs' %>
 	<%= javascript_include_tag :defaults %>
 </head>
-<body>
+<body id="<%= @body_id %>">
 
 	<div id="header">
 
@@ -19,10 +19,11 @@
 		<%= image_tag 'logo_zero.png' %>
 
 		<ul id="tabnav">
-			<li id="home_nav"><%= link_to 'Schedule', '#' %></li>
-			<li id="new_sound_nav"><%= link_to 'Spots', '#' %></li>
-			<li id="new_sound_nav"><%= link_to 'Recipes', '#' %></li>
-			<li id="new_sound_nav"><%= link_to 'Configuration', '#' %></li>
+			<li id="home_nav"><%= link_to 'Home', root_path %></li>
+			<li id="schedule_nav"><%= link_to 'Schedule', schedule_path %></li>
+			<li id="spot_nav"><%= link_to 'Spots', '#' %></li>
+			<li id="recipes_nav"><%= link_to 'Recipes', '#' %></li>
+			<li id="configuration_nav"><%= link_to 'Configuration', '#' %></li>
 		</ul>
 
 	</div>

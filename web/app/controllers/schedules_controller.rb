@@ -3,15 +3,21 @@ class SchedulesController < ApplicationController
   end
   
   def new
+    @schedule = Schedule.find :first
   end
   
   def create
-    @schedule = Schedule.new
-    @schedule.calendar = params[:calendar]
-    if @schedule.save
-      render :action => 'index'
+    @schedule = Schedule.find :first
+    if @schedule.new_version(params[:calendar])
+      # Success!
     else
-      render :action => 'new'
+      # Problem
     end
+  end
+  
+  private 
+  
+  def body_id
+    @body_id = "schedule"
   end
 end

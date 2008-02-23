@@ -25,11 +25,25 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
+  map.root :controller => "home"
+  
+  map.schedule 'schedule/:action', :controller => 'schedules'
+  
+  map.spots 'spots/:action', :controller => 'spots'
+
+  map.programs 'programs/:name/:year/:month/:day',
+               :controller => 'schedules',
+               :action => 'show_date',
+               :requirements => { :year => /(19|20)\d\d/, 
+                                  :month => /[01]?\d/, 
+                                  :day => /[0-3]?\d/}, 
+               :day => nil, 
+               :month => nil
+               
 
   # See how all your routes lay out with "rake routes"
 
   # Install the default routes as the lowest priority.
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  #map.connect ':controller/:action/:id'
+  #map.connect ':controller/:action/:id.:format'
 end

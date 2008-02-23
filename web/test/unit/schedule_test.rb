@@ -1,8 +1,18 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ScheduleTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  
+  def test_parse
+    f = File.open(File.dirname(__FILE__) + '/../calendars/schedule-1.ics', 'r')
+    cals = Icalendar.parse(f)
+    
+    s = Schedule.create
+    s.new_version(f)
+    
+    assert_equal 1, s.schedule_versions.size
+    
+    assert_equal cals.events.size, s.current.program_schedulings.size
+    
+    f.close
   end
 end

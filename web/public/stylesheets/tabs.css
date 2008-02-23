@@ -19,15 +19,15 @@ ul#tabnav li {
 
 /* settings for selected tab & link */
 body#home li#home_nav a,
-body#sound li#sound_nav a, 
-body#new_sound li#new_sound_nav a, 
-body#documentation li#documentation_nav a, 
-body#tags li#tags_nav a { 
-	background-color: #ccc; /* set selected tab background color as desired */
-	color: #ccc; /* set selected tab link color as desired */
+body#schedule li#schedule_nav a, 
+body#spots li#spots_nav a, 
+body#recipes li#recipes_nav a, 
+body#configuration li#configuration_nav a { 
+	background-color: #ddd; /* set selected tab background color as desired */
+	color: #000; /* set selected tab link color as desired */
 	position: relative;
 	top: 0px;
-	padding-top: 10px; /* must change with respect to padding (X) above and below */
+	padding-top: 5px; /* must change with respect to padding (X) above and below */
 	
 	/* dz: these two lines were in a rule without a tags. wouldn't work. copied them here */
 	border-bottom: none;/*1px solid #000;*/ /* set border color to page background color */
