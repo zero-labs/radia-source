@@ -6,7 +6,7 @@ By uploading a new file you are overriding the current schedule and all tasks as
 <% end %>
 <h1>New schedule</h1>
 
-<% form_tag '/schedules/create', { :multipart => true } do -%>
+<% form_tag '/schedule/create', { :multipart => true } do -%>
 	<label for="calendar">Select the iCalendar file with the schedule: </label>
 	<%= file_field_tag 'calendar' %><br /><br />
 	<%= submit_tag 'Change schedule' %>

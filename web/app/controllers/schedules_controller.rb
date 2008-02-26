@@ -8,11 +8,10 @@ class SchedulesController < ApplicationController
   
   def create
     @schedule = Schedule.find :first
-    if @schedule.new_version(params[:calendar])
-      # Success!
-    else
-      # Problem
-    end
+    @schedule.new_version!(params[:calendar])
+    
+    # html
+    redirect_to :action => 'index'
   end
   
   private 

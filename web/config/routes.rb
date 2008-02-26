@@ -28,18 +28,18 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "home"
   
   map.schedule 'schedule/:action', :controller => 'schedules'
+    
+  map.resources :programs
   
-  map.spots 'spots/:action', :controller => 'spots'
-
-  map.programs 'programs/:name/:year/:month/:day',
-               :controller => 'schedules',
-               :action => 'show_date',
-               :requirements => { :year => /(19|20)\d\d/, 
-                                  :month => /[01]?\d/, 
-                                  :day => /[0-3]?\d/}, 
-               :day => nil, 
-               :month => nil
-               
+  #map.programs 'programs/:name/:year/:month/:day',
+  #             :controller => 'schedules',
+  #             :action => 'show_date',
+  #             :requirements => { :year => /(19|20)\d\d/, 
+  #                                :month => /[01]?\d/, 
+  #                                :day => /[0-3]?\d/}, 
+  #             :day => nil, 
+  #             :month => nil
+  #             
 
   # See how all your routes lay out with "rake routes"
 

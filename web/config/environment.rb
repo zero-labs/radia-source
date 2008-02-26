@@ -56,4 +56,12 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+  
+  # Ensure that there is a schedule created 
+  config.after_initialize do
+    begin
+      Schedule.create if Schedule.find(:first).nil?
+    rescue # ignore exceptions raised when schema not yet created 
+    end
+  end
 end

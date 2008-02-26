@@ -1,31 +1,19 @@
-require 'singleton'
+#require 'singleton'
 
 class Schedule < ActiveRecord::Base
-  include Singleton
+  #include Singleton
   
   has_many :schedule_versions
-  
-  # Attribute for the current schedule version
-  def current=(sched_version)
-    self.web_active_version = sched_version.id unless sched_version.nil?
-  end
-  
-  def current
-    if self.web_active_version.nil?
-      return nil
-    else
-      return schedule_versions.find_by_id(self.web_active_version)
-    end
-  end
+  belongs_to :current, :class_name => 'ScheduleVersion', :foreign_key => 'web_active_version'
   
   # Creates a new schedule version and switches to it
-  def new_version(icalendar)
-    return if icalendar.nil?
+  def new_version!(icalendar)
     # New version & populate with calendar information
     new_version = ScheduleVersion.new(:calendar => icalendar)
     # Add to collection
     self.schedule_versions << new_version
     # Switch to new version
     self.current = new_version
+    self.save!
   end
 end

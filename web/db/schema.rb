@@ -16,13 +16,12 @@ ActiveRecord::Schema.define(:version => 6) do
     t.integer  "program_id"
     t.datetime "start"
     t.datetime "end"
-    t.string   "recurrence"
+    t.string   "uid"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "programs", :force => true do |t|
-    t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"

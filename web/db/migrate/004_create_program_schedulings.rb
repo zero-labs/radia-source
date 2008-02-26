@@ -5,7 +5,7 @@ class CreateProgramSchedulings < ActiveRecord::Migration
       t.belongs_to :program
       t.datetime :start
       t.datetime :end
-      t.string :recurrence
+      t.string :uid
       t.timestamps
     end
   end

@@ -5,3 +5,8 @@
 #
 # two:
 #   column: value
+radiozero:
+    id: 1
+    web_active_version: nil
+    
+    
