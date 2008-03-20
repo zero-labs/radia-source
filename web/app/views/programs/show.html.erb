@@ -1,0 +1,22 @@
+<% @pagetitle = "Program: #{@program.name}" %>
+
+<h2>
+	<span class="prefix">Program > </span>
+	<%= @program.name %>
+	<span class="<%= (@program.active? ? 'active' : 'inactive') %>">
+		(<%= (@program.active? ? 'active' : 'inactive') %>)
+	</span>
+</h2>
+<hr />
+
+<% content_for :right do %>
+	<ul>
+		<li><%= link_to 'Edit this program', edit_program_path(@program) %></li>
+		<li><%= link_to "Back to program listing", programs_path %></li>
+	</ul>
+<% end %>
+
+<h3>Description</h3>
+<p>
+	<%= @program.description %>
+</p>

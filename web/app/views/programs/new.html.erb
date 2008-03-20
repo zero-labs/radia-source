@@ -1,0 +1,16 @@
+<% @pagetitle = "New program" %>
+<h2><%= @pagetitle %></h2>
+<hr />
+
+<% content_for :right do %>
+	<ul>
+		<li><%= link_to "Back to program listing", programs_path %></li>
+	</ul>
+<% end %>
+
+<p>
+	Input information for the new program
+</p>
+<% form_for :program, @program, :url => { :action => 'create' } do |f| %>
+	<%= render :partial => 'form', :locals => { :f => f } %>
+<% end %>

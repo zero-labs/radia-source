@@ -1,0 +1,16 @@
+<% @pagetitle = "Edit program: #{@program.name}" %>
+<h2>
+	<span class="prefix">Edit program > </span>
+	<%= @program.name %>
+</h2>
+<hr />
+
+<% content_for :right do %>
+	<ul>
+		<li><%= link_to "Back to program listing", programs_path %></li>
+	</ul>
+<% end %>
+
+<% form_for :program, @program, :url => { :action => 'update' }, :html => { :method => :put } do |f| %>
+	<%= render :partial => 'form', :locals => { :f => f } %>
+<% end %>

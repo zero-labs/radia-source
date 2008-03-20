@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+ENV["RAILS_ENV"] = "development"
+require File.expand_path(File.join(File.dirname(__FILE__), "../../../../config/environment"))
+require File.expand_path(File.join(File.dirname(__FILE__), "app"))
+
+pids = (1..5).to_a.collect do |i|
+  fork do
+    ActiveRecord::Base.establish_connection
+
+    # from deadlock retrty 
+    messages = [
+      "Deadlock found when trying to get lock",
+      "Lock wait timeout exceeded"
+    ]
+
+    max_retries = 3
+    retry_count = 0
+    begin
+      puts "#{i} => #{Thing.instance.inspect}"
+    rescue ActiveRecord::StatementInvalid => error
+      if messages.any? { |msg| error.message =~ /#{Regexp.escape(msg)}/ }
+        raise if retry_count >= max_retries
+        retry_count += 1
+        puts "Deadlock detected on retry #{retry_count}, restarting transaction"
+        retry
+      else
+        raise
+      end
+    end    
+  end
+end
+
+pids.each {|pid| Process.waitpid pid }
+
+ActiveRecord::Base.establish_connection
+if Thing.count == 1
+  puts "1 Thing - great"
+  exit(0)
+else 
+  puts "Oh dear"
+  exit(1)
+end

@@ -1,0 +1,26 @@
+
+An ActiveRecord::Singleton class (in general)
+- should only create one instance
+- should not be able to create instances via new
+- should not be able to destroy the instance
+
+An ActiveRecord::Singleton class (with an empty table)
+- should insert a single row when getting the instance
+
+An ActiveRecord::Singleton class (with a row in its table)
+- should find the single row when getting the instance
+- should only have one row in table after multiple saves
+- should get the instance via find
+- should get the instance in an array via find(:all)
+- should not find the instance when conditions don't match
+- should return empty array with find(:all) when conditions don't match
+- should update the attributes of the instance when finding
+
+An ActiveRecord::Singleton class (concurrent usage)
+- should instantiate the same object with multiple threads
+- should insert only one row with multiple threads
+- should insert only one row with multiple processes
+
+Finished in 1.578889 seconds
+
+14 examples, 0 failures

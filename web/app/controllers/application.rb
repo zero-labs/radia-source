@@ -3,8 +3,15 @@
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
+  before_filter :active_nav
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => '7ff6ddfc1e3482e81bb3ce53070c5404'
+  
+  protected 
+  
+  def active_nav
+    @active = 'home'
+  end
 end

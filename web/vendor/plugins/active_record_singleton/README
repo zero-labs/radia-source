@@ -1,0 +1,22 @@
+http://plugins.ardes.com > active_record_singleton
+
+= active_record_singleton
+Mixin to make an ActiveRecord class behave in a singleton fashion, having
+only one row in its associated table.
+ 
+See the ActiveRecord::Singleton RDoc for usage and examples.
+
+=== Specs and Coverage
+* {SPECDOC}[link:files/SPECDOC.html] lists the specifications
+* {RSpec Report}[link:rspec_report.html] is a report of spec pass/fails
+* {RCov Report}[link:coverage/index.html] is the rcov report
+
+=== Dependencies
+* <tt>RCov</tt>               To install do: <tt>gem install rcov</tt>
+* <tt>RSpec</tt>              To install do: <tt>gem install rspec</tt>
+* <tt>rspec rails plugin</tt> see http://rspec.rubyforge.org/documentation/rails/install.html
+
+=== Testing
+
+RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
+<tt>test/</tt> Do rake --tasks for more details.

@@ -1,0 +1,26 @@
+<% @pagetitle = "Programs" %>
+
+<h2><%= @pagetitle %></h2>
+<hr />
+
+<% content_for :right do %>
+	<ul>
+		<li><%= link_to "New program", new_program_path %></li>
+		<li><%= link_to "Update schedule", new_program_schedule_path %></li>
+	</ul>
+<% end %>
+
+<% unless @programs.empty? then %>
+<ul>
+	<% @programs.each do |p| %>
+		<li <%= %( onmouseover="$('mod_#{p.id}').show();" onmouseout="$('mod_#{p.id}').hide();") %>>
+			<%= link_to p.name, p %>
+			<span style="display:none;" id="mod_<%= p.id %>">
+			    <%= link_to('edit', edit_program_path(p), :class => "utility") %> |
+			    <%= link_to('delete', program_path(p), :class => "utility", :method => :delete, :confirm => 'Delete this program forever?') %>
+			</span>
+		</li>
+	<% end %>
+</ul>
+<% end %>
+

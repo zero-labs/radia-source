@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Radia Source<%= (@pagetitle.blank? ? '' : ": #{@pagetitle}") %></title>	
+	
+	<%= stylesheet_link_tag 'blueprint/src/reset', :media => 'screen, projection' %>
+	<%= stylesheet_link_tag 'blueprint/src/typography', :media => 'screen, projection' %>
+	<%= stylesheet_link_tag 'blueprint/src/grid', :media => 'screen, projection' %>
+	<%= stylesheet_link_tag 'blueprint/src/forms', :media => 'screen, projection' %>
+
+	<%= stylesheet_link_tag 'blueprint/print', :media => 'print' %>
+	<!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<%= stylesheet_link_tag 'display', :media => 'screen, projection' %>
+	
+	<%= javascript_include_tag :defaults %>
+</head>
+<body id="<%= @body_id %>">
+
+	<div class="container">
+
+		<div id="header" class="span-24">
+			<div id="logo" class="span-4">
+				<%= image_tag 'zero_logo_white.png' %>
+			</div>
+			<div id="control" class="span-19 last">
+				<ul id="control_nav">
+					<li><%= link_to 'Login', '#' %></li>
+				</ul>
+			</div>
+			<div class="span-24">
+				<ul id="main_nav">
+					<li id="home_nav"><%= link_to 'Home', root_path, :class => (@active == 'home' ? 'active' : '') %></li>
+					<li id="programs_nav"><%= link_to 'Programs', programs_path, :class => (@active == 'programs' ? 'active' : '') %></li>
+					<li id="spot_nav"><%= link_to 'Spots', '#', :class => (@active == 'spots' ? 'active' : '') %></li>
+					<li id="configuration_nav"><%= link_to 'Configuration', '#', :class => (@active == 'configuration' ? 'active' : '') %></li>
+				</ul>
+			</div>
+		</div>
+		<div id="content" class="span-24">
+			<div id="main_content" class="span-17">
+				<% unless flash[:notice].blank? then %>
+					<div id="notice" class="alert">
+						<%=h flash[:notice] %>
+					</div>
+				<% end %>
+				<% unless flash[:error].blank? then %>
+					<div id="error" class="alert">
+						<%=h flash[:error] %>
+					</div>
+				<% end %>
+				
+				<%= @content_for_layout %>
+			</div>
+
+			<div id="right_content" class="span-6 last">
+				<%= @content_for_right %>
+			</div>
+		</div>
+		<div id="footer" class="span-24">
+
+		</div>
+
+	</div>
+</body>
+</html>
