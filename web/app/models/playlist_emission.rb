@@ -1,0 +1,2 @@
+class PlaylistEmission < Emission
+end

@@ -1,16 +1,18 @@
-<% @pagetitle = "Programs" %>
+<% 
+	@pagetitle = "Programs"
+	@breadcrumbs = [add_crumb("Programs", programs_path, true)]
+%>
 
-<h2><%= @pagetitle %></h2>
-<hr />
-
-<% content_for :right do %>
+<% content_for :sidebar do %>
+	<h1>Administration</h1>
 	<ul>
 		<li><%= link_to "New program", new_program_path %></li>
-		<li><%= link_to "Update schedule", new_program_schedule_path %></li>
+		<li><%= link_to "Update schedule", edit_schedule_path %></li>
 	</ul>
 <% end %>
 
 <% unless @programs.empty? then %>
+<div id="program_list">
 <ul>
 	<% @programs.each do |p| %>
 		<li <%= %( onmouseover="$('mod_#{p.id}').show();" onmouseout="$('mod_#{p.id}').hide();") %>>
@@ -22,5 +24,6 @@
 		</li>
 	<% end %>
 </ul>
+</div>
 <% end %>
 

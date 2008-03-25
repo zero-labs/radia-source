@@ -1,11 +1,10 @@
-<% @pagetitle = "New program" %>
-<h2><%= @pagetitle %></h2>
-<hr />
+<% 
+	@pagetitle = "New program"
+	@breadcrumbs = [add_crumb("Programs", programs_path), 
+		add_crumb("New", new_program_path, true)]
+%>
 
-<% content_for :right do %>
-	<ul>
-		<li><%= link_to "Back to program listing", programs_path %></li>
-	</ul>
+<% content_for :sidebar do %>
 <% end %>
 
 <p>

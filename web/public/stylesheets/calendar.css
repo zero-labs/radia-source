@@ -1,0 +1,97 @@
+/*
+  A grey based theme, inspired by Blinksale and their ColorBurn widget. http://firewheeldesign.com
+  
+  AUTHOR: Geoffrey Grosenbach http://nubyonrails.com
+  Modified by: Daniel Zacarias http://www.radiozero.pt  
+
+*/
+
+.calendar {
+  color: #fff;
+  text-align: center;
+  width: 100%;
+}
+
+thead tr {
+  color: #000;
+}
+
+.monthName th {
+  font-weight: normal;
+  text-align: center;
+  margin-top: 1em;
+  margin-bottom: 0.7em;
+  color: #000;
+}
+
+.dayName th {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  background-color: #C0C0C0;
+  color: #000;
+  text-align: center;
+  /*border-bottom: 1px solid #fff;*/
+}
+
+.otherMonth, .day, .specialDay, .emissionDay {
+  padding: 0.1em 0.1em;
+  text-align: center;
+  font-size: 0.8em;
+  /*border-right: 1px solid #111111;*/
+}
+
+.otherMonth {
+  color: #888;
+  background-color: #C2C2C2;
+}
+
+.day a:link, .day a:visited, .specialDay a:link, .specialDay a:visited, .emissionDay a:link, .emissionDay a:visited {
+	text-decoration: none;
+	color: #000;
+}
+
+.day a:hover, .specialDay a:hover, .emissionDay a:hover {
+	text-decoration: underline;
+}
+
+.day, .specialDay {
+  padding: 0;
+  margin: 0;
+  color: #000;
+}
+
+.specialDay {
+  background-color: #ADFF2F;
+  color: #000;
+  font-weight: bold;
+}
+
+.specialDay a, .specialDay a:visited, .specialDay a:hover {
+  /*color: #000;
+  text-decoration: none;
+  padding: 0.1em;*/
+}
+
+.specialDay a:hover {
+  /*color: white;
+  background-color: black;*/
+}
+
+.emissionDay {
+  background-color: #999;
+  font-weight: bold;
+}
+
+.weekendDay {
+  /*background-color: #C0C0C0;*/
+}
+
+.today {
+	background-color: #eee;
+	font-weight:bold;
+	color: black;
+}
+
+

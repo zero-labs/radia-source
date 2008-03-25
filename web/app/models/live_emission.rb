@@ -1,0 +1,2 @@
+class LiveEmission < Emission
+end

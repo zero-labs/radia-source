@@ -1,0 +1,125 @@
+/*** Tabs ***/
+
+#main_nav 
+{
+	height: 23px;
+	margin: 0;
+	padding-left: 10px;
+	/*background: url('/images/tab_bottom.gif') repeat-x bottom;*/
+	border-bottom:1px solid #666;
+}
+
+#main_nav li
+{
+	margin: 0; 
+	padding: 0;
+	display: inline;
+	list-style-type: none;
+}
+
+#main_nav a:link, #main_nav a:visited
+{
+	float: left;
+	background: #333;/*#333*/
+	font-size: 1em;
+	line-height: 18px;
+	/*font-weight: bold;*/
+	padding: 2px 10px 2px 10px;
+	margin-right: 4px;
+	border: 1px solid #333;
+	border-bottom: #C0C0C0;
+	text-decoration: none;
+	color: #fff;
+}
+
+#main_nav a:hover, #main_nav a:link.active, #main_nav a:visited.active
+{
+	background: #C0C0C0;
+	color: #000;
+	border-bottom: 1px solid #C0C0C0;
+}
+
+#main_nav a:visited.active { font-weight: bold;}
+
+
+/*** Control Navigation ***/
+
+#control
+{
+	margin: 5px 5px 5px 5px;
+}
+
+#control_nav 
+{
+	margin: 10px 30px 0 0;
+	text-align: right;
+}
+
+#control_nav a:link, #control_nav a:visited
+{
+	color: #FFD700;
+	text-decoration:none;
+	font-size: 0.9em;
+}
+
+#control_nav a:hover
+{
+	text-decoration: underline;
+}
+
+#control_nav li 
+{
+	margin: 0; 
+	padding: 0;
+	display: inline;
+	list-style-type: none;
+}
+
+
+/*** Breadcrumbs ***/
+
+#bread {
+	color: #000;
+	font-weight: bold;
+	font-size: 0.9em;
+	padding: 0.2em;
+	margin-bottom: 0.3em;
+}
+
+#bread .high 
+{
+	font-size: 1.3em;
+}
+
+#bread a:link, #bread a:visited {
+	text-decoration: none;
+	color: #000;
+}
+
+#bread a:hover {
+	text-decoration: underline;
+}
+
+#bread ul {
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+	border: none;
+} 
+
+#bread ul li {
+	margin-left: 0;
+	padding-left: 0.2em;
+	border: none;
+	list-style: none;
+	display: inline;
+}
+
+#bread ul li:before {
+	content: "\2192 \0020";
+	color: #333;
+}
+	
+#bread ul li.first:before {
+	content: "\0020";
+}

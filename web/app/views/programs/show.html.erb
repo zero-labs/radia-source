@@ -1,22 +1,28 @@
-<% @pagetitle = "Program: #{@program.name}" %>
+<%
+	@pagetitle = "Program: #{@program.name}" 
+	
+	@breadcrumbs = [add_crumb("Programs", programs_path),
+					add_crumb("#{@program.name}", program_path(@program), true)] 
+%>
 
-<h2>
-	<span class="prefix">Program > </span>
-	<%= @program.name %>
-	<span class="<%= (@program.active? ? 'active' : 'inactive') %>">
-		(<%= (@program.active? ? 'active' : 'inactive') %>)
-	</span>
-</h2>
-<hr />
-
-<% content_for :right do %>
-	<ul>
-		<li><%= link_to 'Edit this program', edit_program_path(@program) %></li>
-		<li><%= link_to "Back to program listing", programs_path %></li>
-	</ul>
+<% content_for :sidebar do %>
+	<%= render :partial => 'sidebar' %>
 <% end %>
+
+<h3>Authors</h3>
+<p>
+</p>
 
 <h3>Description</h3>
 <p>
 	<%= @program.description %>
 </p>
+
+<hr />
+<h3>Upcoming emissions</h3>
+
+<ul>
+<% @program.upcoming_emissions.each do |e| %>
+	<li><%= link_to e.start.to_formatted_s(:long), program_emission_path(@program, e) %></li>
+<% end %>
+</ul>

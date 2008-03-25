@@ -1,14 +1,11 @@
-<% @pagetitle = "Edit program: #{@program.name}" %>
-<h2>
-	<span class="prefix">Edit program > </span>
-	<%= @program.name %>
-</h2>
-<hr />
+<% 
+	@pagetitle = "Edit program: #{@program.name}" 
+	@breadcrumbs = [add_crumb("Programs", programs_path), 
+					add_crumb("#{@program.name}", program_path(@program), true),
+					add_crumb("Edit", edit_program_path(@program))]
+%>
 
-<% content_for :right do %>
-	<ul>
-		<li><%= link_to "Back to program listing", programs_path %></li>
-	</ul>
+<% content_for :sidebar do %>
 <% end %>
 
 <% form_for :program, @program, :url => { :action => 'update' }, :html => { :method => :put } do |f| %>

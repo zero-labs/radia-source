@@ -3,7 +3,7 @@ class ProgramsController < ApplicationController
   # GET /programs
   # GET /programs.xml
   def index
-    @programs = Program.find(:all)
+    @programs = Program.find(:all, :order => 'name ASC')
     
     respond_to do |format|
       format.html # index.html.erb
@@ -80,7 +80,6 @@ class ProgramsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
   
   protected
   

@@ -1,0 +1,2 @@
+class RecordedEmission < Emission
+end

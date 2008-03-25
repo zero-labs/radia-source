@@ -1,0 +1,5 @@
+<% 
+	@pagetitle = "Program: #{@emission.program.name}" 
+	emission_crumbs
+%>
+<h3>Time:</h3> <%= @emission.start.strftime("%H:%M") + " - " + @emission.end.strftime("%H:%M") %>

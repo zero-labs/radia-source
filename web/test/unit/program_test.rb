@@ -1,7 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProgramTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
+  def test_validation
+    
+  end
+
   def test_basic_properties
     p1 = Program.new(:name => 'First program')
     p2 = Program.new(:name => 'Comunicação Típica') # program with unicode characters
