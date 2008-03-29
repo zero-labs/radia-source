@@ -4,7 +4,12 @@
 %>
 
 <% content_for :sidebar do %>
-	<h1>Browse emissions</h1>
+	<h1>List emissions by:</h1>
+	<h2>Type</h2>
+	<h2>Time</h2>
+	<% if @program.nil? %>
+	<h2>Program</h2>
+	<% end %>
 	<div id="minical">
 		<%= render :partial => 'shared/minical', :locals => { :date => Time.now, :program => @program } %>
 	</div>

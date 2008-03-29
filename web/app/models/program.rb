@@ -1,6 +1,9 @@
 class Program < ActiveRecord::Base
   include TimeUtils
   
+  # Accepts roles
+  acts_as_authorizable
+  
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
   acts_as_urlnameable :name, :overwrite => true
 

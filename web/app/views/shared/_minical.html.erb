@@ -1,3 +1,5 @@
+<h1>Emissions calendar</h1>
+
 <% form_remote_tag :url => (program.nil? ? global_date_selection_path : program_date_selection_path(program.urlname)), 
 					:update => 'minical' do %>
 
@@ -5,6 +7,5 @@
 <%= select_month date %>
 <%= submit_tag "Go" %>
 <% end %>
-
 
 <%= emissions_calendar(date.year, date.month, program) %>

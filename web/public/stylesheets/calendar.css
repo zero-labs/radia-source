@@ -16,6 +16,11 @@ thead tr {
   color: #000;
 }
 
+th a {
+	color: #000;
+	text-decoration: none;
+}
+
 .monthName th {
   font-weight: normal;
   text-align: center;

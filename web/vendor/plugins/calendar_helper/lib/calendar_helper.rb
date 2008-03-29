@@ -67,7 +67,9 @@ module CalendarHelper
   def calendar(options = {}, &block)
     raise(ArgumentError, "No year given")  unless options.has_key?(:year)
     raise(ArgumentError, "No month given") unless options.has_key?(:month)
-
+    raise(ArgumentError, "No previous month link given") unless options.has_key?(:previous_month_link)
+    raise(ArgumentError, "No next month link given") unless options.has_key?(:next_month_link)
+    
     block                        ||= Proc.new {|d| nil}
 
     defaults = {
@@ -80,14 +82,15 @@ module CalendarHelper
       :first_day_of_week => 0,
       :accessible => false,
       :show_today => true,
-      :previous_month_text => nil,
-      :next_month_text => nil
+      :previous_month_link => nil,
+      :next_month_link => nil, 
+      :program => nil
     }
     options = defaults.merge options
 
     first = Date.civil(options[:year], options[:month], 1)
     last = Date.civil(options[:year], options[:month], -1)
-
+    
     first_weekday = first_day_of_week(options[:first_day_of_week])
     last_weekday = last_day_of_week(options[:first_day_of_week])
     
@@ -95,18 +98,14 @@ module CalendarHelper
     first_weekday.times do
       day_names.push(day_names.shift)
     end
-
+    
     # TODO Use some kind of builder instead of straight HTML
     cal = %(<table class="#{options[:table_class]}" border="0" cellspacing="0" cellpadding="0">)
     cal << %(<thead><tr>)
-    if options[:previous_month_text] or options[:next_month_text]
-      cal << %(<th colspan="2">#{options[:previous_month_text]}</th>)
-      colspan=3
-    else
-      colspan=7
-    end
-    cal << %(<th colspan="#{colspan}" class="#{options[:month_name_class]}">#{Date::MONTHNAMES[options[:month]]}</th>)
-    cal << %(<th colspan="2">#{options[:next_month_text]}</th>) if options[:next_month_text]
+    cal << %(<th colspan="2">#{options[:previous_month_link]}</th>)
+    cal << %(<th colspan="3" class="#{options[:month_name_class]}">#{Date::MONTHNAMES[options[:month]]}</th>)
+    cal << %(<th colspan="2">#{options[:next_month_link]}</th>)
+    
     cal << %(</tr><tr class="#{options[:day_name_class]}">)
     day_names.each do |d|
       unless d[options[:abbrev]].eql? d

@@ -46,8 +46,16 @@
 	font-size: 1em;
 	font-weight: bold;
 	border-bottom: 1px dotted #666;
+	text-transform: capitalize;
 	color: #000;
 	padding: 0.2em;
+}
+
+#sidebar h2 {
+	font-size: 0.9em;
+	font-weight: bold;
+	text-transform: capitalize;
+	margin-left: 10px;
 }
 
 

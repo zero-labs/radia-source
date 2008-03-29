@@ -1,7 +1,7 @@
 class ProgramsController < ApplicationController
   
   # GET /programs
-  # GET /programs.xml
+  # GET /programs.:format
   def index
     @programs = Program.find(:all, :order => 'name ASC')
     
@@ -12,7 +12,7 @@ class ProgramsController < ApplicationController
   end
   
   # GET /programs/program-name
-  # GET /programs/program-name.xml
+  # GET /programs/program-name.:format
   def show
     @program = Program.find_by_urlname(params[:id])
     
@@ -33,7 +33,7 @@ class ProgramsController < ApplicationController
   end
   
   # POST /programs/program-name
-  # POST /programs/program-name.xml
+  # POST /programs/program-name.:format
   def create
     @program = Program.new(params[:program])
     respond_to do |format|
@@ -50,7 +50,7 @@ class ProgramsController < ApplicationController
   end
   
   # PUT /programs/program-name
-  # PUT /programs/program-name.xml
+  # PUT /programs/program-name.:format
   def update
     @program = Program.find_by_urlname(params[:id])  
     
@@ -69,7 +69,7 @@ class ProgramsController < ApplicationController
   end
   
   # DELETE /programs/program-name
-  # DELETE /programs/program-name.xml
+  # DELETE /programs/program-name.:format
   def destroy
     @program = Program.find_by_urlname(params[:id])
     @program.destroy

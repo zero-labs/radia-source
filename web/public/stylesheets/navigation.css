@@ -72,7 +72,16 @@
 	margin: 0; 
 	padding: 0;
 	display: inline;
-	list-style-type: none;
+	list-style: none;
+}
+
+#control_nav ul li:before {
+	content: "\007C \0020";
+	color: #fff;
+}
+	
+#control_nav ul li.first:before {
+	content: "\0020";
 }
 
 

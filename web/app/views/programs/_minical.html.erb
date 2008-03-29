@@ -1,7 +1,0 @@
-<% form_remote_tag :url => { :controller => :programs, :action => :date_selection, :id => program.id }, :update => 'minical' do %>
-<%= select_year date %>
-<%= select_month date %>
-<%= submit_tag "Go" %>
-<% end %>
-
-<%= mini_calendar(program, date.year, date.month) unless program.nil? %>

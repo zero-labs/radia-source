@@ -25,13 +25,19 @@
 			<div id="logo" class="span-4">
 				<%= image_tag 'zero_logo_white.png' %>
 			</div>
-			<div id="control" class="span-19 last">
-				<ul id="control_nav">
-					<li><%= link_to 'Login', '#' %></li>
+			<div id="control_nav" class="span-19 last">
+				<ul>
+					<% if logged_in? %>
+						<li class="first"><%= link_to "#{current_user.name}", user_path(current_user) %>
+						<li><%= link_to 'Logout', logout_path, { :method => :delete } if logged_in? %></li>
+						
+					<% else %>
+						<li class="first"><%= link_to 'Login', login_path %></li>
+					<% end %>
 				</ul>
 			</div>
-			<div class="span-24">
-				<ul id="main_nav">
+			<div id="main_nav" class="span-24">
+				<ul>
 					<li id="dashboard_nav"><%= link_to 'Dashboard', root_path, :class => (@active == 'dashboard' ? 'active' : '') %></li>
 					<li id="emission_nav"><%= link_to 'Emissions', emissions_path, :class => (@active == 'emissions' ? 'active' : '') %></li>
 					<li id="programs_nav"><%= link_to 'Programs', programs_path, :class => (@active == 'programs' ? 'active' : '') %></li>
@@ -43,16 +49,7 @@
 		</div>
 		<div id="content" class="span-24">
 			<div id="main_content" class="span-17">
-				<% unless flash[:notice].blank? then %>
-					<div id="notice" class="alert">
-						<%=h flash[:notice] %>
-					</div>
-				<% end %>
-				<% unless flash[:error].blank? then %>
-					<div id="error" class="alert">
-						<%=h flash[:error] %>
-					</div>
-				<% end %>
+				<%= render :partial => 'shared/flash', :locals => { :flash => flash } %>
 				<%= render :partial => 'shared/breadcrumbs' %>
 				<%= @content_for_layout %>
 			</div>
