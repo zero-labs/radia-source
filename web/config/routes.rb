@@ -12,9 +12,14 @@ ActionController::Routing::Routes.draw do |map|
   map.login 'login', :controller => 'sessions', :action => 'new', :conditions => { :method => :get }
   map.logout 'logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   
+  # AJAX actions to switch login mode
+  map.connect 'sessions/use_open_id', :controller => 'sessions', :action => 'use_open_id', :conditions => { :method => :post }
+  map.connect 'sessions/use_normal', :controller => 'sessions', :action => 'use_normal', :conditions => { :method => :post }
+  
   # User registration
   map.resources :users
   map.signup 'signup', :controller => 'users', :action => 'new'
+  map.activate 'activate/:activation_code', :controller => 'users', :action => 'activate'
   
   # Program schedule
   map.with_options :controller => 'program_schedule' do |schedule|
@@ -24,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   # Emissions (as resources accessible by date)
-  map.datestamped_resources :emissions
+  map.datestamped_resources :emissions#, :collection => {:all => :get, :past => :get, :future => :get}
   
   # AJAX methods for emissions
   map.with_options :controller => 'emissions' do |emission|
@@ -36,4 +41,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :programs do |program|
     program.datestamped_resources :emissions
   end
+  
+  # Radio Editors
+  map.resources :editors
+  
+  # Program Authors
+  map.resources :authors
+  
 end

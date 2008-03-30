@@ -4,5 +4,7 @@
 </ul>
 
 <div id="minical">
-	<%= render :partial => 'shared/minical', :locals => { :date => Time.now, :program => @program } %>
+	<%= render :partial => 'shared/minical', 
+		:locals => { :date => Time.now, :program => @program, 
+					 :emissions => @program.find_emissions_by_date(Time.now.year, Time.now.month) } %>
 </div>

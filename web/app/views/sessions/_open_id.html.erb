@@ -1,0 +1,10 @@
+<% form_tag session_path do -%>
+<p>
+	<label for="openid_url">Your OpenID:</label>
+	<%= text_field_tag 'openid_url', 'http://', :size => 30, :class => 'text' %>
+</p>
+<p class="submit">
+	<%= submit_tag 'Log in' %> or 
+	<%= link_to_remote 'use normal login', :url => { :action => 'use_normal' }, :update => 'form_area' %>
+</p>
+<% end -%>

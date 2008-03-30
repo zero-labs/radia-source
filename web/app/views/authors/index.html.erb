@@ -1,0 +1,11 @@
+<%
+	@pagetitle = "Authors"
+	@breadcrumbs = [add_crumb("Authors", authors_path, true)]
+%>
+
+<% content_for :sidebar do %>
+	<h1>Administration</h1>
+	<ul>
+		<li><%= link_to 'New author', new_author_path %></li>
+	</ul>
+<% end %>

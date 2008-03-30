@@ -1,7 +1,6 @@
 class Program < ActiveRecord::Base
   include TimeUtils
   
-  # Accepts roles
   acts_as_authorizable
   
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
@@ -14,6 +13,8 @@ class Program < ActiveRecord::Base
                                 :conditions => ["start >= ?", Time.now], 
                                 :order => 'start ASC', 
                                 :limit => 5
+  has_many :authorships
+  has_many :authors, :through => :authorships
                                 
   # Generate URLs based on the program's urlname
   def to_param

@@ -48,10 +48,16 @@ body
   padding-left: 20px;
 }
 
-label
+#login_area label
 {
 	margin-right: 10px;
 	font-size: 1.2em;
+}
+
+#signup label
+{
+	margin-right: 10px;
+	font-size: 1em;
 }
 
 input.text {
@@ -61,6 +67,10 @@ input.text {
 form {
 	margin-top: 4em;
 	text-align: left;
+}
+
+p.submit {
+	text-align: center;
 }
 
 

@@ -3,8 +3,6 @@ class UsersController < ApplicationController
   
   # render new.rhtml
   def new
-    @user = User.new(:name => session[:name], :email => session[:email], :identity_url => session[:identity_url])
-    session[:name] = session[:email] = session[:identity_url] = nil
   end
 
   def create

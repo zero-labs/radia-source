@@ -1,6 +1,8 @@
 class Emission < ActiveRecord::Base
   include TimeUtils
   
+  acts_as_authorizable
+  
   belongs_to :program_schedule
   belongs_to :program
   
@@ -49,6 +51,7 @@ class Emission < ActiveRecord::Base
   
   protected
   
+  # Ensures that start date comes before end date
   def start_before_end
     return if self.start.nil? or self.end.nil? # This should be caught by another validation
     errors.add(:end, "date/time can't be before start date/time") unless self.start <= self.end

@@ -2,19 +2,11 @@
 
 <div id="login_area" class="prepend-4 span-8 append-4">
 	<h2>Login to Radia Source</h2>
-	
-	<% form_tag session_path do -%>
-	<p><label for="login">Login</label><br/>
-	<%= text_field_tag 'login' %></p>
 
-	<p><label for="password">Password</label><br/>
-	<%= password_field_tag 'password' %></p>
-
-	<p><%= submit_tag 'Log in' %></p>
-	<% end -%>
+	<div id="form_area">
+		<%= render :partial => 'normal' %>
+	</div>
 </div>
-<div id="help" class="span-16">
-<%= link_to 'What is OpenID?', 'http://openid.net/' %> <%= arrow %> 
-<%= link_to 'Where can I use it?', 'http://openid.net/where' %> <%= arrow %> 
-<%= link_to 'How do I get one?', 'http://openid.net/get' %>
+<div id="help" class="span-16">	
+	<%= render :partial => 'help' %>
 </div>

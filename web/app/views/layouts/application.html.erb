@@ -38,12 +38,13 @@
 			</div>
 			<div id="main_nav" class="span-24">
 				<ul>
-					<li id="dashboard_nav"><%= link_to 'Dashboard', root_path, :class => (@active == 'dashboard' ? 'active' : '') %></li>
-					<li id="emission_nav"><%= link_to 'Emissions', emissions_path, :class => (@active == 'emissions' ? 'active' : '') %></li>
-					<li id="programs_nav"><%= link_to 'Programs', programs_path, :class => (@active == 'programs' ? 'active' : '') %></li>
-					<li id="spot_nav"><%= link_to 'Spots', '#', :class => (@active == 'spots' ? 'active' : '') %></li>
-					<li id="spot_nav"><%= link_to 'Authors', '#', :class => (@active == 'spots' ? 'active' : '') %></li>
-					<li id="configuration_nav"><%= link_to 'Configuration', '#', :class => (@active == 'configuration' ? 'active' : '') %></li>
+					<%= navigation_item(:dashboard, [], root_path) %>
+					<%= navigation_item(:emissions) %>
+					<%= navigation_item(:programs) %>
+					<%= navigation_item(:spots, [], "#") %>
+					<%= navigation_item(:editors) %>
+					<%= navigation_item(:authors) %>
+					<%= navigation_item(:configuration, [], '#') %>
 				</ul>
 			</div>
 		</div>

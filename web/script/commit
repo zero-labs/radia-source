@@ -22,8 +22,8 @@ to_checkin = []
       to_add << path
     when '!'
       to_remove << path
-    when 'M'
-      to_checkin << path
+    #when 'M'
+    #  to_checkin << path
   end
 end
 
@@ -37,25 +37,25 @@ end
 
 print_list(to_add, 'add')
 print_list(to_remove, 'remove')
-print_list(to_checkin, 'checkin')
+#print_list(to_checkin, 'checkin')
 
-puts "\nplease write something for the commit log and hit enter..." 
-puts "(hitting enter on an empty line will cancel this commit)\n\n" 
+#puts "\nplease write something for the commit log and hit enter..." 
+#puts "(hitting enter on an empty line will cancel this commit)\n\n" 
+#
+#log = gets.strip
+#
+#if log.empty?
+#  puts "commit cancelled!\n" 
+#  exit
+#end
 
-log = gets.strip
-
-if log.empty?
-  puts "commit cancelled!\n" 
-  exit
-end
-
-puts "\ncontacting repository...\n" 
+#puts "\ncontacting repository...\n" 
 
 `svn add #{to_add.join(' ')}` unless to_add.empty?
 `svn remove #{to_remove.join(' ')}` unless to_remove.empty?
-puts "\n" + `svn commit -m "#{log.gsub('"', '\"')}"` + "\n" 
-
-puts "running 'svn update' to be sure we are up-to-date..." 
-puts `svn update`
+#puts "\n" + `svn commit -m "#{log.gsub('"', '\"')}"` + "\n" 
+#
+#puts "running 'svn update' to be sure we are up-to-date..." 
+#puts `svn update`
 
 puts "\nfinished.\n"

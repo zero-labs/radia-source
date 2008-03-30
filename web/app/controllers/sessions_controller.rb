@@ -22,6 +22,14 @@ class SessionsController < ApplicationController
     redirect_back_or_default(root_path)
   end
   
+  def use_open_id
+    render :partial => 'open_id'
+  end
+  
+  def use_normal
+    render :partial => 'normal'
+  end
+  
   protected
   
   # OpenID authentication
@@ -37,7 +45,7 @@ class SessionsController < ApplicationController
           end
           successful_login
         else
-          failed_login_with_signup(identity_url, registration, "Sorry, no user by that identity URL exists (#{identity_url}).")
+          failed_login "Sorry, no user by that identity URL exists (#{identity_url})."
         end
       else
         failed_login result.message
@@ -62,17 +70,9 @@ class SessionsController < ApplicationController
 
   private
   def successful_login
-    self.current_user = @user
+    #self.current_user = @user
     flash[:notice] = "Logged in successfully"
     redirect_back_or_default(root_path)
-  end
-  
-  def failed_login_with_signup(identity_url, registration, message)
-    session[:name] = registration['fullname']
-    session[:email] = registration['email']
-    session[:identity_url] = identity_url
-    flash[:error] = message
-    redirect_to(signup_path)
   end
   
   def failed_login(message)

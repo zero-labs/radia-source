@@ -1,0 +1,16 @@
+<% form_tag session_path do -%>
+<p>
+	<label for="login">Login</label><br/>
+	<%= text_field_tag 'login', nil, :class => 'text' %>
+</p>
+
+<p>
+	<label for="password">Password</label><br/>
+	<%= password_field_tag 'password', nil, :class => 'text' %>
+</p>
+
+<p class="submit">
+	<%= submit_tag 'Log in' %> or 
+	<%= link_to_remote 'use OpenID', :url => { :action => 'use_open_id' }, :update => 'form_area' %>
+</p>
+<% end -%>

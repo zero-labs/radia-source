@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base  
   include AuthenticatedSystem
   
-  helper :all # include all helpers, all the time
+  #helper :all # include all helpers, all the time
   before_filter :active_nav
 
   # See ActionController::RequestForgeryProtection for details
