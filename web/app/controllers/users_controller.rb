@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
   layout 'login'
   
+  before_filter :check_logged_in, :only => [:new, :create]
+  
   # render new.rhtml
   def new
   end
@@ -31,6 +33,17 @@ class UsersController < ApplicationController
       flash[:notice] = "Signup complete!"
     end
     redirect_back_or_default('/')
+  end
+  
+  def show
+    @user = User.find_by_urlname(params[:id])
+    
+  end
+  
+  private
+  
+  def check_logged_in
+    redirect_back_or_default(root_path) if logged_in?
   end
 
 end

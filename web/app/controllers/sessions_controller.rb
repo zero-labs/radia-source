@@ -2,6 +2,8 @@
 class SessionsController < ApplicationController
   layout 'login'
   
+  before_filter :check_logged_in, :only => [:new, :create]
+  
   # render new.rhtml
   def new
   end
@@ -10,7 +12,7 @@ class SessionsController < ApplicationController
     if using_open_id?
       open_id_authentication
     else
-      password_authentication(params[:name], params[:password], params[:remember_me] == "1")
+      password_authentication(params[:login], params[:password], params[:remember_me] == "1")
     end
   end
 
@@ -34,15 +36,9 @@ class SessionsController < ApplicationController
   
   # OpenID authentication
   def open_id_authentication
-    authenticate_with_open_id(params[:openid_url], :required => [:fullname, :email]) do |result, identity_url, registration|
+    authenticate_with_open_id(params[:openid_url], :required => [:fullname, :email]) do |result, identity_url|
       if result.successful?
-        if @user = User.find_by_identity_url(identity_url)
-          {'name=' => 'fullname', 'email=' => 'email'}.each do |attr, reg|
-            @user.send(attr, registration[reg]) unless registration[reg].blank?
-          end
-          unless @user.save
-            flash[:error] = "Error saving the fields from your OpenID profile: #{current_user.errors.full_messages.to_sentence}"
-          end
+        if self.current_user = User.find_by_identity_url(identity_url)
           successful_login
         else
           failed_login "Sorry, no user by that identity URL exists (#{identity_url})."
@@ -78,5 +74,9 @@ class SessionsController < ApplicationController
   def failed_login(message)
     flash[:error] = message
     redirect_to(login_path)
+  end
+  
+  def check_logged_in
+    redirect_back_or_default(root_path) if logged_in?
   end
 end

@@ -2,6 +2,7 @@ require 'digest/sha1'
 class User < ActiveRecord::Base
   acts_as_authorizable
   acts_as_authorized_user
+  acts_as_urlnameable :login, :overwrite => true
   
   # Virtual attribute for the unencrypted password
   attr_accessor :password
@@ -23,8 +24,12 @@ class User < ActiveRecord::Base
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :identity_url, :name
   
-  has_many :authorships
+  has_many :authorships, :dependent => :destroy
   has_many :programs, :through => :authorships
+
+  def to_param
+    self.urlname
+  end
 
   # Activates the user in the database.
   def activate

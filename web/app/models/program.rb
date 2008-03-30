@@ -13,7 +13,7 @@ class Program < ActiveRecord::Base
                                 :conditions => ["start >= ?", Time.now], 
                                 :order => 'start ASC', 
                                 :limit => 5
-  has_many :authorships
+  has_many :authorships, :dependent => :destroy
   has_many :authors, :through => :authorships
                                 
   # Generate URLs based on the program's urlname
