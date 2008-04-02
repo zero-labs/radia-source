@@ -60,20 +60,19 @@ class SessionsController < ApplicationController
       successful_login
     else
       failed_login "Sorry, that username/password doesn't work"
-      #render :action => 'new'
     end
   end
 
   private
   def successful_login
-    #self.current_user = @user
     flash[:notice] = "Logged in successfully"
     redirect_back_or_default(root_path)
   end
   
   def failed_login(message)
     flash[:error] = message
-    redirect_to(login_path)
+    #redirect_to(login_path)
+    render :action => 'new'
   end
   
   def check_logged_in

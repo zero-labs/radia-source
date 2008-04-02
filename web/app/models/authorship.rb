@@ -5,33 +5,17 @@ class Authorship < ActiveRecord::Base
   #after_save :update_permissions
   #before_destroy :remove_permissions
   
+  # Returns the emissions in which the user is an author
   def emissions
-    self.program.emissions.collect { |e| }
-  end
-  
-
-  def update_permissions
-    self.user.has_role('author', self.program)
-    return if program.emissions.empty?
-    if always?
-      program.emissions.each { |e| user.has_role('author', e) }
+    if self.always?
+      self.program.emissions
     else
-      program.emissions.each do |e|
-        if permissions_by_day[e.start.wday]
-          user.has_role('author', e)
-        else
-          user.has_no_role('author', e)
-        end
-      end
+      # TODO check if self.program.emissions.empty?
+      self.program.emissions.select { |e| perms[e.start.wday] }  
     end
   end
   
-  def remove_permissions
-    self.user.has_no_role('author', self.program)
-    return if program.emissions.empty?
-    program.emissions.each { |e| user.has_no_role('author', e) }
-  end
-  
+  # Faux accessors to support direct creation/update from form
   def user_id
     self.user.id unless user.nil?
   end
@@ -41,7 +25,7 @@ class Authorship < ActiveRecord::Base
   end
   
   def program_id
-    self.program.id unless program.nil?
+    self.program.id unless self.program.nil?
   end
   
   def program_id=(id)

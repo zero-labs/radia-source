@@ -9,10 +9,6 @@ class UsersController < ApplicationController
 
   def create
     cookies.delete :auth_token
-    # protects against session fixation attacks, wreaks havoc with 
-    # request forgery protection.
-    # uncomment at your own risk
-    # reset_session
     @user = User.new(params[:user])
     @user.save
     if @user.errors.empty?
@@ -20,9 +16,8 @@ class UsersController < ApplicationController
       flash[:notice] = "Thanks for signing up!"
       redirect_back_or_default root_path
     else
-      # render :action => 'new'
       flash[:error] = "There was an error during signup"
-      redirect_to signup_path
+      render :action => 'new'
     end
   end
 
@@ -36,8 +31,7 @@ class UsersController < ApplicationController
   end
   
   def show
-    @user = User.find_by_urlname(params[:id])
-    
+    @user = User.find_by_urlname(params[:id])    
   end
   
   private
