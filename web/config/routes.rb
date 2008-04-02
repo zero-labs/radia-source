@@ -46,6 +46,5 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :editors
   
   # Program Authors
-  map.resources :authors
-  
+  map.resources :authors  
 end

@@ -1,0 +1,23 @@
+<%
+	@pagetitle = "Author Dashboard"
+	@breadcrumbs = [add_crumb("Author Dashboard", author_path(@author), true)]
+%>
+
+<% content_for :sidebar do %>
+	<h1>My programs</h1>
+	<ul>
+		<% @author.programs.each do |p| %>
+		<li><%= link_to p.name, program_path(p) %></li>
+		<% end %>
+	</ul>
+<% end %>
+
+
+<% @author.authorships.each do |a| %>
+	<h2><%= a.program.name %></h2>
+	<ul>
+	<% a.emissions(5).each do |e| %>
+		<li><%= link_to e.start.to_formatted_s(:long), emission_path(e) %></li>
+	<% end %>
+	</ul>
+<% end %>

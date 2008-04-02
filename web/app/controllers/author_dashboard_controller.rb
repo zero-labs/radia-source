@@ -1,2 +1,0 @@
-class AuthorDashboardController < ApplicationController
-end

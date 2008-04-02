@@ -38,10 +38,10 @@
 			</div>
 			<div id="main_nav" class="span-24">
 				<ul>
-					<%= navigation_item(:dashboard, [], root_path) %>
+					<%= navigation_item(:editor_dashboard, [], root_path) %>
+					<%= navigation_item(:author_dashboard, [], author_path(current_user)) %>
 					<%= navigation_item(:emissions) %>
 					<%= navigation_item(:programs) %>
-					<%= navigation_item(:spots, [], "#") %>
 					<%= navigation_item(:editors) %>
 					<%= navigation_item(:authors) %>
 					<%= navigation_item(:configuration, [], '#') %>

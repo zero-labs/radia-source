@@ -6,12 +6,17 @@ class Authorship < ActiveRecord::Base
   #before_destroy :remove_permissions
   
   # Returns the emissions in which the user is an author
-  def emissions
+  def emissions(number = -1)
     if self.always?
-      self.program.emissions
+      return self.program.emissions.find(:all, :limit => number) if number >= 0
+      return self.program.emissions if number < 0
     else
-      # TODO check if self.program.emissions.empty?
-      self.program.emissions.select { |e| perms[e.start.wday] }  
+      count = 0
+      emission_set.select do |e| 
+        count += 1
+        break if count == number
+        perms[e.start.wday]
+      end
     end
   end
   

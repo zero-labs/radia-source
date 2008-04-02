@@ -38,6 +38,7 @@ class EmissionsController < ApplicationController
    end
    
    # AJAX method
+   # POST /emissions/date_selection
    def date_selection
      date = Date.new(params[:date][:year].to_i, params[:date][:month].to_i)
      if params[:program_id]
@@ -66,7 +67,7 @@ class EmissionsController < ApplicationController
    
    def emissions_for_minical
      if params[:month]
-       @calemissions = @emissions 
+       @calemissions = @emissions
      else
        @calemissions = Emission.find_all_by_date(params[:year] || Time.now.year, Time.now.month) unless params[:program_id]
        @calemissions = @program.find_emissions_by_date(params[:year] || Time.now.year, Time.now.month) if params[:program_id]

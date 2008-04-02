@@ -11,8 +11,8 @@ class ProgramsController < ApplicationController
     end
   end
   
-  # GET /programs/program-name
-  # GET /programs/program-name.:format
+  # GET /programs/:id
+  # GET /programs/:id.:format
   def show
     @program = Program.find_by_urlname(params[:id])
     
@@ -32,8 +32,8 @@ class ProgramsController < ApplicationController
     @program = Program.find_by_urlname(params[:id])
   end
   
-  # POST /programs/program-name
-  # POST /programs/program-name.:format
+  # POST /programs
+  # POST /programs.:format
   def create
     @program = Program.new(params[:program])
     respond_to do |format|
@@ -49,8 +49,8 @@ class ProgramsController < ApplicationController
     end
   end
   
-  # PUT /programs/program-name
-  # PUT /programs/program-name.:format
+  # PUT /programs/:id
+  # PUT /programs/:id.:format
   def update
     @program = Program.find_by_urlname(params[:id])  
     
@@ -68,8 +68,8 @@ class ProgramsController < ApplicationController
     
   end
   
-  # DELETE /programs/program-name
-  # DELETE /programs/program-name.:format
+  # DELETE /programs/:id
+  # DELETE /programs/:id.:format
   def destroy
     @program = Program.find_by_urlname(params[:id])
     @program.destroy

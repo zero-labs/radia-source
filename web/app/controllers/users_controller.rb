@@ -1,12 +1,15 @@
 class UsersController < ApplicationController
-  layout 'login'
+  layout 'login', :except => :show
+  layout 'application', :only => :show
   
   before_filter :check_logged_in, :only => [:new, :create]
   
-  # render new.rhtml
+  # GET /users/new
   def new
   end
 
+  # POST /users
+  # POST /users.:format
   def create
     cookies.delete :auth_token
     @user = User.new(params[:user])
@@ -21,6 +24,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /activate/:activation_code
   def activate
     self.current_user = params[:activation_code].blank? ? false : User.find_by_activation_code(params[:activation_code])
     if logged_in? && !current_user.active?
@@ -30,6 +34,8 @@ class UsersController < ApplicationController
     redirect_back_or_default('/')
   end
   
+  # GET /users/:id
+  # GET /users/:id.:format
   def show
     @user = User.find_by_urlname(params[:id])    
   end

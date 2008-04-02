@@ -12,7 +12,8 @@ module ApplicationHelper
   def navigation_item(item, permissions = [], url = {})
     path = (url.empty? ? self.send("#{item}_path".to_sym) : url)
     out = "<li id=\"#{item}_nav\">" 
-    out << link_to("#{item.to_s.capitalize}", path, :class => (@active == "#{item}" ? 'active' : ''))
+    out << link_to("#{item.to_s.split('_').collect{|e| e.capitalize}.join(' ')}", 
+                    path, :class => (@active == "#{item}" ? 'active' : ''))
     out << "</li>"
   end
   
