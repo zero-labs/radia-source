@@ -6,7 +6,7 @@ class Emission < ActiveRecord::Base
   belongs_to :program_schedule
   belongs_to :program
   
-  validates_uniqueness_of :start, :on => :save # Ensures unique starting dates/times
+  validates_uniqueness_of :start, :on => :save # Ensures unique starting datetimes
   validates_presence_of :start, :end, :on => :save
   
   validate :start_before_end

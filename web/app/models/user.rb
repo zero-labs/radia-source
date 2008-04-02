@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   
   before_save :encrypt_password
   before_create :make_activation_code 
+  
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :identity_url, :name
@@ -94,8 +95,28 @@ class User < ActiveRecord::Base
     @activated
   end
   
+  # TODO Replace this with actual password generator
+  def generate_password
+    self.password = "1234"
+  end
+  
   def self.get(identity_url)
     find(:first, :conditions => ["identity_url = ?", identity_url])
+  end
+  
+  # Gives a role to the user
+  def give_role(name)
+    self.has_role name
+  end
+  
+  # Takes a role from the user
+  def take_role(name)
+    self.has_no_role name
+  end
+  
+  # Returns true if the user has any authorships
+  def is_author?
+    !self.authorships.empty?
   end
 
   protected

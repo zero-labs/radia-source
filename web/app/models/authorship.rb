@@ -2,8 +2,13 @@ class Authorship < ActiveRecord::Base
   belongs_to :program
   belongs_to :user
 
-  after_save :update_permissions
-  before_destroy :remove_permissions
+  #after_save :update_permissions
+  #before_destroy :remove_permissions
+  
+  def emissions
+    self.program.emissions.collect { |e| }
+  end
+  
 
   def update_permissions
     self.user.has_role('author', self.program)

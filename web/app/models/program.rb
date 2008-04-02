@@ -15,7 +15,7 @@ class Program < ActiveRecord::Base
                                 :limit => 5
   has_many :authorships, :dependent => :destroy
   has_many :authors, :through => :authorships
-                                
+  
   # Generate URLs based on the program's urlname
   def to_param
     self.urlname

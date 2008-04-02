@@ -34,13 +34,15 @@ class ProgramSchedule < ActiveRecord::Base
     calendars.each do |cal|
       cal.components(Vpim::Icalendar::Vevent) do |event|
         # TODO create recurrence object
-        program = Program.find_or_create_by_name(event.summary)
-        event.occurences.each(dtend) do |occurrence|
-          # create emission if occurrence date >= dtstart
-          if occurrence >= dtstart then
-            em_start = occurrence
-            em_end = em_start + event.duration
-            create_emission(type, program, em_start, em_end)
+        program = Program.find_by_name(event.summary)
+        if program then
+          event.occurences.each(dtend) do |occurrence|
+            # create emission if occurrence date >= dtstart
+            if occurrence >= dtstart then
+              em_start = occurrence
+              em_end = em_start + event.duration
+              create_emission(type, program, em_start, em_end)
+            end
           end
         end
       end
@@ -51,17 +53,17 @@ class ProgramSchedule < ActiveRecord::Base
   def create_emission(type, program, dtstart, dtend)
     case type
     when :recorded
-      e = RecordedEmission.new(:start => dtstart, :end => dtend)
+      e = RecordedEmission.new(:start => dtstart, :end => dtend, :program => program)
       self.recorded_emissions << e
     when :live
-      e = LiveEmission.new(:start => dtstart, :end => dtend)
+      e = LiveEmission.new(:start => dtstart, :end => dtend, :program => program)
       self.live_emissions << e
     when :playlist
-      e = PlaylistEmission.new(:start => dtstart, :end => dtend)
+      e = PlaylistEmission.new(:start => dtstart, :end => dtend, :program => program)
       self.playlist_emissions << e
     end
     self.emissions << e
-    program.emissions << e
+    #program.emissions << e
   end
   
   def destroy_emissions(type, dtstart, dtend)
