@@ -33,6 +33,6 @@ namespace :radia do
     u = User.create(:name => 'Daniel Zacarias', :email => 'daniel.zacarias@gmail.com', :login => 'zaki',
     :password => '1234', :password_confirmation => '1234')
     u.activate
-    u.has_role 'admin'
+    u.give_role 'admin'
   end
 end

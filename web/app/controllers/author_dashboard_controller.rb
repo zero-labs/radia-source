@@ -1,0 +1,2 @@
+class AuthorDashboardController < ApplicationController
+end
