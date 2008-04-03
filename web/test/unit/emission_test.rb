@@ -50,13 +50,11 @@ class EmissionTest < ActiveSupport::TestCase
   end
   
   def test_date_finders
-    e1 = emissions(:live1)
-    e2 = emissions(:live2)
-    e3 = emissions(:live3)
     
     assert_equal 2, Emission.find_all_by_date(2008, 1).size
     assert_equal 2, Emission.find_all_by_date(2008, 2).size
     assert_equal 1, Emission.find_all_by_date(2008, 1, 14).size
+    assert_equal true, Emission.has_emissions?(DateTime.new(2008, 01, 14))
   end
   
   protected
