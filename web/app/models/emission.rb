@@ -7,10 +7,9 @@ class Emission < ActiveRecord::Base
   belongs_to :program
   
   validates_uniqueness_of :start, :on => :save # Ensures unique starting datetimes
-  validates_presence_of :start, :end, :on => :save
+  validates_presence_of :start, :end, :program, :on => :save
   
-  validate :start_before_end
-  
+  validate :start_before_end  
   # TODO validate nested emissions?
 
   def year
