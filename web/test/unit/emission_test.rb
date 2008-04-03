@@ -42,7 +42,7 @@ class EmissionTest < ActiveSupport::TestCase
     e3 = emissions(:live3)
     
     assert_equal 2, Emission.find_all_by_date(2008, 1).size
-    assert_equal 1, Emission.find_all_by_date(2008, 2).size
+    assert_equal 2, Emission.find_all_by_date(2008, 2).size
     assert_equal 1, Emission.find_all_by_date(2008, 1, 14).size
   end
 end

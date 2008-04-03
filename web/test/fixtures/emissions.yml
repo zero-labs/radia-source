@@ -6,6 +6,7 @@
 # two:
 #   column: value
 
+# it's on a monday
 live1:
     id: 1
     program_id: 1
@@ -14,6 +15,7 @@ live1:
     start: 2008-01-07 22:00:00
     end: 2008-01-07 23:00:00
 
+# it's on a monday
 live2:
     id: 2
     program_id: 1
@@ -21,7 +23,8 @@ live2:
     type: LiveEmission
     start: 2008-01-14 22:00:00
     end: 2008-01-14 23:00:00
-        
+
+# it's on a thursday
 live3:
     id: 3
     program_id: 1
@@ -29,3 +32,12 @@ live3:
     type: LiveEmission
     start: 2008-02-21 22:00:00
     end: 2008-02-21 23:00:00
+
+# it's on a tuesday
+recorded1:
+    id: 4
+    program_id: 1
+    program_schedule_id: 1
+    type: RecordedEmission
+    start: 2008-02-26 22:00:00
+    end: 2008-02-26 22:00:00
