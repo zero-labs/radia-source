@@ -5,7 +5,7 @@ class Program < ActiveRecord::Base
   
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
   acts_as_urlnameable :name, :overwrite => true
-
+    
   has_many :emissions, :dependent => :destroy, :order => 'start ASC'
   
   # Shorthand to retrieve upcoming emissions

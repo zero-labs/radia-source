@@ -10,7 +10,9 @@ namespace :radia do
   task :programs => :environment do
     entries = YAML.load_file(File.dirname(RAILS_ROOT) + '/web/config/programs.yml')
     entries.each do |e|
-      Program.find_or_create_by_name(e)
+      unless Program.find_by_name(e) then
+        Program.create(:name => e)
+      end
     end
   end
 
@@ -19,7 +21,7 @@ namespace :radia do
     entries = YAML.load_file(File.dirname(RAILS_ROOT) + '/web/config/authors.yml')
     entries.each do |e|
       u = User.create(:name => e['name'], :email => e['mail'], :login => urlnameify(e['name']), 
-      :password => '1234', :password_confirmation => '1234')
+                      :password => '1234', :password_confirmation => '1234')
       u.activate
       e['programs'].each do |p| 
         Authorship.create(:program => Program.find_by_name(p), :user => u, :always => true)

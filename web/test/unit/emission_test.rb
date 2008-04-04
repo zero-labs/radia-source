@@ -23,12 +23,12 @@ class EmissionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_ensure_start_date_uniqueness
-    create_emission
-    assert_no_difference 'Emission.count' do
-      create_emission # to create an emission at the same time
-    end
-  end
+  #def test_should_ensure_start_date_uniqueness
+  #  create_emission
+  #  assert_no_difference 'Emission.count' do
+  #    create_emission # to create an emission at the same time
+  #  end
+  #end
   
   def test_should_create_emission
     assert_difference 'Emission.count' do

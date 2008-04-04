@@ -2,4 +2,6 @@
 	@pagetitle = "Program: #{@emission.program.name}" 
 	emission_crumbs
 %>
+<h3>Status:</h3><%= @emission.active? ? "Active" : "Inactive" %><br />
+
 <h3>Time:</h3> <%= @emission.start.strftime("%H:%M") + " - " + @emission.end.strftime("%H:%M") %>

@@ -17,7 +17,7 @@ class UserMailerTest < Test::Unit::TestCase
   end
 
   def test_dummy_test
-    #do nothing
+    # do nothing
   end
 
   private

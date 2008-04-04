@@ -51,6 +51,7 @@ class Authorship < ActiveRecord::Base
   end
 
   def must_have_some_day_rule
+    return true if self.always
     self.permissions_by_day.each { |p| return true if p }
     errors.add_to_base 'must indicate when the user is an author'
   end

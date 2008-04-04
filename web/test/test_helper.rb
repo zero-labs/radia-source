@@ -1,6 +1,8 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
+require 'singleton_helper'
+
 
 class Test::Unit::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
@@ -35,4 +37,8 @@ class Test::Unit::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  def reset_singleton(klass)
+    klass.reset_instance
+    klass.delete_all
+  end
 end

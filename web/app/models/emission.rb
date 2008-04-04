@@ -6,12 +6,17 @@ class Emission < ActiveRecord::Base
   belongs_to :program_schedule
   belongs_to :program
   
-  validates_uniqueness_of :start, :on => :save # Ensures unique starting datetimes
+  # Ensures unique starting datetimes
+  #validates_uniqueness_of :start, :on => :save, :scope => :active
   validates_presence_of :start, :end, :program, :on => :save
   
   validate :start_before_end  
   # TODO validate nested emissions?
+  
+  # TODO
+  # attr_accessors!
 
+  # Convenience methods to access start date/time
   def year
     self.start.year
   end
@@ -23,9 +28,38 @@ class Emission < ActiveRecord::Base
   def day
     self.start.day
   end
+  
+  def hour
+    self.start.hour
+  end
+  
+  def minute
+    self.start.minute
+  end
 
   def to_param
     param_array
+  end
+  
+  # Tests if this emission has been changed from its original state
+  def modified?
+    !self.description.nil?
+  end
+  
+  # Flags the emission as inactive
+  def inactivate!
+    self.active = false
+    self.save
+  end
+  
+  # Flags the emission as active
+  def activate!
+    self.active = true
+    self.save
+  end
+  
+  def inactive?
+    !self.active
   end
 
   # Find all emissions on a certain date

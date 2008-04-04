@@ -5,31 +5,39 @@ class ProgramSchedule < ActiveRecord::Base
   has_many :emissions, :order => 'start ASC'
   has_many :programs, :through => :emissions
   
-  has_many :recorded_emissions, :order => 'start ASC'
-  has_many :live_emissions, :order => 'start ASC'
-  has_many :playlist_emissions, :order => 'start ASC'
+  has_many :recorded_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
+  has_many :live_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
+  has_many :playlist_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
+  
+  has_many :inactive_emissions, :order => 'start ASC', :class_name => 'Emission', :conditions => ["active = ?", false]
 
   def update_emissions(params)
     dtstart = TimeUtils.get_datetime(params[:start])
     dtend = TimeUtils.get_datetime(params[:end])
+    ignored = []
     params[:calendars].each_key do |key|
-      update_by_type(key.to_sym, params[:calendars][key], dtstart, dtend)
+      next if params[:calendars][key].blank? 
+      ignored << update_by_type(key.to_sym, params[:calendars][key], dtstart, dtend, params[:test])
     end    
     self.save
+    ignored
   end
 
   protected
 
   # Updates the schedule for a given type of emission
   # with events occurring between dtstart and dtend
-  def update_by_type(type, icalendar, dtstart, dtend)
+  def update_by_type(type, icalendar, dtstart, dtend, test = false)
     return if icalendar.nil? or icalendar.blank?
     
     calendars = Vpim::Icalendar.decode(icalendar)
-    return if calendars.blank? 
+    return if calendars.blank?
     
-    # Destroy emissions within the given timeframe
-    destroy_emissions(type, dtstart, dtend)
+    # Cleans emissions within the given timeframe
+    # Destroys unaltered emissions and inactivates those with changes
+    purge_emissions(type, dtstart, dtend, test)
+    
+    ignored = []
     
     calendars.each do |cal|
       cal.components(Vpim::Icalendar::Vevent) do |event|
@@ -37,45 +45,65 @@ class ProgramSchedule < ActiveRecord::Base
         program = Program.find_by_name(event.summary)
         if program then
           event.occurences.each(dtend) do |occurrence|
-            # create emission if occurrence date >= dtstart
             if occurrence >= dtstart then
-              em_start = occurrence
-              em_end = em_start + event.duration
-              create_emission(type, program, em_start, em_end)
+              deal_with_occurrence(type, program, event, occurrence)
             end
           end
+        else
+          ignored << event.summary
         end
       end
     end
+    ignored
+  end
+  
+  def deal_with_occurrence(type, program, event, occurrence)
+    emissions = program.find_emissions_by_date(occurrence.year, occurrence.month, occurrence.day)
+    
+    if emissions then
+      emissions.each do |e|
+        return if (e.start == occurrence) and !e.modified?
+      end
+    end
+    # if it got here it's because the emission is different from existing ones
+    create_emission(type, program, occurrence, occurrence + event.duration)
   end
   
   # Emission type, start and end date/time
   def create_emission(type, program, dtstart, dtend)
     case type
     when :recorded
-      e = RecordedEmission.new(:start => dtstart, :end => dtend, :program => program)
+      e = RecordedEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
       self.recorded_emissions << e
     when :live
-      e = LiveEmission.new(:start => dtstart, :end => dtend, :program => program)
+      e = LiveEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
       self.live_emissions << e
     when :playlist
-      e = PlaylistEmission.new(:start => dtstart, :end => dtend, :program => program)
+      e = PlaylistEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
       self.playlist_emissions << e
     end
-    self.emissions << e
-    #program.emissions << e
+    e.save
   end
   
-  def destroy_emissions(type, dtstart, dtend)
+  def purge_emissions(type, dtstart, dtend, test = false)
     case type
     when :recorded
-      k = self.recorded_emissions
+      k = self.recorded_emissions(true)
     when :live
-      k = self.live_emissions
+      k = self.live_emissions(true)
     when :playlist
-      k = self.playlist_emissions
+      k = self.playlist_emissions(true)
     end
-    k.each { |e| e.destroy if ((e.start >= dtstart) and (e.start <= dtend)) }
+    
+    k.each do |e|
+      # destroy if not modified and between start/end dates
+      e.destroy if (!e.modified? and (e.start >= dtstart) and (e.start <= dtend))
+      # make inactive if emission has been modified
+      if (e.modified? and (e.start >= dtstart) and (e.start <= dtend)) then
+        e.inactivate!
+        self.inactive_emissions << e
+      end
+    end
   end
 
 end
