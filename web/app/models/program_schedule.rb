@@ -11,6 +11,8 @@ class ProgramSchedule < ActiveRecord::Base
   
   has_many :inactive_emissions, :order => 'start ASC', :class_name => 'Emission', :conditions => ["active = ?", false]
 
+  acts_as_emission_process_configurable
+
   def update_emissions(params)
     dtstart = TimeUtils.get_datetime(params[:start])
     dtend = TimeUtils.get_datetime(params[:end])

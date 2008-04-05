@@ -8,7 +8,7 @@ class ProgramScheduleController < ApplicationController
   def update
     @schedule = ProgramSchedule.instance
     if @schedule.update_emissions(params[:new_schedule])
-      redirect_to :controller => 'programs', :action => 'index'
+      redirect_to :action => 'index'
     else
       redirect_to :action => 'edit'
     end

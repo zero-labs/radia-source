@@ -40,6 +40,7 @@
 				<ul>
 					<%= navigation_item(:editor_dashboard, [], root_path) if logged_in? %>
 					<%= navigation_item(:author_dashboard, [], author_path(current_user)) if logged_in? %>
+					<%= navigation_item(:schedule) if logged_in? %>
 					<%= navigation_item(:emissions) if logged_in? %>
 					<%= navigation_item(:programs) if logged_in? %>
 					<%= navigation_item(:editors) if logged_in? %>

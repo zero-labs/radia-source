@@ -20,4 +20,8 @@ module EmissionsHelper
       @breadcrumbs.push add_crumb("#{@date[:day]}", program_emissions_by_day_path(@program)) unless @date[:day].blank?			
     end
   end
+  
+  def status
+    
+  end
 end

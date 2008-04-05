@@ -3,6 +3,13 @@
 	<li><%= link_to 'Edit program', edit_program_path(@program) %></li>
 </ul>
 
+<h1>Process configuration</h1>
+<ul>
+	<li><%= link_to "Recorded emissions", "#" %></li>
+	<li><%= link_to "Live emissions", "#" %></li>
+	<li><%= link_to "Playlist emissions", "#" %></li>
+</ul>
+
 <div id="minical">
 	<%= render :partial => 'shared/minical', 
 		:locals => { :date => Time.now, :program => @program, 

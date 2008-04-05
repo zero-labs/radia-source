@@ -23,7 +23,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # Program schedule
   map.with_options :controller => 'program_schedule' do |schedule|
-    #schedule.schedule 'schedule', :action => 'index', :conditions => {:method => :get}
+    schedule.schedule 'schedule', :action => 'index', :conditions => {:method => :get}
     schedule.edit_schedule 'schedule/edit', :action => 'edit', :conditions => {:method => :get}
     schedule.update_schedule 'schedule', :action => 'update', :conditions => {:method => :put}
   end
