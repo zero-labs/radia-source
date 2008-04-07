@@ -16,3 +16,9 @@ function toggle_visibility(id) {
 	else
 	e.style.display = 'block';
 }
+
+function toggle_group_visibility(group) {
+	for (el in group) {
+		toggle_visibility(el);
+	}
+}

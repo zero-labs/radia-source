@@ -1,0 +1,17 @@
+<%
+	@pagetitle = "Schedule"
+	@breadcrumbs = [add_crumb("Schedule", schedule_path, true)]
+%>
+
+<% content_for :sidebar do %>
+<h1>Administration</h1>
+<ul>
+	<li><%= link_to "Update schedule", edit_schedule_path %></li>
+</ul>
+<h1>Process configuration</h1>
+<ul>
+	<li><%= link_to "Recorded emissions", edit_schedule_process_path(:process_type => 'recorded') %></li>
+	<li><%= link_to "Live emissions", edit_schedule_process_path(:process_type => 'live') %></li>
+	<li><%= link_to "Playlist emissions", edit_schedule_process_path(:process_type => 'playlist') %></li>
+</ul>
+<% end %>

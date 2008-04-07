@@ -1,0 +1,18 @@
+<h3><%= title %></h3>
+<p>
+	<label for="<%= "process[#{field}_field][protocol]" %>">Protocol</label><br/>
+	<%= text_field_tag "process[#{field}_field][protocol]", process.send(field).send(:protocol) %>
+</p>
+
+<p>
+	<label for="<%= "process[#{field}_field][location]" %>">Location</label> (e.g. ftp.radiozero.pt)<br/>
+	<%= text_field_tag "process[#{field}_field][location]", process.send(field).send(:location) %>
+</p>
+<p>
+	<label for="<%= "process[#{field}_field][login]]" %>">Login</label><br/>
+	<%= text_field_tag "process[#{field}_field][login]", process.send(field).send(:login) %>
+</p>
+<p>
+	<label for="<%= "process[#{field}_field][password]" %>">Password</label><br/>
+	<%= password_field_tag "process[#{field}_field][password]", process.send(field).send(:password) %>
+</p>

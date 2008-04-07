@@ -22,14 +22,14 @@ ActionController::Routing::Routes.draw do |map|
   map.activate 'activate/:activation_code', :controller => 'users', :action => 'activate'
   
   # Program schedule
-  map.with_options :controller => 'program_schedule' do |schedule|
-    schedule.schedule 'schedule', :action => 'index', :conditions => {:method => :get}
-    schedule.edit_schedule 'schedule/edit', :action => 'edit', :conditions => {:method => :get}
-    schedule.update_schedule 'schedule', :action => 'update', :conditions => {:method => :put}
+  map.resource :schedule, :controller => 'program_schedule' do |schedule|
+    schedule.resource :process, :controller => 'process_configuration', :path_prefix => 'schedule/:process_type'
   end
   
   # Emissions (as resources accessible by date)
-  map.datestamped_resources :emissions#, :collection => {:all => :get, :past => :get, :future => :get}
+  map.datestamped_resources :emissions do |emission|
+    emission.resource :process, :controller => 'process_configuration', :path_prefix => 'emissions/:year/:month/:day/:id'
+  end
   
   # AJAX methods for emissions
   map.with_options :controller => 'emissions' do |emission|
@@ -40,11 +40,21 @@ ActionController::Routing::Routes.draw do |map|
   # Programs, with nested resources
   map.resources :programs do |program|
     program.datestamped_resources :emissions
+    program.resource :process, :controller => 'process_configuration', :path_prefix => 'programs/:program_id/:process_type'
   end
   
   # Radio Editors
   map.resources :editors
   
   # Program Authors
-  map.resources :authors  
+  map.resources :authors
+      
+  #map.with_options :controller => 'process' do |process|
+  #  process.process 'process/:type', :action => 'index', :conditions => {:method => :get}
+  #  process.new_process 'process/:type/new', :action => 'new', :conditions => {:method => :get }
+  #  process.edit_process 'process/:type/edit', :action => 'edit', :conditions => {:method => :get}
+  #  process.update_process 'process/:type/', :action => 'updae', :conditions => {:method => :put }
+  #  pr
+  #  
+  #end
 end

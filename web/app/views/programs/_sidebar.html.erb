@@ -5,9 +5,9 @@
 
 <h1>Process configuration</h1>
 <ul>
-	<li><%= link_to "Recorded emissions", "#" %></li>
-	<li><%= link_to "Live emissions", "#" %></li>
-	<li><%= link_to "Playlist emissions", "#" %></li>
+	<li><%= link_to "Recorded emissions", program_process_path(@program, :process_type => 'recorded') %></li>
+	<li><%= link_to "Live emissions", program_process_path(@program, :process_type => 'live') %></li>
+	<li><%= link_to "Playlist emissions", program_process_path(@program, :process_type => 'playlist') %></li>
 </ul>
 
 <div id="minical">

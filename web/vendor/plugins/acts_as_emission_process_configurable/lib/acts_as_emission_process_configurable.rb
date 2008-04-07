@@ -15,33 +15,40 @@ module RadiaSource
       # will load the relevant instance methods
       # defined below when invoked
       module ClassMethods
-        def acts_as_emission_processable
-          # this is at the class level
-          # add any class level manipulations you need here, like has_many, etc.
+        def acts_as_emission_process_configurable
+          # class level manipulations
+          
           has_one :recorded_process_configuration, :as => :processable
           #has_one :live_process_configuration, :as => :processable
-          
           
           extend RadiaSource::Acts::EmissionProcessConfigurable::SingletonMethods
           include RadiaSource::Acts::EmissionProcessConfigurable::InstanceMethods
         end
       end
 
-      # Adds a catch_chickens class method which finds
-      # all records which have a 'chickens' field set
-      # to true.
+      # Methods that apply to the class
       module SingletonMethods
-        #def catch_chickens
-        #  find(:all, :conditions => ['chickens = ?', true])
-        #end
-        # etc...
+        # ...
       end
 
       # Adds instance methods.
       module InstanceMethods
-        #def eat_chicken
-        #  puts "Fox with ID #{self.id} just ate a chicken" 
-        #end
+        def has_process?(type)
+          respond_to?("#{type}_process_configuration")
+        end
+        
+        def recorded
+          init_recorded if self.recorded_process_configuration(true).nil?
+          self.recorded_process_configuration(true)
+        end
+        
+        private
+        
+        def init_recorded
+          self.recorded_process_configuration = RecordedProcessConfiguration.create(:processable => self)
+          self.recorded_process_configuration.init_fields
+          self.recorded_process_configuration.save
+        end
       end
 
     end

@@ -1,5 +1,7 @@
 class ActionConfiguration < ActiveRecord::Base  
-  validates_presence_of :perform, :activity
+  belongs_to :process_configuration 
+  
+  validates_presence_of :perform, :activity, :process_configuration, :attrname
   validate :has_some_action
   
   protected

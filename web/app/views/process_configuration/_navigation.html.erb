@@ -1,0 +1,10 @@
+<div id="activity_nav">
+	<ul>
+		<% count = 0 %>
+		<% items.each do |activity| %>
+			<li class="<%= (count ==  0) ? 'first' : '' %>">
+				<%= link_to activity.to_s.capitalize, "#" %>
+			</li>
+		<% count += 1; end %>
+	</ul>
+</div>

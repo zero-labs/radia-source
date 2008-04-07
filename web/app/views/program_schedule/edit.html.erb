@@ -12,31 +12,31 @@
 	Select the calendar files representing the types of programs you want to update.
 </p>
 
-<% form_tag update_schedule_path, { :multipart => true, :method => :put } do -%>
-	<div class="right_division span-9">
+<% form_tag schedule_path, { :multipart => true, :method => :put } do -%>
+<div class="right_division span-9">
 	<p>
-	<label for="schedule_date_start">Start date:</label><br />
-	<%= select_datetime Time.now, {:prefix => "new_schedule[start]", :time_separator => ' : '} %>
+		<label for="schedule_date_start">Start date:</label><br />
+		<%= select_datetime Time.now, {:prefix => "new_schedule[start]", :time_separator => ' : '} %>
 	</p>
 	<p>
-	<label for="date_end">End date:</label><br />
-	<%= select_datetime 6.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>
+		<label for="date_end">End date:</label><br />
+		<%= select_datetime 6.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>
 	</p>
 	<br/>
-	</div>
-	<div class="left_space span-6 last">
+</div>
+<div class="left_space span-6 last">
 	<p>
-	<label for="new_schedule[calendars][recorded]">Recorded programs: </label><br />
-	<%= file_field_tag 'new_schedule[calendars][recorded]' %>
+		<label for="new_schedule[calendars][recorded]">Recorded programs: </label><br />
+		<%= file_field_tag 'new_schedule[calendars][recorded]' %>
 	</p>
 	<p>
-	<label for="new_schedule[calendars][live]">Live: </label><br/>
-	<%= file_field_tag 'new_schedule[calendars][live]' %>
+		<label for="new_schedule[calendars][live]">Live: </label><br/>
+		<%= file_field_tag 'new_schedule[calendars][live]' %>
 	</p>
 	<p>
-	<label for="new_schedule[playlist]">Playlist: </label><br />
-	<%= file_field_tag 'new_schedule[calendars][playlist]' %>
+		<label for="new_schedule[playlist]">Playlist: </label><br />
+		<%= file_field_tag 'new_schedule[calendars][playlist]' %>
 	</p>
-	</div>
-	<%= submit_tag 'Change schedule' %>
+</div>
+<%= submit_tag 'Change schedule' %>
 <% end -%>

@@ -125,8 +125,20 @@ span.inactive
 	list-style-type: none;
 }
 
+/** Process configuration **/
+#delivery {
+}
+
+#validation, #broadcast, #post_broadcast {
+}
+
 
 /*** Misc ***/
+.centered
+{
+	text-align: center;
+}
+
 .right_division
 {
 	border-right: 1px dashed #777;

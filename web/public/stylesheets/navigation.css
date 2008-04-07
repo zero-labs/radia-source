@@ -44,11 +44,6 @@
 
 /*** Control Navigation ***/
 
-#control
-{
-	margin: 5px 5px 5px 5px;
-}
-
 #control_nav 
 {
 	margin: 10px 30px 0 0;
@@ -84,6 +79,44 @@
 	content: "\0020";
 }
 
+
+/*** Activity Navigation ***/
+
+#activity_nav 
+{
+	padding: 0;
+	margin: 5px 0 0 0;
+	text-align: center;
+}
+
+#activity_nav a:link, #activity_nav a:visited
+{
+	color: #8B0000;
+	text-decoration:none;
+	font-size: 1.2em;
+}
+
+#activity_nav a:hover
+{
+	text-decoration: underline;
+}
+
+#activity_nav li 
+{
+	margin: 0; 
+	padding: 0;
+	display: inline;
+	list-style: none;
+}
+
+#activity_nav ul li:before {
+	content: "\007C \0020";
+	color: #333;
+}
+	
+#activity_nav ul li.first:before {
+	content: "\0020";
+}
 
 /*** Breadcrumbs ***/
 

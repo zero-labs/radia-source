@@ -1,0 +1,25 @@
+<%= render :partial => 'navigation', :locals => { :items => @process.activities.keys } %>
+
+<div class="prepend-4 span-9 append-4">
+	
+<% #form_for @type.to_sym, @process, :url => @form_path, :html => { :method => :put } do |f| %>
+<% form_tag @form_path, :method => :put do -%>
+<% @process.activities.each do |activity, fields| %>
+	<div id="<%= activity %>">
+		<h2 class="centered"><%= activity.to_s.capitalize %></h2>
+		
+		<% fields.each do |suffix, params| %>
+			<p>	
+				<% field_name = activity.to_s + '_' + suffix.to_s
+				   if params[0] == :service %>
+					<%= service_config(@process, field_name, params[1]) %>
+				<% elsif params[0] == :action %>
+					<%= action_config(@process, field_name, params[1], params.slice(2..-1)) %>
+				<% end %>
+			</p>
+<% 
+		end
+	end %>
+</div>
+<%= submit_tag "Update process" %>
+<% end -%>
