@@ -110,13 +110,55 @@
 }
 
 #activity_nav ul li:before {
-	content: "\007C \0020";
+	content: "\2192 \0020";
 	color: #333;
 }
 	
 #activity_nav ul li.first:before {
 	content: "\0020";
 }
+
+
+/*** Letter Navigation ***/
+
+#letter_nav 
+{
+	padding: 0;
+	margin: 5px 0 0 0;
+	text-align: center;
+}
+
+#letter_nav a:link, #letter_nav a:visited
+{
+	color: #8B0000;
+	text-decoration:none;
+	font-size: 1.2em;
+}
+
+#letter_nav a:hover
+{
+	text-decoration: underline;
+}
+
+#letter_nav li 
+{
+	margin: 0; 
+	margin-right: 10px;
+	padding: 0;
+	display: inline;
+	list-style: none;
+}
+
+#letter_nav ul li:before {
+	content: "\2192 \0020";
+	color: #333;
+}
+	
+#letter_nav ul li.first:before {
+	content: "\0020";
+}
+
+
 
 /*** Breadcrumbs ***/
 

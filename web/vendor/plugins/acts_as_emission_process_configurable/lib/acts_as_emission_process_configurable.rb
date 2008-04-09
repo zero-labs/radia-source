@@ -14,13 +14,37 @@ module RadiaSource
       # declare the class level helper methods which
       # will load the relevant instance methods
       # defined below when invoked
+      
+      # class level manipulations
       module ClassMethods
-        def acts_as_emission_process_configurable
-          # class level manipulations
+        def acts_as_emission_process_configurable(options = {})
+          defaults = { :recorded => false, :live => false, :playlist => false, :repeat => false }
           
-          has_one :recorded_process_configuration, :as => :processable
-          #has_one :live_process_configuration, :as => :processable
-          
+          defaults.merge(options).each do |key, val|
+            case key
+            when :recorded
+              if val then 
+                has_one(:recorded_process_configuration, :as => :processable)
+                include RadiaSource::Acts::EmissionProcessConfigurable::RecordedInstanceMethods
+              end
+            when :live
+              if val then 
+                has_one(:live_process_configuration, :as => :processable)
+                include RadiaSource::Acts::EmissionProcessConfigurable::LiveInstanceMethods
+              end
+            when :playlist
+              if val then 
+                has_one(:playlist_process_configuration, :as => :processable)
+                include RadiaSource::Acts::EmissionProcessConfigurable::PlaylistInstanceMethods
+              end
+            when :repeat
+              if val then 
+                has_one(:repeat_process_configuration, :as => :processable)
+                include RadiaSource::Acts::EmissionProcessConfigurable::RepeatInstanceMethods
+              end
+            end
+          end
+                    
           extend RadiaSource::Acts::EmissionProcessConfigurable::SingletonMethods
           include RadiaSource::Acts::EmissionProcessConfigurable::InstanceMethods
         end
@@ -36,10 +60,17 @@ module RadiaSource
         def has_process?(type)
           respond_to?("#{type}_process_configuration")
         end
-        
+      end
+      
+      module RecordedInstanceMethods  
         def recorded
-          init_recorded if self.recorded_process_configuration(true).nil?
-          self.recorded_process_configuration(true)
+          if self.parent.nil? and self.recorded_process_configuration.nil?
+            init_recorded
+          elsif self.recorded_process_configuration.nil?
+            self.parent.recorded_process_configuration
+          else
+            self.recorded_process_configuration
+          end
         end
         
         private
@@ -48,9 +79,18 @@ module RadiaSource
           self.recorded_process_configuration = RecordedProcessConfiguration.create(:processable => self)
           self.recorded_process_configuration.init_fields
           self.recorded_process_configuration.save
+          self.recorded_process_configuration
         end
       end
-
+      
+      module LiveInstanceMethods
+      end
+      
+      module PlaylistInstanceMethods
+      end
+      
+      module RepeatInstanceMethods
+      end
     end
   end
 end

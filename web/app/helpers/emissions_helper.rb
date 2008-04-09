@@ -21,7 +21,12 @@ module EmissionsHelper
     end
   end
   
-  def status
-    
+  def type_tag(emission)
+    type = emission.emission_type
+    "<span class=\"#{type.downcase}\">#{type}</span>"
+  end
+  
+  def status_tag(emission)
+    emission.status
   end
 end

@@ -2,9 +2,10 @@ class Program < ActiveRecord::Base
   include TimeUtils
   
   acts_as_authorizable
+  acts_as_urlnameable :name, :overwrite => true
+  acts_as_emission_process_configurable :recorded => true
   
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
-  acts_as_urlnameable :name, :overwrite => true
     
   has_many :emissions, :dependent => :destroy, :order => 'start ASC'
   
@@ -39,5 +40,9 @@ class Program < ActiveRecord::Base
   # Find one emission on a given date
   def find_emission_by_date(year, month, day)
     self.find_emissions_by_date(year, month, day).first
+  end
+  
+  def parent
+    ProgramSchedule.instance
   end
 end

@@ -11,25 +11,30 @@ class ProgramSchedule < ActiveRecord::Base
   
   has_many :inactive_emissions, :order => 'start ASC', :class_name => 'Emission', :conditions => ["active = ?", false]
 
-  acts_as_emission_process_configurable
+  acts_as_emission_process_configurable :recorded => true
 
   def update_emissions(params)
-    dtstart = TimeUtils.get_datetime(params[:start])
+    #dtstart = TimeUtils.get_datetime(params[:start])
+    dtstart = Time.now
     dtend = TimeUtils.get_datetime(params[:end])
     ignored = []
     params[:calendars].each_key do |key|
       next if params[:calendars][key].blank? 
-      ignored << update_by_type(key.to_sym, params[:calendars][key], dtstart, dtend, params[:test])
+      ignored << update_by_type(key.to_sym, params[:calendars][key], dtstart, dtend)
     end    
     self.save
     ignored
+  end
+  
+  def parent
+    nil
   end
 
   protected
 
   # Updates the schedule for a given type of emission
   # with events occurring between dtstart and dtend
-  def update_by_type(type, icalendar, dtstart, dtend, test = false)
+  def update_by_type(type, icalendar, dtstart, dtend)
     return if icalendar.nil? or icalendar.blank?
     
     calendars = Vpim::Icalendar.decode(icalendar)
@@ -37,7 +42,7 @@ class ProgramSchedule < ActiveRecord::Base
     
     # Cleans emissions within the given timeframe
     # Destroys unaltered emissions and inactivates those with changes
-    purge_emissions(type, dtstart, dtend, test)
+    purge_emissions(type, dtstart, dtend)
     
     ignored = []
     
@@ -87,7 +92,7 @@ class ProgramSchedule < ActiveRecord::Base
     e.save
   end
   
-  def purge_emissions(type, dtstart, dtend, test = false)
+  def purge_emissions(type, dtstart, dtend)
     case type
     when :recorded
       k = self.recorded_emissions(true)

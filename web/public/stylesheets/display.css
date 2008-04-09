@@ -117,20 +117,49 @@ span.inactive
 	text-decoration:none;
 }
 
-/** Program listing **/
-#program_list li {
-	margin: 0; 
-	padding: 0;
-	display: block;
-	list-style-type: none;
-}
-
 /** Process configuration **/
-#delivery {
-}
+#delivery { }
 
 #validation, #broadcast, #post_broadcast {
 }
+
+/** Emission list ***/
+#emissions li {
+	padding: 0 0em 0.3em 0;
+	list-style: none;
+}
+
+#emissions a:link, #emissions a:visited {
+	padding-left: 0.4em;
+}
+
+span.recorded
+{
+	font-weight: bold;
+	font-size: 0.9em;
+	background-color: #98FB98;
+	padding: 0.2em;
+	margin: 0.1em;
+}
+
+span.live
+{
+	font-weight: bold;
+	font-size: 0.9em;
+	background-color: #FFA07A;
+	padding: 0.2em;
+	margin: 0.1em;
+}
+
+span.playlist
+{
+	font-weight: bold;
+	font-size: 0.9em;
+	background-color: #ADD8E6;
+	padding: 0.2em;
+	margin: 0.1em;
+}
+
 
 
 /*** Misc ***/

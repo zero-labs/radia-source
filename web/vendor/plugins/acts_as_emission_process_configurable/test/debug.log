@@ -385,3 +385,165 @@
   [4;35;1mSQL (0.000137)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
   [4;36;1mSQL (0.000143)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
   [4;35;1mSQL (0.000137)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.012456)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.001156)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000403)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000287)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000248)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000214)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000298)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000343)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000262)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000223)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000239)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000249)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000235)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000205)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.059153)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000224)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000156)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000145)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000168)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000152)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000149)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000146)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000137)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000137)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000254)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000310)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000287)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000243)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000208)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000195)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000294)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000304)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000254)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000207)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000181)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000149)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000142)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000144)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000147)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000165)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000241)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mServiceConfiguration Create (0.000142)[0m   [0;1mINSERT INTO service_configurations ("updated_at", "process_configuration_id", "protocol", "activity", "attrname", "login", "password", "created_at", "location") VALUES('2008-04-07 19:42:39', 1, 'ftp', 'SomeActivity', 'some_name', NULL, NULL, '2008-04-07 19:42:39', 'www.test.com')[0m
+  [4;35;1mSQL (0.000158)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000147)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000237)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000148)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000139)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000230)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000153)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000893)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000256)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000154)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000177)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000252)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000158)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000232)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000151)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000253)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000313)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000282)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000244)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000207)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000196)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000294)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000304)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000253)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000206)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000178)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000237)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mActionConfiguration Create (0.000155)[0m   [0;1mINSERT INTO action_configurations ("perform", "updated_at", "process_configuration_id", "numerical_value", "activity", "attrname", "string_value", "created_at") VALUES('t', '2008-04-07 19:43:04', 1, 1.0, 'SomeActivity', 'some_attr', NULL, '2008-04-07 19:43:04')[0m
+  [4;35;1mSQL (0.000163)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000149)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000288)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000159)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000140)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000224)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000144)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000139)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000237)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000145)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000139)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000225)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000222)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000144)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000205)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000236)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mServiceConfiguration Create (0.000128)[0m   [0;1mINSERT INTO service_configurations ("updated_at", "process_configuration_id", "protocol", "activity", "attrname", "login", "password", "created_at", "location") VALUES('2008-04-07 19:43:04', 1, 'ftp', 'SomeActivity', 'some_name', NULL, NULL, '2008-04-07 19:43:04', 'www.test.com')[0m
+  [4;35;1mSQL (0.000146)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000145)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000228)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000145)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000225)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000150)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000138)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000231)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000143)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000137)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000225)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000139)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000224)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000143)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000265)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000322)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000282)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000242)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000220)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000198)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: processable: DROP TABLE processable[0m
+  [4;36;1mSQL (0.000295)[0m   [0;1mCREATE TABLE processable ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL) [0m
+  [4;35;1mSQL (0.000303)[0m   [0mCREATE TABLE service_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "protocol" varchar(255) DEFAULT NULL, "location" varchar(255) DEFAULT NULL, "login" varchar(255) DEFAULT NULL, "password" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000254)[0m   [0;1mCREATE TABLE action_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "process_configuration_id" integer DEFAULT NULL, "attrname" varchar(255) DEFAULT NULL, "activity" varchar(255) DEFAULT NULL, "perform" boolean DEFAULT NULL, "numerical_value" float DEFAULT NULL, "string_value" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000205)[0m   [0mCREATE TABLE process_configurations ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "processable_id" integer DEFAULT NULL, "type" varchar(255) DEFAULT NULL, "processable_type" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;36;1mSQL (0.000171)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000236)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mActionConfiguration Create (0.000130)[0m   [0;1mINSERT INTO action_configurations ("perform", "updated_at", "process_configuration_id", "numerical_value", "activity", "attrname", "string_value", "created_at") VALUES('t', '2008-04-07 19:44:06', 1, 1.0, 'SomeActivity', 'some_attr', NULL, '2008-04-07 19:44:06')[0m
+  [4;35;1mSQL (0.000147)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000228)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000144)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000139)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000225)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000144)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000139)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000226)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000142)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000136)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000224)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000146)[0m   [0mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;36;1mSQL (0.000135)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000226)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000143)[0m   [0;1mSELECT count(*) AS count_all FROM action_configurations [0m
+  [4;35;1mSQL (0.000160)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000234)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mServiceConfiguration Create (0.000129)[0m   [0mINSERT INTO service_configurations ("updated_at", "process_configuration_id", "protocol", "activity", "attrname", "login", "password", "created_at", "location") VALUES('2008-04-07 19:44:06', 1, 'ftp', 'SomeActivity', 'some_name', NULL, NULL, '2008-04-07 19:44:06', 'www.test.com')[0m
+  [4;36;1mSQL (0.000146)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000142)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000229)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000146)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000139)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000236)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000142)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000138)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000224)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000140)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mSQL (0.000137)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mProcessConfiguration Load (0.000224)[0m   [0mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;36;1mSQL (0.000141)[0m   [0;1mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;35;1mSQL (0.000138)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m
+  [4;36;1mProcessConfiguration Load (0.000226)[0m   [0;1mSELECT * FROM process_configurations WHERE (process_configurations."id" = 1) [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM service_configurations [0m

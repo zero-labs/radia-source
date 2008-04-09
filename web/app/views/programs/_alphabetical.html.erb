@@ -1,0 +1,23 @@
+<ul id="letter_nav">
+<% abc.each do |letter| %>
+	<li><%= link_to letter.upcase, :anchor => letter %></li>
+<% end %>
+</ul>
+
+<% abc.each do |letter| %>
+	<% unless programs[letter].empty? then %>
+		<a name="<%= letter %>"></a>
+		<h2><%= letter.upcase %></h2>
+		<ul>
+			<% programs[letter].sort{ |a,b| a.urlname <=> b.urlname }.each do |p| %>
+				<li <%= %( onmouseover="$('mod_#{p.id}').show();" onmouseout="$('mod_#{p.id}').hide();") %>>
+					<%= link_to p.name, p %>
+					<span style="display:none;" id="mod_<%= p.id %>">
+					    <%= link_to('edit', edit_program_path(p), :class => "utility") %> |
+					    <%= link_to('delete', program_path(p), :class => "utility", :method => :delete, :confirm => 'Delete this program forever?') %>
+					</span>
+				</li>
+			<% end %>
+		</ul>
+	<% end %>
+<% end %>

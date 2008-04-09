@@ -17,12 +17,12 @@
 	</div>
 <% end %>
 
-<ul>
+<ul id="emissions">
 <% @emissions.each do |e| %>
 	<% if @program.nil? %>
-		<li><%= link_to e.start.to_formatted_s(:long) + ' - ' + e.program.name, emission_path(e) %></li>
+		<li><%= type_tag(e) %><%= link_to e.start.to_formatted_s(:long) + ' - ' + e.program.name, emission_path(e) %></li>
 	<% else %>
-		<li><%= link_to e.start.to_formatted_s(:long), program_emission_path(@program, e) %></li>
+		<li><%= type_tag(e) %><%= link_to e.start.to_formatted_s(:long), program_emission_path(@program, e) %></li>
 	<% end %>
 <% end %>
 </ul>

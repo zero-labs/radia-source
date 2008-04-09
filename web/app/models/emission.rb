@@ -82,6 +82,16 @@ class Emission < ActiveRecord::Base
     !self.find_by_date(date.year, date.month, date.day).blank?
   end
   
+  # Returns the emission's parent for process configuration
+  def parent
+    self.program
+  end
+  
+  
+  def status
+    
+  end
+  
   protected
   
   # Ensures that start date comes before end date

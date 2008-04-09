@@ -2,7 +2,6 @@
 
 <div class="prepend-4 span-9 append-4">
 	
-<% form_tag @form_path, :method => :put do -%>
 <% @process.activities.each do |activity, fields| %>
 	<div id="<%= activity %>">
 		<h2 class="centered">
@@ -13,14 +12,12 @@
 			<p>	
 				<% field_name = activity.to_s + '_' + suffix.to_s
 				   if params[0] == :service %>
-					<%= service_config(@process, field_name, params[1]) %>
+					<%= service_show(@process, field_name, params[1]) %>
 				<% elsif params[0] == :action %>
-					<%= action_config(@process, field_name, params[1], params.slice(2..-1)) %>
+					<%= action_show(@process, field_name, params[1], params.slice(2..-1)) %>
 				<% end %>
 			</p>
 <% 
 		end
 	end %>
 </div>
-<%= submit_tag "Update process" %>
-<% end -%>

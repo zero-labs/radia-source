@@ -1,14 +1,14 @@
 <h3><%= title %></h3>
 
 <p>
-	<label for="<%= "process[#{field}_field][perform]" %>"><%= attribute[0] %></label>
 	<%= check_box_tag "process[#{field}_field][perform]", 1, process.send(field).send(:perform) %>
+	<label for="<%= "process[#{field}_field][perform]" %>"><%= attribute[0] %></label>
 </p>
 
 <p>
 	<label for="<%= "process[#{field}_field][#{attribute[1]}]" %>"><%= "#{attribute[2]}"%></label><br />
 	<% if attribute.size == 3 %>
-		<%= text_field_tag "process[#{field}_field][#{attribute[1]}]", process.send(field).send(attribute[1]) %>
+		<%= text_field_tag "process[#{field}_field][#{attribute[1]}]", process.send(field).send(attribute[1]) %>		
 	<% elsif attribute.size > 3 # has options 
 		values = process.send(field).send(attribute[1]).split(' ')
 	%>

@@ -11,19 +11,5 @@
 	</ul>
 <% end %>
 
-<% unless @programs.empty? then %>
-<div id="program_list">
-<ul>
-	<% @programs.each do |p| %>
-		<li <%= %( onmouseover="$('mod_#{p.id}').show();" onmouseout="$('mod_#{p.id}').hide();") %>>
-			<%= link_to p.name, p %>
-			<span style="display:none;" id="mod_<%= p.id %>">
-			    <%= link_to('edit', edit_program_path(p), :class => "utility") %> |
-			    <%= link_to('delete', program_path(p), :class => "utility", :method => :delete, :confirm => 'Delete this program forever?') %>
-			</span>
-		</li>
-	<% end %>
-</ul>
-</div>
-<% end %>
+<%= alphabetical_list(@programs) %>
 

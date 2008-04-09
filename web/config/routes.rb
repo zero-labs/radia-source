@@ -26,10 +26,13 @@ ActionController::Routing::Routes.draw do |map|
     schedule.resource :process, :controller => 'process_configuration', :path_prefix => 'schedule/:process_type'
   end
   
+  #map.resources :emissions, :collection => { :recorded => :get, :live => :get, :playlist => :get }
+  
   # Emissions (as resources accessible by date)
   map.datestamped_resources :emissions do |emission|
     emission.resource :process, :controller => 'process_configuration', :path_prefix => 'emissions/:year/:month/:day/:id'
   end
+  
   
   # AJAX methods for emissions
   map.with_options :controller => 'emissions' do |emission|
