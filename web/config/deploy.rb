@@ -6,11 +6,26 @@ set :repository,  "http://radia-source.googlecode.com/svn/trunk"
 # via the :deploy_to variable:
 
 set :deploy_to, "/usr/local/var/www/#{application}"
+set :deploy_via, :export
+set :user, 'tecnica'
 
 # If you aren't using Subversion to manage your source code, specify
 # your SCM below:
 # set :scm, :subversion
 
-role :app, "http://source.radiozero.pt"
-role :web, "http://source.radiozero.pt"
-role :db,  "http://source.radiozero.pt", :primary => true
+role :app, "source.radiozero.pt"
+role :web, "source.radiozero.pt"
+role :db,  "source.radiozero.pt", :primary => true
+
+namespace :deploy do
+
+  desc "Use a different production password"
+  task :move_db_config, :roles => :app do
+    db_config = "#{shared_path}/config/database.yml.production"
+    run "cp #{db_config} #{release_path}/config/database.yml" 
+  end
+  
+end
+
+
+after "deploy:update_code", "deploy:move_db_config"
