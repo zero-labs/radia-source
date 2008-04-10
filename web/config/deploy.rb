@@ -5,7 +5,7 @@ set :repository,  "http://radia-source.googlecode.com/svn/trunk"
 # servers (which is the default), you can specify the actual location
 # via the :deploy_to variable:
 
-set :deploy_to, "/usr/local/var/www/#{application}"
+set :deploy_to, "/usr/local/var/#{application}"
 set :deploy_via, :export
 set :user, 'tecnica'
 
