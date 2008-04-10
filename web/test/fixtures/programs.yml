@@ -1,4 +1,6 @@
 # Program with unicode string for name
 program_1:
-    id: 1
     name: Programação Variável
+    
+program_2:
+    name: Some other program

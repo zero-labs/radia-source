@@ -26,6 +26,14 @@ module EmissionsHelper
     "<span class=\"#{type.downcase}\">#{type}</span>"
   end
   
+  def print_emission(emission, program = nil)
+    render :partial => 'emission', :locals => { :emission => emission, :program => program }
+  end 
+  
+  def program_emission_tag(program, emission)
+    
+  end
+  
   def status_tag(emission)
     emission.status
   end

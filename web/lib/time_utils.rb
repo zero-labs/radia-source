@@ -1,5 +1,5 @@
 module TimeUtils
-  # Create date comparison array from a given from date
+  # Create date comparison array from a given 'from' date
   def self.time_delta(year, month = nil, day = nil)
     from = Time.local(year, month || 1, day || 1)
 

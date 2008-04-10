@@ -125,39 +125,55 @@ span.inactive
 
 /** Emission list ***/
 #emissions li {
-	padding: 0 0em 0.3em 0;
+	padding: 0.3em 0 0 0;
+	margin: 0 0 0.5em 0;
+	font-weight: bold;
+	font-size: 0.9em;
 	list-style: none;
 }
 
 #emissions a:link, #emissions a:visited {
 	padding-left: 0.4em;
+	color: #000;
+	text-decoration: none;
+}
+
+#emissions a:hover {
+	text-decoration: underline;
+}
+
+span.recorded, span.live, span.playlist, span.repetition {
+	display:block;
+	padding: 0.2em 0 0.2em 0;
 }
 
 span.recorded
 {
-	font-weight: bold;
-	font-size: 0.9em;
-	background-color: #98FB98;
-	padding: 0.2em;
-	margin: 0.1em;
+	background-color: #69C;
 }
 
 span.live
 {
-	font-weight: bold;
-	font-size: 0.9em;
-	background-color: #FFA07A;
-	padding: 0.2em;
-	margin: 0.1em;
+	background-color: #96F;
 }
 
 span.playlist
 {
-	font-weight: bold;
-	font-size: 0.9em;
+	background-color: #9C3;
+}
+
+span.repetition
+{
 	background-color: #ADD8E6;
-	padding: 0.2em;
-	margin: 0.1em;
+}
+
+span.emission_info
+{
+	display: block;
+	background-color: #fff;
+	border: 0;
+	border-top: 1px #333 solid;
+	padding: 1em;
 }
 
 

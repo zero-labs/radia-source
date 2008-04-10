@@ -6,12 +6,12 @@
 # two:
 #   column: value
 always:
-    user_id: 1
-    program_id: 1
+    user: quentin
+    program: program_1
     always: true
 
 mon_tue:
-    user_id: 2
-    program_id: 1
+    user: aaron
+    program: program_1
     monday: true
     tuesday: true

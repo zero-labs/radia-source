@@ -7,7 +7,7 @@ class Emission < ActiveRecord::Base
   belongs_to :program
   
   # Ensures unique starting datetimes
-  #validates_uniqueness_of :start, :on => :save, :scope => :active
+  validates_uniqueness_of :start, :on => :save, :scope => :active
   validates_presence_of :start, :end, :program, :on => :save
   
   validate :start_before_end  
@@ -34,7 +34,7 @@ class Emission < ActiveRecord::Base
   end
   
   def minute
-    self.start.minute
+    self.start.min
   end
 
   def to_param
@@ -46,15 +46,27 @@ class Emission < ActiveRecord::Base
     !self.description.nil?
   end
   
-  # Flags the emission as inactive
+  # Marks the emission as inactive
   def inactivate!
     self.active = false
     self.save
   end
   
-  # Flags the emission as active
+  # Marks the emission as active
   def activate!
     self.active = true
+    self.save
+  end
+  
+  # Flags an emission for control purposes
+  def flag!
+    self.flag = true
+    self.save
+  end
+  
+  # Unflags an emission for control purposes
+  def unflag!
+    self.flag = false
     self.save
   end
   
@@ -87,9 +99,8 @@ class Emission < ActiveRecord::Base
     self.program
   end
   
-  
   def status
-    
+    # TODO
   end
   
   protected

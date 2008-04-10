@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
   
   protected 
   
+  def schedule
+    ProgramSchedule.instance
+  end
+  
   def active_nav
     @active = 'home'
   end

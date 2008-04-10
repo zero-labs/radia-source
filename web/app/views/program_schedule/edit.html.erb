@@ -27,6 +27,10 @@
 		<%= file_field_tag 'new_schedule[calendars][playlist]' %>
 	</p>
 	<p>
+		<label for="new_schedule[repeated]">Repeats: </label><br />
+		<%= file_field_tag 'new_schedule[calendars][repeated]' %>
+	</p>
+	<p>
 		<label for="date_end">End date:</label><br />
 		<%= select_datetime 6.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>
 	</p>

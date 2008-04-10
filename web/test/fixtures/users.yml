@@ -1,5 +1,4 @@
 quentin:
-  id: 1
   login: quentin
   name: Quentin
   email: quentin@example.com
@@ -10,7 +9,6 @@ quentin:
   activated_at: <%= 5.days.ago.to_s :db %> 
 
 aaron:
-  id: 2
   login: aaron
   name: Aaron
   email: aaron@example.com

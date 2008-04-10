@@ -1,0 +1,15 @@
+<li>
+	<% 
+		tstart = emission.start.to_formatted_s(:long)
+		tend = emission.end.to_formatted_s(:time)
+	%>
+	<% if program.nil? %>
+		<span class="<%= "#{emission.emission_type.downcase}" %>"
+			<%= link_to "#{tstart}-#{tend}", emission_path(emission) %>
+		</span>
+		<span class="emission_info"><%= link_to emission.program.name, program_path(emission.program) %></span>
+	<% else %>
+		<%= link_to "#{tstart}-#{tend}", program_emission_path(program, emission) %>
+	<% end %>
+</li>
+

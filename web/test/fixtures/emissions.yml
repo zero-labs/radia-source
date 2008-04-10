@@ -8,8 +8,7 @@
 
 # it's on a monday
 live1:
-    id: 1
-    program_id: 1
+    program: program_1
     program_schedule_id: 1
     type: LiveEmission
     start: 2008-01-07 22:00:00
@@ -17,8 +16,7 @@ live1:
 
 # it's on a monday
 live2:
-    id: 2
-    program_id: 1
+    program: program_1
     program_schedule_id: 1
     type: LiveEmission
     start: 2008-01-14 22:00:00
@@ -26,8 +24,7 @@ live2:
 
 # it's on a thursday
 live3:
-    id: 3
-    program_id: 1
+    program: program_1
     program_schedule_id: 1
     type: LiveEmission
     start: 2008-02-21 22:00:00
@@ -35,9 +32,40 @@ live3:
 
 # it's on a tuesday
 recorded1:
-    id: 4
-    program_id: 1
+    program: program_1
     program_schedule_id: 1
     type: RecordedEmission
     start: 2008-02-26 22:00:00
-    end: 2008-02-26 22:00:00
+    end: 2008-02-26 23:00:00
+
+# Program 2
+program_2_live_1:
+    program: program_2
+    program_schedule_id: 1
+    description: "It's a live broadcast!"
+    type: LiveEmission
+    start: 2008-03-01 21:00:00
+    end: 2008-03-01 22:00:00
+
+program_2_repeat_1:
+    program: program_2
+    program_schedule_id: 1
+    emission: program_2_live_1
+    type: RepeatedEmission
+    start: 2008-03-02 01:00:00
+    end: 2008-03-02 02:00:00
+    
+program_2_repeat_2:
+    program: program_2
+    program_schedule_id: 1
+    emission: program_2_live_1
+    type: RepeatedEmission
+    start: 2008-03-03 02:00:00
+    end: 2008-03-03 03:00:00
+    
+program_2_recorded_1:
+    program: program_2
+    program_schedule_id: 1
+    type: RecordedEmission
+    start: 2008-03-04 05:00:00
+    end: 2008-03-04 06:00:00
