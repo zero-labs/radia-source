@@ -1,0 +1,20 @@
+<% remote_form_for(@bloc_element, :url => create_bloc_element_path(@emission_type), :html => { :method => :put }) do |f| %>
+<%= hidden_field_tag 'bloc_element[asset][kind]', 'live' %>
+
+<fieldset>
+	<legend>Live</legend>
+	
+	<p>
+		<label for="bloc_element_live_source">Live source:</label>&nbsp;
+		<%= select_tag 'bloc_element[asset][live_source]', live_assets %>
+	</p>
+	
+	<%= render :partial => 'authored', :locals => { :single => false } %>
+	
+	<%= render :partial => 'duration', :locals => { :f => f } %>
+
+	<p class="centered">
+		<%= submit_tag 'Save' %>
+	</p>
+</fieldset>
+<% end %>

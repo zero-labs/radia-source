@@ -1,0 +1,53 @@
+<ul id="result_nav">
+	<% unless @result[:conflicting].empty? %>
+	<li>
+		<span id="see_conflicts">
+			<%= link_to "See broadcasts with conflicts", '#', 
+			:onclick => "make_visible('with_conflicts'); switch_visibility('see_conflicts', 'hide_conflicts');" %>
+		</span>
+		<span id="hide_conflicts" style="display: none;">
+			<%= link_to "Hide broadcasts with conflicts", '#', 
+			:onclick => "make_invisible('with_conflicts'); switch_visibility('hide_conflicts', 'see_conflicts');" %>
+		</span>
+	</li>
+	<% end %>
+
+	<% unless @result[:to_create].empty? %>
+	<li>
+		<span id="see_created">
+			<%= link_to "See broadcasts to be created", '#', 
+			:onclick => "make_visible('to_be_created'); switch_visibility('see_created', 'hide_created');" %>
+		</span>
+		<span id="hide_created" style="display: none;">
+			<%= link_to "Hide broadcasts to be created", '#', 
+			:onclick => "make_invisible('to_be_created'); switch_visibility('hide_created', 'see_created');" %>
+		</span>
+	</li>
+	<% end %>
+
+	<% unless @result[:ignored].empty? %>
+	<li>
+		<span id="see_ignored">
+			<%= link_to "See ignored programs", '#', 
+			:onclick => "make_visible('to_be_ignored'); switch_visibility('see_ignored', 'hide_ignored');" %>
+		</span>
+		<span id="hide_ignored" style="display: none;">
+			<%= link_to "Hide ignored programs", '#', 
+			:onclick => "make_invisible('to_be_ignored'); switch_visibility('hide_ignored', 'see_ignored');" %>
+		</span>
+	</li>
+	<% end %>
+
+	<% unless @result[:to_destroy].empty? %>
+	<li>
+		<span id="see_destroyed">
+			<%= link_to "See broadcasts to be destroyed", '#', 
+			:onclick => "make_visible('to_be_destroyed'); switch_visibility('see_destroyed', 'hide_destroyed');" %>
+		</span>
+		<span id="hide_destroyed" style="display: none;">
+			<%= link_to "Hide broadcasts to be destroyed", '#', 
+			:onclick => "make_invisible('to_be_destroyed'); switch_visibility('hide_destroyed', 'see_destroyed');" %>
+		</span>
+	</li>
+	<% end %>
+</ul>

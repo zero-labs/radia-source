@@ -1,0 +1,25 @@
+<%= render :partial => 'crumbs' %>
+<% add_crumb("New", new_audio_playlist_path) %>
+
+<div class="span-8">
+<% form_for(@playlist, :url => audio_playlists_path) do |f| %>
+	<p>
+		<label for="playlist_title">Title</label>
+		<%= f.text_field :title %>
+	</p>
+	<p>
+	</p>
+	<p>
+		<%= submit_tag 'Create playlist' %>
+	</p>
+</div>
+<div id="singles" class="span-8">
+	<h3 class="centered">Available singles</h3>
+	<ul>
+		<% available_singles.each do |s| %>
+		<li id="<%= "single_#{s.id}" %>"><%= s.title %></li>
+		<%= draggable_element("single_#{s.id}", :revert => true) %>
+		<% end %>
+	</ul>
+</div>
+<% end %>

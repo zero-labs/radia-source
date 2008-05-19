@@ -1,0 +1,16 @@
+<%
+	add_crumb("Settings", settings_path, true)
+%>
+<% content_for :sidebar do %>
+	<ul>
+		<li><%= link_to 'New asset service', new_settings_asset_service_path %></li>
+		<li><%= link_to "New live source", new_settings_live_source_path %></li>
+	</ul>
+<% end %>
+
+<h3>Asset services</h3>
+<ul>
+	<% @settings.asset_services.each do |sl| %>
+		<li><%= link_to sl.name, edit_settings_asset_service_path(sl) %></li>
+	<% end %>
+</ul>

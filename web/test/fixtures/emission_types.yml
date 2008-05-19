@@ -1,0 +1,15 @@
+author:
+    name: 'Author'
+    color: '#111'
+    
+live:
+    name: 'Live'
+    color: '#222'
+    
+playlist:
+    name: 'Playlist'
+    color: '#333'
+    
+recorded:
+    name: 'Recorded'
+    color: '#444'

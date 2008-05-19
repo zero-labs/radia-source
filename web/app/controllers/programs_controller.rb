@@ -1,4 +1,5 @@
 class ProgramsController < ApplicationController
+  before_filter :login_required, :except => [:index, :show]
   
   # GET /programs
   # GET /programs.:format
@@ -40,7 +41,7 @@ class ProgramsController < ApplicationController
       if @program.save
         flash[:notice] = "Program successfully saved."
         format.html { redirect_to program_path(@program) }
-        format.xml { head :ok}
+        format.xml { head :ok }
       else
         flash[:error] = "An error occurred."
         format.html { render :action => 'new' }

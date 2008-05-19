@@ -1,0 +1,9 @@
+<%= hidden_field_tag 'single_audio_asset[asset_service_id]', service_id %>
+<ul id="files">
+<% files.each do |f| %>
+	<li>
+		<%= radio_button_tag 'single_audio_asset[location]', f, false, :id => f.hash %>
+		<label for="<%= f.hash %>"><%= f %></label>
+	</li>
+<% end %>
+</ul>

@@ -1,0 +1,18 @@
+<% render :partial => 'crumbs' %>
+<% add_crumb (@live_source.title, settings_live_source_path(@live_source)) %>
+<% add_crumb("Edit", edit_settings_live_source_path) %>
+
+<% form_for(@live_source, :url => settings_live_source_path(@live_source)) do |f| %>
+	<p>
+		<label for="live_source_title">Title</label><br />
+		<%= f.text_field :title %>
+	</p>
+	
+	<p>
+		<label for="live_source_location">Location</label><br />
+		<%= f.text_field :url %>
+	</p>
+	<p>
+		<%= submit_tag 'Update live source' %>
+	</p>
+<% end %>

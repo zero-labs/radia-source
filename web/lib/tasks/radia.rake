@@ -8,33 +8,68 @@ namespace :radia do
 
   desc "Creates programs from YAML file at config/programs.yml"
   task :programs => :environment do
-    entries = YAML.load_file(File.dirname(RAILS_ROOT) + '/web/config/programs.yml')
+    entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/programs.yml')
     entries.each do |e|
-      unless Program.find_by_name(e) then
-        Program.create(:name => e)
-      end
+      Program.find_or_create_by_name(e)
     end
+  end
+  
+  desc "Creates emission types"
+  task :emission_types => :environment do
+    b = Bloc.create
+    recorded = EmissionType.new(:name => 'Recorded', :color => '#69C', :bloc => b)
+    recorded.save
+    b = Bloc.create
+    live = EmissionType.new(:name => 'Live', :color => '#96F', :bloc => b)
+    live.save
+    b = Bloc.create
+    playlist = EmissionType.new(:name => 'Playlist', :color => '#9C3', :bloc => b)
+    playlist.save
   end
 
   desc "Creates authors from YAML file at config/authors.yml"
-  task :authors => [:create_admin, :programs, :environment] do
-    entries = YAML.load_file(File.dirname(RAILS_ROOT) + '/web/config/authors.yml')
+  task :authors => [:programs, :environment] do
+    entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/authors.yml')
     entries.each do |e|
-      u = User.create(:name => e['name'], :email => e['mail'], :login => urlnameify(e['name']), 
-                      :password => '1234', :password_confirmation => '1234')
+      u = User.find_or_create_by_name(:name => e['name'], :email => e['mail'], 
+                                      :login => urlnameify(e['name']), 
+                                      :password => '1234', :password_confirmation => '1234')
       u.activate
       e['programs'].each do |p| 
         Authorship.create(:program => Program.find_by_name(p), :user => u, :always => true)
       end
     end
   end
-
+  
   desc "Creates admin user"
   task :create_admin => :environment do
     # Create admin
-    u = User.create(:name => 'Daniel Zacarias', :email => 'daniel.zacarias@gmail.com', :login => 'zaki',
-    :password => '1234', :password_confirmation => '1234')
+    u = User.find_or_create_by_name(:name => 'Daniel Zacarias', :email => 'daniel.zacarias@gmail.com', 
+                                    :login => 'zaki', :password => '1234', :password_confirmation => '1234')
     u.activate
     u.give_role 'admin'
+  end
+  
+  desc "Creates asset service"
+  task :asset_service => :environment do
+    if (s = AssetService.find_by_name('Upload de novos programas')).nil?
+      AssetService.create(:settings => Settings.instance, :name => 'Upload de novos programas', :protocol => 'ftp', 
+                          :uri => 'ftp.radiozero.pt/upload_de_novos_programas', :login => 'radiologo')
+    end
+  end
+  
+  desc "Creates singles"
+  task :singles => :environment do
+    singles = YAML.load_file(File.dirname(__FILE__) + '/../../config/singles.yml')
+    singles.each do |s|
+      if (record = SingleAudioAsset.find_by_title(s['title'])).nil?
+        SingleAudioAsset.create(:title => s['title'], :md5_hash => s['md5_hash'], 
+                                :length => s['length'], :available => true)
+      end
+    end
+  end
+  
+  desc "Calls all other tasks"
+  task :all => [:asset_service, :singles, :emission_types, :create_admin, :authors, :environment] do 
   end
 end

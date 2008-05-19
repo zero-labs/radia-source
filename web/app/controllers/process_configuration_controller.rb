@@ -1,4 +1,5 @@
 class ProcessConfigurationController < ApplicationController
+  before_filter :login_required, :except => [:index, :show]
   before_filter :configuration_from_params
 
   def show

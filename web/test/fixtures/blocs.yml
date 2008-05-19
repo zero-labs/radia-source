@@ -1,0 +1,10 @@
+recorded_bloc:
+    playable_type: EmissionType
+    
+author_bloc:
+    playable: author
+    playable_type: EmissionType
+    
+emission_bloc:
+    playable: live1
+    playable_type: Emission

@@ -1,15 +1,14 @@
 <% 
 	@pagetitle = "Programs"
-	@breadcrumbs = [add_crumb("Programs", programs_path, true)]
+	add_crumb("Programs", programs_path, true)
 %>
 
 <% content_for :sidebar do %>
 	<h1>Administration</h1>
 	<ul>
 		<li><%= link_to "New program", new_program_path %></li>
-		<li><%= link_to "Update schedule", edit_schedule_path %></li>
 	</ul>
 <% end %>
 
-<%= alphabetical_list(@programs) %>
+<%= alphabetical_list(@programs, 'program') %>
 

@@ -1,0 +1,22 @@
+<%
+	@pagetitle = "Edit authorship"
+	add_crumb("Programs", programs_path)
+	add_crumb(@program.name, program_path(@program))
+	add_crumb("Authors", program_authors_path)
+	add_crumb(@authorship.user.name, program_author_path(@program, @authorship.user), true)
+	add_crumb("Edit", edit_program_author_path(@program, @authorship.user))
+%>
+
+<% form_for :authorship, @authorship, :url => program_author_path(@program, @authorship.user), :html => { :method => :put } do |f| -%>
+	
+	<%= hidden_field_tag 'program_id', @program.id %>
+	<%= hidden_field_tag 'user_id', @authorship.user.id %>
+	
+	<p>
+		<%= render :partial => 'rules', :locals => { :form => f } %>
+	</p>
+	<p>
+		<%= submit_tag "Update" %>
+	</p>
+<% end -%>
+

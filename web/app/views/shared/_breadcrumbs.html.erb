@@ -1,13 +1,12 @@
 <div id="bread">
-<ul>
-<% unless @breadcrumbs.blank? then
-   	count = 0
-   	@breadcrumbs.each do |element| %>
-	<li class="<%= (count == 0 ? 'first' : '') %>">
-		<%= link_to element[:text], element[:link], :class => (element[:highlight] ? 'high' : '') %>
-	</li>
-<%  count += 1; end; end %>
-</ul>
+	<ul>
+	<% unless @breadcrumbs.blank? then
+	   	count = 0
+	   	@breadcrumbs.each do |element| %>
+		<li class="<%= (count == 0 ? 'first' : '') %>">
+			<%= link_to element[:text], element[:link], :class => (element[:highlight] ? 'high' : '') %>
+		</li>
+	<%  count += 1; end; end %>
+	</ul>
 </div>
-<hr />
 

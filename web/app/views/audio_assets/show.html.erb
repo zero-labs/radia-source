@@ -1,0 +1,31 @@
+<%
+	add_crumb("Audio Assets", audio_path, true)
+%>
+
+<% content_for :sidebar do %>
+	<h1>Broadcasts</h1>
+	<ul>
+		<li><%= link_to "New single", new_audio_single_path %></li>
+		<li><%= link_to "New playlist", new_audio_playlist_path %></li>
+	</ul>
+	<h1>Intermissions</h1>
+	<ul>
+		<li><%= link_to "New spot", new_audio_single_path %></li>
+		<li><%= link_to "New playlist", new_audio_playlist_path %></li>
+	</ul>
+<% end %>
+
+<ul id="type_list">
+	<li><span class="list_title"><%= link_to "Playlists", audio_playlists_path %></span></li>
+	<ul>
+		<% @audio[:playlists].each do |p| %>
+		<li><%= p.title %></li>
+		<% end %>
+	</ul>
+	<li><span class="list_title"><%= link_to "Singles", audio_singles_path %></span></li>
+	<ul>
+		<% @audio[:singles].each do |p| %>
+		<li><%= p.title %></li>
+		<% end %>
+	</ul>
+</ul>

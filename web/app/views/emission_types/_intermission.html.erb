@@ -1,0 +1,8 @@
+<% remote_form_for(@bloc_element, :url => create_bloc_element_path(@emission_type), :html => { :method => :put }) do |f| %>
+<%= hidden_field_tag 'bloc_element[asset][kind]', 'intermission' %>
+<fieldset>
+	<legend>Intermission</legend>
+	<%= render :partial => 'duration', :locals => { :f => f } %>
+</fieldset>
+
+<% end %>

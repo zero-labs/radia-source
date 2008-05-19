@@ -1,0 +1,32 @@
+<p>
+	<label for="authored">Produced by an author?</label><br/>
+
+	<%= radio_button_tag 'bloc_element[asset][authored]', 1 %> 
+	<label for="bloc_element_asset_authored_1">Yes</label> or 
+	<%= radio_button_tag 'bloc_element[asset][authored]', 0 %> 
+	<label for="bloc_element_asset_authored_0">No</label>
+</p>
+
+<%= observe_field 'bloc_element_asset_authored_1', :frequency => 0.5, 
+	:function => "value_visible_invisible(value, 'authored_opts', 'not_authored_opts');" %>
+<div id="not_authored_opts" style="display: none;">
+	<% if single %>
+		<%= select_tag 'bloc_element[asset][id]', single_unauthored_assets %>
+		<p class="centered">
+			<%= submit_tag 'Save' %>
+		</p>
+	<% end %>
+</div>
+<div id="authored_opts" style="display: none;">	
+	<p>
+		<label>Audio must be delivered...</label><br />
+		<%= select_tag 'bloc_element[asset][deadline][]', deadline_values %>
+		<%= select_tag 'bloc_element[asset][deadline][]', deadline_units %>
+		<% base = (single ? 'before' : 'after' ) %>
+		<%= "#{base} broadcast" %>
+		<%= hidden_field_tag 'bloc_element[asset][deadline][]', base %>
+	</p>
+	<p class="centered">
+		<%= submit_tag 'Save' %>
+	</p>
+</div>

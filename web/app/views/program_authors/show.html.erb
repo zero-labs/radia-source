@@ -1,0 +1,6 @@
+<%
+	add_crumb("Programs", programs_path)
+	add_crumb(@program.name, program_path(@program))
+	add_crumb("Authors", program_authors_path)
+	add_crumb(@authorship.user.name, program_author_path(@program, @authorship.user), true)
+%>

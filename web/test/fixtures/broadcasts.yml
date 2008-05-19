@@ -1,0 +1,100 @@
+# Generic broadcasts to test gap detection
+
+gap_test1:
+    dtstart: 2007-01-03 8:00
+    dtend: 2007-01-03 10:00
+    program_schedule_id: 1
+
+gap_test2:
+    dtstart: 2007-01-03 10:05
+    dtend: 2007-01-03 10:30
+    program_schedule_id: 1
+    
+gap_test3:
+    dtstart: 2007-01-03 10:30
+    dtend: 2007-01-03 11:00
+    program_schedule_id: 1
+
+gap_test4:
+    dtstart: 2007-01-03 11:00
+    dtend: 2007-01-03 11:30
+    program_schedule_id: 1
+    
+gap_test5:
+    dtstart: 2007-01-03 12:00
+    dtend: 2007-01-03 13:00
+    program_schedule_id: 1
+
+gap_test6:
+    dtstart: 2007-01-03 13:05
+    program_schedule_id: 1
+    dtend: 2007-01-03 14:00
+
+# Emissions
+live1:
+    type: Emission
+    program: program_1
+    program_schedule_id: 1
+    emission_type: live
+    dtstart: 2008-01-07 22:00:00
+    dtend: 2008-01-07 23:00:00
+
+# it's on a monday
+live2:
+    type: Emission
+    program: program_1
+    program_schedule_id: 1
+    emission_type: live
+    dtstart: 2008-01-14 22:00:00
+    dtend: 2008-01-14 23:00:00
+
+# it's on a thursday
+live3:
+    type: Emission
+    program: program_1
+    program_schedule_id: 1
+    emission_type: live
+    dtstart: 2008-02-21 22:00:00
+    dtend: 2008-02-21 23:00:00
+
+# it's on a tuesday
+recorded1:
+    type: Emission
+    program: program_1
+    program_schedule_id: 1
+    emission_type: recorded
+    dtstart: 2008-02-26 22:00:00
+    dtend: 2008-02-26 23:00:00
+
+# Program 2
+program_2_live_1:
+    type: Emission
+    program: program_2
+    program_schedule_id: 1
+    description: "It's a live broadcast!"
+    emission_type: live
+    dtstart: 2008-03-01 21:00:00
+    dtend: 2008-03-01 22:00:00
+    
+program_2_recorded_1:
+    type: Emission
+    program: program_2
+    program_schedule_id: 1
+    emission_type: recorded
+    dtstart: 2008-03-04 05:00:00
+    dtend: 2008-03-04 06:00:00
+
+
+# Repetitions
+
+program_2_repeat_1:
+    type: Repetition
+    emission: program_2_live_1
+    dtstart: 2008-03-02 01:00:00
+    dtend: 2008-03-02 02:00:00
+    
+program_2_repeat_2:
+    type: Repetition
+    emission: program_2_live_1
+    dtstart: 2008-03-03 02:00:00
+    dtend: 2008-03-03 03:00:00

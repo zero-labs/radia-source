@@ -41,4 +41,6 @@ class Test::Unit::TestCase
     klass.reset_instance
     klass.delete_all
   end
+  
+  include AuthenticatedTestHelper
 end

@@ -1,0 +1,15 @@
+<ul id="letter_nav">
+<% abc.each do |letter| %>
+	<li><%= link_to letter.upcase, :anchor => letter %></li>
+<% end %>
+</ul>
+
+<% first, second = split_abc_collection(items) %>
+
+<div class="prepend-1 span-8">
+	<%= render :partial => 'shared/abc_column', :locals => { :abc => abc, :item => item, :items => first } %>
+</div>
+
+<div class="span-7">
+	<%= render :partial => 'shared/abc_column', :locals => { :abc => abc, :item => item, :items => second } %>
+</div>

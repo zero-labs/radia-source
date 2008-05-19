@@ -1,9 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
-  # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
-  # Then, you can remove it from this and the functional test.
-  include AuthenticatedTestHelper
   fixtures :users
 
   def test_should_create_user
@@ -98,6 +95,18 @@ class UserTest < Test::Unit::TestCase
     assert_not_nil users(:quentin).remember_token
     assert_not_nil users(:quentin).remember_token_expires_at
     assert users(:quentin).remember_token_expires_at.between?(before, after)
+  end
+  
+  def test_should_be_author
+    assert users(:quentin).is_author?
+  end
+  
+  def test_should_be_author_of
+    assert users(:aaron).is_author_of?('Programação Variável')
+  end
+  
+  def test_should_not_be_author_of
+    assert_equal false, users(:aaron).is_author_of?('Some other program')
   end
 
 protected

@@ -1,0 +1,7 @@
+<% render :partial => 'crumbs' %>
+
+<ul>
+<% @playlists.each do |p| %>
+	<li><%= link_to p.title, audio_playlist_path(p) %> (<%= "#{p.flatten.size} items" %>)</li>
+<% end %>
+</ul>

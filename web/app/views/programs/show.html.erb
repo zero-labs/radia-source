@@ -1,17 +1,13 @@
 <%
 	@pagetitle = "Program: #{@program.name}" 
 	
-	@breadcrumbs = [add_crumb("Programs", programs_path),
-					add_crumb("#{@program.name}", program_path(@program), true)] 
+	add_crumb("Programs", programs_path)
+	add_crumb("#{@program.name}", program_path(@program), true)	
 %>
 
 <% content_for :sidebar do %>
 	<%= render :partial => 'sidebar' %>
 <% end %>
-
-<h3>Authors</h3>
-<p>
-</p>
 
 <h3>Description</h3>
 <p>
@@ -23,6 +19,6 @@
 
 <ul>
 <% @program.upcoming_emissions.each do |e| %>
-	<li><%= link_to e.start.to_formatted_s(:long), program_emission_path(@program, e) %></li>
+	<li><%= link_to e.dtstart.to_formatted_s(:long), program_broadcast_path(@program, e) %></li>
 <% end %>
 </ul>

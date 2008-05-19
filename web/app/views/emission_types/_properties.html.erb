@@ -1,0 +1,18 @@
+<fieldset>
+		<legend>Properties</legend>
+		<p>
+			<label for="emission_type_name">Name</label><br/>
+			<%= f.text_field :name %>
+		</p>
+		<p>
+			<label for="emission_type_calendar_url">Default iCalendar URL</label><br/>
+			<%= f.text_field :calendar_url %>
+		</p>
+		<p>
+			<label for="emission_type_color">Color</label><br/>
+			<%= f.text_field :color, :size => 6 %>
+		</p>
+		<p class="centered">
+			<%= submit_tag "Update" %>
+		</p>
+	</fieldset>

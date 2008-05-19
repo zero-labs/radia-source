@@ -1,0 +1,8 @@
+<% unless ignored_programs.empty? then %>
+	<h3>The following programs were ignored because they don't exist in the system</h3>
+	<ul>
+		<% ignored_programs.uniq.each do |p| %>
+		<li><%= p %></li>
+		<% end %>
+	</ul>
+<% end %>

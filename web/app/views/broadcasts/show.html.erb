@@ -1,0 +1,6 @@
+<% 
+	@pagetitle = "Program: #{@broadcast.program.name}" 
+	broadcast_crumbs
+%>
+
+<h3>Time:</h3> <%= @broadcast.dtstart.strftime("%H:%M") + " - " + @broadcast.dtend.strftime("%H:%M") %>

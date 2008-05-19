@@ -1,17 +1,31 @@
-<h1>Administration</h1>
+<h1>Edit</h1>
 <ul>
-	<li><%= link_to 'Edit program', edit_program_path(@program) %></li>
+	<li><%= link_to 'Program properties', edit_program_path(@program) %></li>
+	<li><%= link_to 'Process configuration', program_process_path(@program, :process_type => 'recorded') %></li>
 </ul>
 
-<h1>Process configuration</h1>
+<h1>Authors</h1>
+<ul id="authors">
+	<% @program.authorships.each do |a| %>
+	<li <%= %( onmouseover="$('mod_#{a.id}').show(); $('days_#{a.id}').show();" onmouseout="$('mod_#{a.id}').hide(); $('days_#{a.id}').hide();") %>>
+		<%= link_to a.user.name, program_author_path(@program, a.user) %>
+		
+		<span style="display:none;" id="mod_<%= a.id %>">
+		    <%= link_to('edit', edit_program_author_path(@program, a.user), :class => "utility") %> |
+		    <%= link_to('delete', program_author_path(@program, a.user), :class => "utility", 
+				:method => :delete, :confirm => 'Delete this authorship forever?') %>
+		</span>
+	</li>
+	<%	end	 %>
+</ul>
 <ul>
-	<li><%= link_to "Recorded emissions", program_process_path(@program, :process_type => 'recorded') %></li>
-	<li><%= link_to "Live emissions", program_process_path(@program, :process_type => 'live') %></li>
-	<li><%= link_to "Playlist emissions", program_process_path(@program, :process_type => 'playlist') %></li>
+	<li class="add">
+		<%= link_to 'Add author', new_program_author_path(@program) %>
+	</li>
 </ul>
 
 <div id="minical">
 	<%= render :partial => 'shared/minical', 
 		:locals => { :date => Time.now, :program => @program, 
-					 :emissions => @program.find_emissions_by_date(Time.now.year, Time.now.month) } %>
+					 :broadcasts => @program.find_broadcasts_by_date(Time.now.year, Time.now.month) } %>
 </div>

@@ -1,20 +1,5 @@
 <%
-	@pagetitle = "Authors"
-	@breadcrumbs = [add_crumb("Authors", authors_path, true)]
+	add_crumb("Authors", authors_path, true)
 %>
 
-<% content_for :sidebar do %>
-	<h1>Administration</h1>
-	<ul>
-		<li><%= link_to 'New author', new_author_path %></li>
-	</ul>
-<% end %>
-
-<% @programs.each do |p| %>
-<h3><%= link_to p.name, program_path(p) %></h3>
-<ul>
-	<% p.authorships.each do |a| %>
-	<li><%= link_to a.user.name, author_path(a.user) %></li>
-	<% end %>
-</ul>
-<% end %>
+<%= alphabetical_list(@authors, 'author') %>

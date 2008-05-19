@@ -1,15 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class EmissionTest < ActiveSupport::TestCase
-  fixtures :emissions
-  
-  def test_should_require_start_and_end_date
-    assert_no_difference 'Emission.count' do
-      create_emission(:start => nil, :end => nil)
-      create_emission(:start => nil)
-      create_emission(:end => nil)
-    end
-  end
+  fixtures :broadcasts, :emission_types
   
   def test_should_require_program
     assert_no_difference 'Emission.count' do
@@ -17,21 +9,9 @@ class EmissionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_ensure_start_before_end
+  def test_should_require_emission_type
     assert_no_difference 'Emission.count' do
-      create_emission(:start => DateTime.new(2008, 01, 01, 14, 00), :end => DateTime.new(2008, 01, 01, 13, 00))
-    end
-  end
-  
-  def test_should_ensure_start_date_uniqueness
-    create_emission
-    assert_no_difference 'Emission.count' do
-      create_emission # create an emission at the same time
-    end
-    
-    assert_difference 'Emission.count' do
-      # create inactive emission at the same time
-      create_emission :active => false
+      create_emission :emission_type => nil
     end
   end
   
@@ -41,27 +21,20 @@ class EmissionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_date_shorthand_parameters
-    e = emissions(:live1)
-    assert_equal e.start.year, e.year
-    assert_equal e.start.month, e.month
-    assert_equal e.start.day, e.day
-  end
-  
-  def test_date_finders
-    
-    assert_equal 2, Emission.find_all_by_date(2008, 1).size
-    assert_equal 2, Emission.find_all_by_date(2008, 2).size
-    assert_equal 1, Emission.find_all_by_date(2008, 1, 14).size
-    assert_equal true, Emission.has_emissions?(DateTime.new(2008, 01, 14))
+  def test_should_be_modified
+    e = broadcasts(:live1)
+    assert_equal false, e.modified?
+    e.description = "changed!"
+    assert_equal true, e.modified?
   end
   
   protected
   
   def create_emission(options = {})
-    opts = {:start => DateTime.new(2008, 01, 01, 12, 00), :end => DateTime.new(2008, 01, 01, 13, 00), 
-            :program => programs(:program_1)}.merge(options)
-    record = Emission.new(opts)
+    defaults = {:dtstart => DateTime.new(2008, 01, 01, 12, 00), :dtend => DateTime.new(2008, 01, 01, 13, 00), 
+                :program => programs(:program_1), :emission_type => emission_types(:live), 
+                :program_schedule => ProgramSchedule.instance}
+    record = Emission.new(defaults.merge(options))
     record.save
     record
   end

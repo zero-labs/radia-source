@@ -40,6 +40,19 @@ class User < ActiveRecord::Base
     save(false)
   end
 
+  def self.find_authors
+    find(:all).select { |u| u.is_author? }
+  end
+  
+  def self.find_author_by_urlname(urlname)
+    u = find_by_urlname(urlname)
+    if u.is_author? 
+      u 
+    else
+      raise ActiveRecord::RecordNotFound
+    end
+  end
+
   def active?
     # the existence of an activation code means they have not activated yet
     activation_code.nil?
@@ -118,22 +131,28 @@ class User < ActiveRecord::Base
   def is_author?
     !self.authorships.empty?
   end
+  
+  # Takes a name and tests if the user is an author for that program
+  def is_author_of?(name)
+    self.is_author? and !self.programs.find_by_name(name).nil?
+  end
 
   protected
-    # before filter 
-    def encrypt_password
-      return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
-      self.crypted_password = encrypt(password)
-    end
-      
-    def password_required?
-      crypted_password.blank? || !password.blank?
-    end
-    
-    def make_activation_code
+  
+  # before filter 
+  def encrypt_password
+    return if password.blank?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.crypted_password = encrypt(password)
+  end
 
-      self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
-    end
-    
+  def password_required?
+    crypted_password.blank? || !password.blank?
+  end
+
+  def make_activation_code
+
+    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+  end
+
 end

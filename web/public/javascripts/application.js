@@ -22,3 +22,28 @@ function toggle_group_visibility(group) {
 		toggle_visibility(el);
 	}
 }
+
+function make_visible(id) {
+	var e = document.getElementById(id);
+	e.style.display = 'block';
+}
+
+function make_invisible(id) {
+	var e = document.getElementById(id);
+	e.style.display = 'none';
+}
+
+function switch_visibility(id1, id2) {
+	make_invisible(id1);
+	make_visible(id2);
+}
+
+function value_visible_invisible(value, id1, id2) {
+	if (value == 1) {
+		make_visible(id1);
+		make_invisible(id2);
+	} else {
+		make_visible(id2);
+		make_invisible(id1);
+	}
+}

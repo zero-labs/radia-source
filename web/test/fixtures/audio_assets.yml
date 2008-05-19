@@ -1,0 +1,17 @@
+playlist_1:
+    type: Playlist
+
+playlist_2:
+    type: Playlist
+    
+unauthored_single_not_present:
+    type: SingleAudioAsset
+
+unauthored_single_present:
+    type: SingleAudioAsset
+
+authored_single_not_present:
+    type: SingleAudioAsset
+
+authored_single_present:
+    type: SingleAudioAsset

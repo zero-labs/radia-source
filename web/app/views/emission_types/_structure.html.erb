@@ -1,0 +1,32 @@
+<fieldset>
+	<legend>Structure</legend>
+
+	<ul id="element_types">
+		<li style="margin-right:20px; vertical-align: middle;">
+			<%= image_tag 'icons/add.png', :alt => 'Add element' %>
+		</li>
+		<li>
+			<%= link_to_remote "Single", :update => 'bloc_element', 
+			:url => { :action => 'show_bloc_element', :controller => 'emission_types', :id => @emission_type, :kind => 'single' }, :html => { :class => 'element_type'} %>
+		</li>
+		<li>
+			<%= link_to_remote "Live", :update => 'bloc_element', 
+			:url => { :action => 'show_bloc_element', :controller => 'emission_types', :id => @emission_type, :kind => 'live' }, :html => { :class => 'element_type'} %>	
+		</li>
+		<li>
+			<%= link_to_remote "Playlist", :update => 'bloc_element', 
+			:url => { :action => 'show_bloc_element', :controller => 'emission_types', :id => @emission_type, :kind => 'playlist' }, :html => { :class => 'element_type'} %> 
+		</li>
+		<li>
+			<%= link_to_remote "Intermission", :update => 'bloc_element',
+			:url => { :action => 'show_bloc_element', :controller => 'emission_types', :id => @emission_type, :kind => 'intermission' }, :html => { :class => 'element_type'} %>
+		</li>
+	</ul>
+	
+	<div id="bloc_element"></div>
+	<hr />
+	<div id="bloc">
+		<%= render :partial => 'bloc', :object => @emission_type.bloc %>
+	</div>
+
+</fieldset>

@@ -1,0 +1,19 @@
+<%
+	@pagetitle = "Authors"
+	add_crumb("Programs", programs_path)
+	add_crumb(@program.name, program_path(@program), true)
+	add_crumb("Authors", program_authors_path(@program))
+%>
+
+<ul>
+	<% @program.authorships.each do |a| %>
+	<li <%= %( onmouseover="$('mod_#{a.id}').show();" onmouseout="$('mod_#{a.id}').hide();") %>>
+		<%= link_to a.user.name, author_path(a.user) %>
+		<span style="display:none;" id="mod_<%= a.id %>">
+		    <%= link_to('edit', edit_program_author_path(@program, a.user), :class => "utility") %> |
+		    <%= link_to('delete', program_author_path(@program, a.user), :class => "utility", 
+				:method => :delete, :confirm => 'Delete this authorship forever?') %>
+		</span>
+	</li>
+	<% end %>
+</ul>

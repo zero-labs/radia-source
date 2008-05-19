@@ -1,0 +1,22 @@
+<%
+	@pagetitle = "New authorship"
+	add_crumb("Programs", programs_path)
+	add_crumb(@program.name, program_path(@program), true)
+	add_crumb("Authors", program_authors_path(@program))
+	add_crumb("New", new_program_author_path)
+%>
+
+<% form_for :authorship, @authorship, :url => program_authors_path(@program) do |f| -%>
+	<%= hidden_field_tag 'authorship[program_id]', @program.id %>
+
+	<p>
+		<label for="authorship_user">Select user</label><br/>
+		<%= f.collection_select :user_id, get_users, :id, :name %>
+	</p>
+	<p>
+		<%= render :partial => 'rules', :locals => { :form => f } %>
+	</p>
+	<p>
+		<%= submit_tag "Add author" %>
+	</p>
+<% end -%>

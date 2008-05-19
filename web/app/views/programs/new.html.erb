@@ -1,7 +1,7 @@
 <% 
 	@pagetitle = "New program"
-	@breadcrumbs = [add_crumb("Programs", programs_path), 
-		add_crumb("New", new_program_path, true)]
+	add_crumb("Programs", programs_path)
+	add_crumb("New", new_program_path, true)
 %>
 
 <% content_for :sidebar do %>

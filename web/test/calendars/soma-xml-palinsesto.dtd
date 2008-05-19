@@ -1,0 +1,41 @@
+<!ELEMENT PalinsestoXML		(Palinsesto*)>
+
+<!ELEMENT Palinsesto		(Description,
+				 Priority,
+				 Start,
+				 Stop,
+				 TimeContinued,
+				 SpotController,
+				 Type,
+				 Jingle,
+				 Module,
+				 ModuleData,
+				 Stream,
+				 Random,
+				 SoftStop,
+				 RatioSong,
+				 RatioSpot,
+				 PathSong,
+				 PathSpot)>
+
+<!ELEMENT Description		(#PCDATA)>
+<!ATTLIST Description color CDATA #IMPLIED>
+
+<!ELEMENT Priority		(#PCDATA)>
+<!ELEMENT Start			(#PCDATA)>
+<!ELEMENT Stop			(#PCDATA)>
+<!ELEMENT TimeContinued		(#PCDATA)>
+<!ELEMENT SpotController	(#PCDATA)>
+<!ELEMENT Type			(#PCDATA)>
+<!ELEMENT Jingle		(#PCDATA)>
+<!ELEMENT Module		(#PCDATA)>
+<!ELEMENT ModuleData		(#PCDATA)>
+<!ELEMENT Stream		(#PCDATA)>
+<!ELEMENT Random		(#PCDATA)>
+<!ELEMENT SoftStop		(#PCDATA)>
+<!ELEMENT RatioSong		(#PCDATA)>
+<!ELEMENT RatioSpot		(#PCDATA)>
+<!ELEMENT PathSong		(item*)>
+<!ELEMENT PathSpot		(item*)>
+<!ELEMENT item 			(#PCDATA)>
+

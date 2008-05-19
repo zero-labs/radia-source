@@ -1,42 +1,38 @@
 <% 
 	@pagetitle = "Update program schedule"
-	@breadcrumbs = [add_crumb("Schedule", schedule_path),
-					add_crumb("Update schedule", edit_schedule_path, true)]
-	
+	add_crumb("Schedule", schedule_path)
+	add_crumb("Update from calendar", edit_schedule_path, true)	
 %>
 
 
 <% content_for :sidebar do %>
+	<%= render :partial => 'sidebar' %>
 <% end %>
 <p class="centered">
-	Select the calendar files representing the types of programs you want to update.
+	Select the calendar files representing the type of programs you want to update.
 </p>
 
-<% form_tag schedule_path, { :multipart => true, :method => :put } do -%>
-<div class="prepend-5 span-9 append-3">
+<% form_tag schedule_load_calendar_path, { :multipart => true, :method => :post } do -%>
+<div class="prepend-3 span-11 append-3">
+	<fieldset>
+		<legend>Broadcast type</legend>
+		<%= radio_button_tag 'new_schedule[repeat]', 0, true %> 
+		<label for="new_schedule_repeat_0">Emissions</label>
+		<%= select_tag 'new_schedule[type]', emission_types %> or
+		<%= radio_button_tag 'new_schedule[repeat]', 1, false %> 
+		<label for="new_schedule_repeat_1">Repetitions</label>		
+	</fieldset>
 	<p>
-		<label for="new_schedule[calendars][recorded]">Recorded: </label><br />
-		<%= file_field_tag 'new_schedule[calendars][recorded]' %>
-	</p>
-	<p>
-		<label for="new_schedule[calendars][live]">Live: </label><br/>
-		<%= file_field_tag 'new_schedule[calendars][live]' %>
-	</p>
-	<p>
-		<label for="new_schedule[playlist]">Playlist: </label><br />
-		<%= file_field_tag 'new_schedule[calendars][playlist]' %>
-	</p>
-	<p>
-		<label for="new_schedule[repeated]">Repeats: </label><br />
-		<%= file_field_tag 'new_schedule[calendars][repeated]' %>
+		<label for="new_schedule[calendar]">iCalendar file: </label>
+		<%= file_field_tag 'new_schedule[calendar]' %>
 	</p>
 	<p>
 		<label for="date_end">End date:</label><br />
-		<%= select_datetime 6.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>
+		<%= select_datetime 3.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>
 	</p>
 	<br/>
 </div>
 <p class="centered">
-<%= submit_tag 'Change schedule' %>
+<%= submit_tag 'Update schedule' %>
 </p>
 <% end -%>

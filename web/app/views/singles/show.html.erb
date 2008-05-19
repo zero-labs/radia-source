@@ -1,0 +1,18 @@
+<%= render :partial => 'crumbs' %>
+<% add_crumb("#{@single_audio_asset.title}", audio_single_path(@single_audio_asset)) %>
+
+<p>
+	<span class="stronger">Title: </span> <%= @single_audio_asset.title %>
+</p>
+<p>
+	<span class="stronger"> <%= (@single_audio_asset.available? ? 'Available' : 'Not available') + ' at broadcast node' %></span>
+</p>
+<p>
+	<% unless @single_audio_asset.available? %>
+		<span class="stronger">Service: </span>
+		<%= #link_to @single_audio_asset.asset_service.name, settings_asset_service_path(@single_audio_asset.asset_service) 
+		%><br />
+	<% end %>
+	<span class="stronger">Location: </span> 
+	<%= @single_audio_asset.location %>
+</p>

@@ -1,0 +1,33 @@
+<%
+	@pagetitle = "Update program schedule"
+	add_crumb("Schedule", schedule_path)
+	add_crumb("Update from calendar", edit_schedule_path, true)
+%>
+
+<%= render :partial => 'result_visibility' %>
+
+<div id="to_be_ignored" style="display: none;">
+	<%= render :partial => 'ignored_programs', :object => @result[:ignored] %>
+</div>
+    
+<div id="with_conflicts" style="display: none;">
+	<%= render :partial => 'conflicts', :object => @result[:conflicting] %>
+</div>
+
+<% form_tag schedule_path, { :method => :put } do |f| -%>
+	<div id="to_be_created" style="display: none;">
+		<% @result[:to_create].each_with_index do |e, i| %>
+			<%= create_emission(e, i) %>
+		<% end %>
+	</div>
+	
+	<div id="to_be_destroyed" style="display: none;">
+		<% @result[:to_destroy].each_with_index do |e, i| %>
+			<%= destroy_emission(e, i) %>
+		<% end %>
+	</div>
+	
+	<p class="centered">
+		<%= submit_tag 'Proceed' %> or <%= link_to "Go back", edit_schedule_path %>
+	</p>
+<% end %>

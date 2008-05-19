@@ -1,0 +1,22 @@
+<fieldset>
+	<legend>When is this user an author?</legend>
+	<p>
+		<%
+			a = @authorship.always
+			b = !@authorship.always && @authorship.has_some_day_rule
+			a = true if !a && !b
+		%>
+		<%= form.radio_button 'always', 1, :checked => a, :id => 'authorship_always', :onclick => "toggle_visibility('authorship_days');" %>
+		<label for="authorship_always">Always</label>
+    	
+		<%= form.radio_button 'always', 0, :checked => b, :id => 'authorship_day', :onclick => "toggle_visibility('authorship_days');" %>
+		<label for="authorship_day">On certain day(s) of the week</label>
+	</p>
+
+	<div id="authorship_days">
+		<% Date::DAYNAMES.each do |day| %>
+			<%= form.check_box day.downcase.to_sym %>
+			<label for="authorship_<%= day.downcase %>"><%= day %></label>
+		<% end %>
+	</div>
+</fieldset>

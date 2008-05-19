@@ -1,8 +1,8 @@
 <% 
 	@pagetitle = "Edit program: #{@program.name}" 
-	@breadcrumbs = [add_crumb("Programs", programs_path), 
-					add_crumb("#{@program.name}", program_path(@program), true),
-					add_crumb("Edit", edit_program_path(@program))]
+	add_crumb("Programs", programs_path)
+	add_crumb("#{@program.name}", program_path(@program), true)
+	add_crumb("Edit", edit_program_path(@program))
 %>
 
 <% content_for :sidebar do %>

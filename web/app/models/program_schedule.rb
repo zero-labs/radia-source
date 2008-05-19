@@ -1,151 +1,207 @@
 class ProgramSchedule < ActiveRecord::Base
   include ActiveRecord::Singleton # Forces single record for this model
-  include TimeUtils
+  extend RadiaSource::TimeUtils
 
-  has_many :emissions, :order => 'start ASC'
+  has_many :broadcasts, :order => 'dtstart ASC'
+  has_many :emissions, :order => 'dtstart ASC'
+  has_many :repetitions, :order => 'dtstart ASC'
   has_many :programs, :through => :emissions
+    
+  # Expects a Hash with the following key-value pairs:
+  # * :calendar => iCalendar file
+  # * :start => { :year => <start year>, :month => <start month>, :day => <start day>, :hour => <start hour>, :day => <start day> } 
+  # * :end => { :year => <end year>, :month => <end month>, :day => <end day>, :hour => <end hour>, :day => <end day> } 
+  # * :emissions => "1" or "0"
+  # * :type => EmissionType id (or 0 for repetitions)
+  # 
+  # Returns an Array with 3 elements (also Arrays): 
+  # * :to_create => Broadcasts to be created
+  # * :to_destroy => Broadcasts to be destroyed
+  # * :ignored => Programs ignored because they don't exist in the DB
+  # * :conflicting => Broadcasts currently in the DB that conflict with those that are to be created
+  #
+  # If the iCalendar attribute is nil or empty (no events), the method returns nil
+  def load_calendar(params)
+    dtstart = (params[:start] ? ProgramSchedule.get_datetime(params[:start]) : Time.now)
+    dtend = ProgramSchedule.get_datetime(params[:end])
+    type = (params[:repeat].to_i == 1 ? 0 : params[:type])
+    parse_calendar(params[:calendar], type, dtstart, dtend)
+  end
   
-  has_many :recorded_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
-  has_many :live_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
-  has_many :playlist_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
-  has_many :repeated_emissions, :order => 'start ASC', :conditions => ["active = ?", true]
+  # Expects a Hash of Hashes containing the attributes to create new emissions
+  # Each entry is of the following form:
+  # {<sequence_number> => { :program => <program_id>, :start => <date str>, :end => <date str>, :type => <type_id> }
+  # 
+  # Returns an Array with all the emissions that were not created
+  def update_emissions(to_create, to_destroy)
+    to_destroy.each { |broadcast| broadcast.destroy } unless to_destroy.nil?
+    problems = to_create.select { |id, broadcast| !create_broadcast(broadcast) } unless to_create.nil?
+    return true if to_destroy.nil? and to_create.nil?
+    problems
+  end
   
-  has_many :inactive_emissions, :order => 'start ASC', :class_name => 'Emission', :conditions => ["active = ?", false]
-
-  acts_as_emission_process_configurable :recorded => true
-
-  def update_emissions(params)
-    dtstart = (params[:start] ? TimeUtils.get_datetime(params[:start]) : Time.now)
-    dtend = TimeUtils.get_datetime(params[:end])
-    ignored = []
+  # Receives a String and finds emissions of that type.
+  # Returns an Array with the requested emissions.
+  def emissions_by_type(type)
+    emission_type = EmissionType.find_by_name(type)
+    return [] if emission_type.nil?
     
-    params[:calendars].each_key do |key|
-      next if params[:calendars][key].blank? or key.to_sym == :repeated
-      ignored << update_by_type(key.to_sym, params[:calendars][key], dtstart, dtend)
-    end
-    
-    if params[:calendars][:repeated] then
-      ignored << update_by_type(:repeated, params[:calendars][:repeated], dtstart, dtend)
-    end
-    
-    move_repetitions unless params[:calendars][:repeated]
-    
-    purge_emissions
-    self.save
-    ignored
+    self.emissions.find(:all, :conditions => ["emission_type_id = ?", emission_type.id])
   end
   
   def parent
     nil
   end
-
-  protected
-
-  # Updates the schedule for a given type of emission
-  # with events occurring between dtstart and dtend
-  def update_by_type(type, icalendar, dtstart, dtend)
-    return if icalendar.nil? or icalendar.blank?
-    
-    calendars = Vpim::Icalendar.decode(icalendar)
-    return if calendars.blank?
-    
-    flag_emissions(type, dtstart, dtend)
-    ignored = []
-    
-    calendars.each do |cal|
-      cal.components(Vpim::Icalendar::Vevent) do |event|
-        # TODO create recurrence object
-        program = Program.find_by_name(event.summary)
-        if program
-          event.occurences.each(dtend) do |occurrence|
-            if occurrence >= dtstart then
-              if type == :repeated
-                deal_with_repetition(program, event, occurrence)
-              else
-                deal_with_occurrence(type, program, event, occurrence)
-              end
-            end
+  
+  def broadcasts_and_gaps(dtstart, dtend)
+    (self.broadcasts.find_in_range(dtstart, dtend) + Broadcast.gaps(dtstart, dtend)).sort
+  end
+  
+  def to_xml(options = {})
+    options[:indent] ||= 2
+    options[:dtstart] ||= Time.now
+    options[:dtend] ||= 1.day.from_now
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    bcs = self.broadcasts_and_gaps(options[:dtstart], options[:dtend])
+    xml.schedule do
+      #bcs.to_xml(:skip_instruct => true, :builder => xml)
+      xml.elements(:type => 'array') do
+        except = [:created_at, :updated_at, :emission_id, :emission_type_id, :program_id, :program_schedule_id]
+        bcs.each do |b|
+          b.to_xml(:skip_instruct => true, :builder => xml, :except => except) do |xml|
+            b.bloc.to_xml(:skip_instruct => true, :builder => xml) unless b.bloc.nil?
           end
-        else
-          ignored << event.summary
         end
       end
     end
-    ignored
   end
   
-  def deal_with_occurrence(type, program, event, occurrence)
-    emissions = program.find_emissions_by_date(occurrence.year, occurrence.month, occurrence.day)
-    return if emissions.nil?
+  def to_broadcast(format, dtstart, dtend)
+    case format
+    when :palinsesto
+      to_palinsesto(dtstart, dtend)
+    end
+  end
+  
+  def to_broadcast(dtstart, dtend)
+    bcasts = self.broadcasts.find_in_range(dtstart, dtend)
+    gaps = Broadcast.gaps(dtstart, dtend)
+    #bcasts.to_xml + gaps.to_xml
+    xml = Builder::XmlMarkup.new(:indent => 2)
     
-    emissions.each do |e|
-      if (e.start == occurrence) and (e.end == (occurrence + event.duration)) then
-        e.unflag!
-        return
+    xml.schedule do
+      # Broadcasts
+      bcasts.each do |bc|
+        bc.to_broadcast(xml)
+        #bc.to_xml
+      end
+      # Gaps
+      gaps.each do |g|
+        g.to_broadcast(xml)
+        #g.to_xml
       end
     end
-    # if it got here it's because the emission is different from existing ones
-    create_emission(type, program, occurrence, occurrence + event.duration)
   end
+
+  protected
   
-  def deal_with_repetition(program, event, occurrence)
-    emission = program.find_first_emission_before_date(occurrence)
-    return if emission.nil?    
-    create_emission(:repeated, program, occurrence, occurrence + event.duration, emission)
-  end
-  
-  # Emission type, start and end date/time
-  def create_emission(type, program, dtstart, dtend, emission = nil)
-    case type
-    when :recorded
-      e = RecordedEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
-      self.recorded_emissions << e
-    when :live
-      e = LiveEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
-      self.live_emissions << e
-    when :playlist
-      e = PlaylistEmission.new(:start => dtstart, :end => dtend, :program => program, :program_schedule => self)
-      self.playlist_emissions << e
-    when :repeated
-      e = RepeatedEmission.new(:start => dtstart, :end => dtend, 
-                              :program => program, :program_schedule => self, :emission => emission)
-      self.repeated_emissions << e
+  def to_palinsesto(dtstart, dtend)
+    bcasts = self.broadcasts.find_in_range(dtstart, dtend)
+    gaps = Broadcast.gaps(dtstart, dtend)
+    
+    xm = Builder::XmlMarkup.new(:indent => 2)
+    xm.PalinsestoXML do
+      # Broadcasts
+      bcasts.each do |bc|
+        bc.to_broadcast(:palinsesto, xm)
+      end
+      # TODO Gaps
     end
-    
-    (e.save ? e : nil)
   end
   
-  # Flags emissions within the given timeframe
-  # Destroys unaltered emissions and inactivates those with changes
-  def flag_emissions(type, dtstart, dtend)
-    case type
-    when :recorded
-      k = self.recorded_emissions.find(:all, :conditions => ["start BETWEEN ? AND ?", dtstart, dtend])
-    when :live
-      k = self.live_emissions.find(:all, :conditions => ["start BETWEEN ? AND ?", dtstart, dtend])
-    when :playlist
-      k = self.playlist_emissions.find(:all, :conditions => ["start BETWEEN ? AND ?", dtstart, dtend])
-    when :repeated
-      k = self.repeated_emissions.find(:all, :conditions => ["start BETWEEN ? AND ?", dtstart, dtend])
-    end
+  def parse_calendar(icalendar, type, dtstart, dtend)
+    return nil if icalendar.nil? or icalendar.blank? or type.blank?
+    calendars = Vpim::Icalendar.decode(icalendar)
+    return nil if calendars.blank?
     
-    k.each { |e| e.flag! }
-  end
-  
-  def move_repetitions
+    to_create = []; to_destroy = []; ignored = []; conflicting = []
     
-  end
-  
-  # Destroys unmodified flagged emissions
-  # Inactivates modified flagged emissions
-  def purge_emissions
-    emissions = Emission.find(:all, :conditions => ["flag = ?", true])
-    emissions.each do |e|  
-      e.destroy if !e.modified?
-      if e.modified? then
-        e.inactivate!
-        self.inactive_emissions << e
+    calendars.each do |cal|
+      cal.components(Vpim::Icalendar::Vevent) do |event|
+        
+        if !(program = Program.find_by_name(event.summary))
+          ignored << event.summary
+          next
+        end
+        
+        event.occurences.each(dtend) do |occurrence|
+          next if occurrence < dtstart
+
+          check = check_event(type, program, occurrence, occurrence + event.duration)
+          next if check.nil? # there's nothing to create, destroy or conflict! :)
+          e = emission_hash(type, program, occurrence, occurrence + event.duration)
+          to_create << e unless e.nil?; to_destroy += check[0]; conflicting += check[1]
+        end
       end
     end
+    # Note: Conflicts between new broadcasts are only checked when they're actually created
+    { :to_create => to_create, :to_destroy => to_destroy, :ignored => ignored, :conflicting => conflicting }
+  end
+  
+  def check_event(type, program, dtstart, dtend)
+    conflicting = []; to_destroy = [];
+    bcs = self.broadcasts.find_in_range(dtstart, dtend)
+    
+    # If there is only one broadcast at the same time, and it is from the same program, all is good!
+    if (bcs.size == 1) and (bcs.first.program == program) and bcs.first.same_time?(dtstart, dtend)
+      return nil
+    end
+    
+    bcs.each do |b|
+      if b.modified? 
+        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :broadcast => b }
+      elsif !b.same_time?(dtstart, dtend) or (b.program != program)                              
+        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :broadcast => b  }
+      end
+    end
+    [to_destroy, conflicting]
+  end
+  
+  def emission_hash(type, program, dtstart, dtend)
+    hsh = { :type => type, :program => program.id, :start => dtstart.to_s, :end => dtend.to_s }
+    if type == 0 # repetition
+      if e = program.find_first_emission_before_date(dtstart)
+        hsh.merge!(:emission => e.id)
+      else # there may not be emissions to be found
+        return nil
+      end
+    end
+    hsh
+  end
+  
+  def create_broadcast(broadcast)    
+    if broadcast[:type].to_i != 0
+      create_emission(broadcast)
+    else
+      create_repetition(broadcast)
+    end
+  end
+  
+  def create_emission(emission)
+    e = Emission.new(:program_schedule => self,
+                    :program => Program.find(emission[:program]),
+                    :emission_type => EmissionType.find(emission[:type]),
+                    :dtstart => DateTime.parse(emission[:start]),
+                    :dtend => DateTime.parse(emission[:end]))
+    e.save
+  end
+  
+  def create_repetition(repetition)
+    r = Repetition.new(:program_schedule => self,
+                       :emission => Emission.find(repetition[:emission]),
+                       :dtstart => DateTime.parse(repetition[:start]),
+                       :dtend => DateTime.parse(repetition[:end]))
+    r.save
   end
 end

@@ -1,89 +1,62 @@
 require File.dirname(__FILE__) + '/../test_helper'
+require 'array'
 
 class ProgramScheduleTest < ActiveSupport::TestCase
+  fixtures :emission_types
   
   def setup
     reset_singleton ProgramSchedule
   end
   
-  def test_should_create_only_given_emission_types
-    assert_no_difference 'schedule.recorded_emissions.size' do
-      make_update :recorded => ''
-    end
-  end
-  
   def test_should_create_correct_number_of_emissions
-    live_prev = schedule.live_emissions.count
-    rec_prev  = schedule.recorded_emissions.count
-    pl_prev   = schedule.playlist_emissions.count
-    rep_prev  = schedule.repeated_emissions.count
+    live_prev = schedule.emissions_by_type('Live').size
+    rec_prev  = schedule.emissions_by_type('Recorded').size
+    pl_prev   = schedule.emissions_by_type('Playlist').size
+    rep_prev  = schedule.repetitions.count
     
-    make_update
+    make_update :live
+    assert_equal live_prev + 91, schedule.emissions_by_type('Live').size
     
-    assert_equal live_prev + 91, schedule.live_emissions.count
-    assert_equal rec_prev  + 13, schedule.recorded_emissions.count
-    assert_equal pl_prev   + 3, schedule.playlist_emissions.count
-    assert_equal rep_prev  + 26, schedule.repeated_emissions.count
+    make_update :recorded
+    assert_equal rec_prev  + 13, schedule.emissions_by_type('Recorded').size
+    
+    make_update :playlist
+    assert_equal pl_prev   + 3, schedule.emissions_by_type('Playlist').size
+    
+    make_update :repetitions
+    assert_equal rep_prev  + 26, schedule.repetitions.count
   end
   
   def test_should_associate_repetitions_with_emissions
-    make_update :live => '', :playlist => ''    
-    e = schedule.recorded_emissions.find_by_date(2008, 4, 9)
-    assert_equal 2, e.repeated_emissions.size
-  end
-  
-  def test_should_inactivate_conflicting_emissions
-    make_update # clean schedule
-    
-    assert_difference 'schedule.inactive_emissions.size' do
-      e = schedule.recorded_emissions.find_by_date(2008, 4, 9)
-      e.description = "hello world!"
-      e.save
-      # update schedule, there should be a conflict with the modified emission
-      File.open("#{RAILS_ROOT}/test/calendars/recorded-test-2.ics") do |f|
-        make_update :recorded => f 
-      end
-    end
-  end
-  
-  def test_should_move_repetitions_of_inactive_emissions
-    flunk
-    
-    make_update :live => '', :playlist => ''
-    
-    e = schedule.recorded_emissions.find_by_date(2008, 4, 9)
-    assert_equal 2, e.repeated_emissions.size
-    
-    File.open("#{RAILS_ROOT}/test/calendars/recorded-test-2.ics") do |f|
-      make_update :recorded => f, :repeated => '', :live => '', :playlist => ''
-    end
-    
-    new_e = schedule.recorded_emissions.find_by_date(2008, 4, 9)
-    
-    assert [], e.repeated_emissions
-    assert_equal 2, new_e.repeated_emissions.size
+    make_update :recorded
+    make_update :repetitions
+    e = schedule.emissions.find_by_date(2008, 4, 9)
+    assert_equal 2, e.repetitions.size
   end
   
   protected 
   
-  def make_update(calendars = {})
-    live     = File.open("#{RAILS_ROOT}/test/calendars/live-test.ics", 'r')
-    recorded = File.open("#{RAILS_ROOT}/test/calendars/recorded-test.ics", 'r')
-    playlist = File.open("#{RAILS_ROOT}/test/calendars/playlist-test.ics", 'r')
-    repeated = File.open("#{RAILS_ROOT}/test/calendars/repeated-test.ics")
+  def make_update(type)
+    to_use = "#{RAILS_ROOT}/test/calendars/live-test.ics"     if type == :live
+    to_use = "#{RAILS_ROOT}/test/calendars/recorded-test.ics" if type == :recorded
+    to_use = "#{RAILS_ROOT}/test/calendars/playlist-test.ics" if type == :playlist
+    to_use = "#{RAILS_ROOT}/test/calendars/repeated-test.ics" if type == :repetitions
+
+    type_id = (type == :repetitions ? 0 : emission_types(type).id)    
+    dtstart = { :year => 2008, :month => 04, :day => 01, :hour => 12, :minute => 00 }
+    dtend   = { :year => 2008, :month => 07, :day => 01, :hour => 12, :minute => 00 }
+    calendar = File.open(to_use, 'r')
     
-    dtstart  = { :year => 2008, :month => 04, :day => 01, :hour => 12, :minute => 00 }
-    dtend    = { :year => 2008, :month => 07, :day => 01, :hour => 12, :minute => 00 }
-    
-    defaults = { :live => live, :recorded => recorded, :playlist => playlist, :repeated => repeated }
-    
-    params   = { :start => dtstart, :end => dtend, :calendars => defaults.merge(calendars)}
-    ignored = schedule.update_emissions(params)
-    live.close; recorded.close; playlist.close
-    ignored
+    params = { :start => dtstart, :end => dtend, :calendar => calendar, 
+               :type => type_id, :program_schedule => schedule }
+    result = schedule.load_calendar(params)
+    # See /lib/array.rb to know about the to_h method
+    schedule.update_emissions(result[:to_create].to_h {|v| v }, result[:to_destroy].to_h { |v| v}) 
+    calendar.close
   end
   
   def schedule
     ProgramSchedule.instance
   end
+  
 end

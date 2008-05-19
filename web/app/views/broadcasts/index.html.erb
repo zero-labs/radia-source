@@ -1,0 +1,18 @@
+<% 
+	@pagetitle = "Broadcasts"
+	broadcast_crumbs
+%>
+
+<% content_for :sidebar do %>
+	<% if @program %>
+		<%= render :partial => 'programs/sidebar' %>
+	<% else %>
+		<%= render :partial => 'program_schedule/sidebar' %>
+	<% end %>
+<% end %>
+
+<ul id="emissions">
+<% @broadcasts.each do |e| %>
+	<%= print_broadcast(e, @program) %>
+<% end %>
+</ul>

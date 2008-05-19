@@ -1,0 +1,25 @@
+<%= render :partial => 'crumbs' %>
+<% add_crumb("Edit", edit_settings_asset_service_path(@asset_service)) %>
+
+<% form_for(@asset_service, :url => settings_asset_service_path(@asset_service), :method => :put) do |f| %>
+	<%= hidden_field_tag :settings_id, :value => 1 %>
+	<p>
+		<label for="service_location_name">Name</label><br />
+		<%= f.text_field :name %>
+	</p>
+	<p>
+		<label for="service_location_protocol">Protocol</label><br />
+		<%= f.select :protocol, get_protocols %>
+	</p>
+	<p>
+		<label for="service_location_uri">URI</label><br />
+		<%= f.text_field :uri %>
+	</p>
+	<p>
+		<label for="service_location_login">Login</label><br />
+		<%= f.text_field :login %>
+	</p>
+	<p>
+		<%= submit_tag 'Update' %>
+	</p>
+<% end %>

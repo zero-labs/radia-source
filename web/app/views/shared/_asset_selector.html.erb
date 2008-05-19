@@ -1,0 +1,10 @@
+<% form_remote_tag :url => service_navigator_path, :update => 'file_list' do -%>
+	<p class="centered">
+		<%= select_tag 'id', asset_services %> 
+	</p>
+	<p>
+		<label for="password">Password</label><br/>
+		<%= password_field_tag 'password', nil, :size => 10 %>
+		<%= submit_tag 'List' %>
+	</p>
+<% end -%>

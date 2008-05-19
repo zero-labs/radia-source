@@ -1,0 +1,9 @@
+<%
+	add_crumb("Users", users_path)
+	add_crumb(@user.name, user_path(@user), true)
+%>
+
+<% content_for :sidebar do %>
+		<h1>Roles</h1>
+		
+<% end %>

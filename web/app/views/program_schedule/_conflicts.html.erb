@@ -1,0 +1,8 @@
+<ul>
+	<% conflicts.each do |c| %>
+		<li><%= "#{c[:program].name} #{c[:dtstart]}-#{c[:dtend]} has conflicts with:" %></li>
+		<ul>
+		<li><%= "#{c[:broadcast].program.name} #{c[:broadcast].dtstart}-#{c[:broadcast].dtend}" %></li>
+		</ul>
+	<% end %>
+</ul>

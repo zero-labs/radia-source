@@ -1,0 +1,23 @@
+<h1>Programming</h1>
+<ul>
+	<li><%= link_to "Update from calendar", edit_schedule_path %></li>
+	<li><%= link_to "New broadcast", schedule_new_broadcast_path %></li>
+</ul>
+
+<h1>Broadcasts</h1>
+<ul>
+	<li><%= link_to "Emission types", schedule_emission_types_path %></li>
+	<li><%= link_to "View as list", schedule_broadcasts_path %></li>
+</ul>
+
+<h1>Gaps</h1>
+<ul>
+	<li><%= link_to "View gaps", schedule_emission_types_path %></li>
+	<li><%= link_to "Filling policy", schedule_broadcasts_path %></li>
+</ul>
+
+<div id="minical">
+	<%= render :partial => 'shared/minical', 
+		:locals => { :date => @caldate, :program => @program, 
+					 :broadcasts => @calbroadcasts } %>
+</div>

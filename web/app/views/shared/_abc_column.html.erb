@@ -1,0 +1,16 @@
+<% abc.each do |letter| %>
+	<% next if !items[letter] or items[letter].empty? %>
+	<a name="<%= letter %>"></a>
+	<h2><%= letter.upcase %></h2>
+	<ul>
+		<% items[letter].sort{ |a,b| a.urlname <=> b.urlname }.each do |e| %>
+			<li <%= %( onmouseover="$('mod_#{e.id}').show();" onmouseout="$('mod_#{e.id}').hide();") %>>
+				<%= link_to e.name, send("#{item}_path", e) %>
+				<span style="display:none;" id="mod_<%= e.id %>">
+				    <%= link_to('edit', send("edit_#{item}_path", e), :class => "utility") %> |
+				    <%= link_to('delete', send("#{item}_path", e), :class => "utility", :method => :delete, :confirm => "Delete this #{item} forever?") %>
+				</span>
+			</li>
+		<% end %>
+	</ul>
+<% end %>

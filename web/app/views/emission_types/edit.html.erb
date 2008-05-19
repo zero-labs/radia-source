@@ -1,0 +1,14 @@
+<%
+	emission_types_crumbs(@emission_type)
+	add_crumb("Edit", edit_schedule_emission_type_path(@emission_type))
+%>
+
+<div class="span-8">
+<% form_for @emission_type, :url => schedule_emission_type_path(@emission_type) do |f| %>
+	<%= render :partial => 'properties', :locals => { :f => f } %>
+<% end %>
+</div>
+
+<div class="span-9 last">
+	<%= render :partial => 'structure' %>
+</div>
