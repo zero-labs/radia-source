@@ -2,6 +2,8 @@ class ProgramScheduleController < ApplicationController
   before_filter :login_required, :except => :show
   before_filter :setup_minical
   
+  helper :broadcasts  
+  
   # GET /schedule
   # GET /schedule.:format
   def show

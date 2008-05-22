@@ -33,14 +33,16 @@ class Repetition < Broadcast
   
   def to_xml(options = {})
     options[:indent] ||= 2
+    options[:replace_unavailable] ||= false
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.broadcast(:type => 'repetition') do 
       xml.tag!(:id, self.id, :type => :integer)
+      xml.tag!('program-id', self.program.urlname, :type => :string)
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, self.description, :type => :string)
-      self.bloc.to_xml(:skip_instruct => true, :builder => xml)
+      bloc.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
     end
   end
 end

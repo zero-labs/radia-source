@@ -17,4 +17,8 @@ module ProgramScheduleHelper
       render :partial => 'ignored_program', :object => p
     end
   end
+  
+  def print_broadcast(broadcast, program = nil)
+    render :partial => 'broadcasts/broadcast', :locals => { :broadcast => broadcast, :program => program }
+  end
 end

@@ -24,6 +24,10 @@ class BlocElement < ActiveRecord::Base
     write_attribute(:length, minutes * ((@unit.nil? or (@unit == 'minutes')) ? 60 : 1)) unless minutes.nil?
   end
   
+  def length
+    read_attribute(:length) || bloc.playable_length
+  end
+  
   def length_unit=(value)
     @unit = value
   end
@@ -33,11 +37,12 @@ class BlocElement < ActiveRecord::Base
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.element do
-      xml.length(self.length)
-      xml.fill(self.fill)
-      xml.items_to_play(self.items_to_play)
-      xml.random(self.random)
-      audio_asset.to_xml(:skip_instruct => true, :builder => xml)
+      xml.tag!(:length, self.length, :type => :float)
+      xml.tag!(:fill, self.fill, :type => :boolean)
+      xml.tag!('items-to-play', self.items_to_play, :type => :integer)
+      xml.tag!(:random, self.random, :type => :boolean)
+      audio = (options[:replace_unavailable] ? AudioAsset.fill(self.length) : audio_asset)
+      audio.to_xml(:skip_instruct => true, :builder => xml, :short => true)
     end
   end
 

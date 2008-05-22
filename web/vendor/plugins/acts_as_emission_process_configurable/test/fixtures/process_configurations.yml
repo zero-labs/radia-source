@@ -1,5 +1,0 @@
-pc:
-    id: 1
-    processable_id: 1
-    type: RecordedProcessConfiguration
-    processable_type: ProgramSchedule

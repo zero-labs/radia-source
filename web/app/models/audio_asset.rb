@@ -6,4 +6,8 @@ class AudioAsset < ActiveRecord::Base
   
   validates_presence_of :title, :unless => :authored?
   validates_uniqueness_of :title, :allow_nil => true, :allow_blank => true
+  
+  def self.fill(length)
+    find(:first)
+  end
 end

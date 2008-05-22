@@ -54,7 +54,7 @@ class ProgramSchedule < ActiveRecord::Base
   end
   
   def broadcasts_and_gaps(dtstart, dtend)
-    (self.broadcasts.find_in_range(dtstart, dtend) + Broadcast.gaps(dtstart, dtend)).sort
+    (self.broadcasts.find_in_range(dtstart, dtend) + Gap.find_all(dtstart, dtend)).sort
   end
   
   def to_xml(options = {})
@@ -65,60 +65,11 @@ class ProgramSchedule < ActiveRecord::Base
     xml.instruct! unless options[:skip_instruct]
     bcs = self.broadcasts_and_gaps(options[:dtstart], options[:dtend])
     xml.schedule do
-      #bcs.to_xml(:skip_instruct => true, :builder => xml)
-      xml.elements(:type => 'array') do
-        except = [:created_at, :updated_at, :emission_id, :emission_type_id, :program_id, :program_schedule_id]
-        bcs.each do |b|
-          b.to_xml(:skip_instruct => true, :builder => xml, :except => except) do |xml|
-            b.bloc.to_xml(:skip_instruct => true, :builder => xml) unless b.bloc.nil?
-          end
-        end
-      end
+      bcs.to_xml(:root => 'broadcasts', :skip_instruct => true, :builder => xml, :replace_unavailable => true)
     end
   end
   
-  def to_broadcast(format, dtstart, dtend)
-    case format
-    when :palinsesto
-      to_palinsesto(dtstart, dtend)
-    end
-  end
-  
-  def to_broadcast(dtstart, dtend)
-    bcasts = self.broadcasts.find_in_range(dtstart, dtend)
-    gaps = Broadcast.gaps(dtstart, dtend)
-    #bcasts.to_xml + gaps.to_xml
-    xml = Builder::XmlMarkup.new(:indent => 2)
-    
-    xml.schedule do
-      # Broadcasts
-      bcasts.each do |bc|
-        bc.to_broadcast(xml)
-        #bc.to_xml
-      end
-      # Gaps
-      gaps.each do |g|
-        g.to_broadcast(xml)
-        #g.to_xml
-      end
-    end
-  end
-
   protected
-  
-  def to_palinsesto(dtstart, dtend)
-    bcasts = self.broadcasts.find_in_range(dtstart, dtend)
-    gaps = Broadcast.gaps(dtstart, dtend)
-    
-    xm = Builder::XmlMarkup.new(:indent => 2)
-    xm.PalinsestoXML do
-      # Broadcasts
-      bcasts.each do |bc|
-        bc.to_broadcast(:palinsesto, xm)
-      end
-      # TODO Gaps
-    end
-  end
   
   def parse_calendar(icalendar, type, dtstart, dtend)
     return nil if icalendar.nil? or icalendar.blank? or type.blank?

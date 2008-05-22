@@ -18,6 +18,18 @@ class Playlist < AudioAsset
     self.audio_assets.collect { |a| a.single? ? a : a.flatten }
   end
   
+  def kind
+    :playlist
+  end
+  
+  def to_xml(options = {})
+    options[:indent] ||= 2
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.audio(:kind => 'playlist') do
+    end
+  end
+  
   protected
   
   def assets_have_been_delivered

@@ -23,13 +23,22 @@ module BroadcastsHelper
     end
   end
   
-  def type_tag(emission)
-    type = emission.emission_type
-    "<span class=\"#{type.downcase}\">#{type}</span>"
+  def type_tag(broadcast)
+    if broadcast.kind_of?(Repetition)
+      color = '#ccc'
+      type = 'Repetition'
+    elsif broadcast.kind_of?(Gap)
+      color = '#FA8072'
+      type = 'Gap'
+    else
+      type = broadcast.emission_type.name
+      color = broadcast.emission_type.color
+    end
+    "<span class=\"type_tag\" style=\"background:#{color}\">#{type}</span>"
   end
   
   def print_broadcast(broadcast, program = nil)
-    render :partial => 'broadcast', :locals => { :broadcast => broadcast, :program => program }
+    render :partial => 'broadcasts/broadcast', :locals => { :broadcast => broadcast, :program => program }
   end 
   
   def program_emission_tag(program, emission)

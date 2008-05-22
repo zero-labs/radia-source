@@ -186,8 +186,8 @@ a.utility:hover
 #validation, #broadcast, #post_broadcast {
 }
 
-/** Emission list ***/
-#emissions li {
+/** Broadcast list ***/
+#broadcasts li {
 	padding: 0.3em 0 0 0;
 	margin: 0 0 0.5em 0;
 	font-weight: bold;
@@ -195,48 +195,45 @@ a.utility:hover
 	list-style: none;
 }
 
-#emissions a:link, #emissions a:visited {
+#broadcasts a:link, #broadcasts a:visited {
 	padding-left: 0.4em;
 	color: #000;
 	text-decoration: none;
 }
 
-#emissions a:hover {
+#broadcasts a:hover {
 	text-decoration: underline;
 }
 
-span.recorded, span.live, span.playlist, span.repetition {
-	display:block;
-	padding: 0.2em 0 0.2em 0;
-}
-
-span.recorded
-{
-	background-color: #69C;
-}
-
-span.live
-{
-	background-color: #96F;
-}
-
-span.playlist
-{
-	background-color: #9C3;
-}
 
 span.repetition
 {
 	background-color: #ADD8E6;
 }
 
-span.emission_info
+.broadcast_head
+{
+	border-bottom: 1px #bbb dotted;
+	font-size: 1.1em;
+	padding-bottom: 5px;
+}
+
+span.broadcast_info
 {
 	display: block;
 	background-color: #fff;
-	border: 0;
-	border-top: 1px #333 solid;
+	border: 0;	
 	padding: 0.5em;
+}
+
+.type_tag
+{
+	padding: 2px 4px 2px 4px;
+	font: 0.8em 'andale mono', 'lucida console', monospace; line-height: 1.5;
+	border: 1px solid #ccc;
+	color: #000;
+	margin: 0.2em;
+	vertical-align: middle;
 }
 
 /*** Singles **/

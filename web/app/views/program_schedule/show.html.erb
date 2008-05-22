@@ -8,8 +8,9 @@
 <% end %>
 
 <h3>Next 24 hours...</h3>
-<ul>
-	<% @broadcasts.each do |b| %>
-	<li><%= "#{b.dtstart}-#{b.dtend}" %> </li>
-	<% end %>
+
+<ul id="broadcasts">
+<% @broadcasts.each do |e| %>
+	<%= print_broadcast(e, @program) %>
+<% end %>
 </ul>

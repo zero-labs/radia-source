@@ -8,10 +8,6 @@ class Emission < Broadcast
   # Ensure presence of mandatory attributes
   validates_presence_of :program, :emission_type
     
-  # Creates an array for params (to use the emission's date)
-  def to_param
-    param_array
-  end
   
   # Tests if this emission has been changed from its original state
   def modified?
@@ -24,7 +20,7 @@ class Emission < Broadcast
   end
   
   def bloc
-    read_attribute(:bloc).nil? ? emission_type.bloc : read_attribute(:bloc)  
+    read_attribute(:bloc).nil? ? new_bloc : read_attribute(:bloc)  
   end
   
   # Audio assets for this emission
@@ -32,16 +28,24 @@ class Emission < Broadcast
     bloc.audio_assets
   end
   
+  def new_bloc
+    b = Bloc.new(:playable => self)
+    b.elements = emission_type.bloc.elements.collect { |e| e.clone :except => :bloc_id }
+    b
+  end
+  
   def to_xml(options = {})
     options[:indent] ||= 2
+    options[:replace_unavailable] ||= false
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.broadcast(:type => 'emission') do 
       xml.tag!(:id, self.id, :type => :integer)
+      xml.tag!('program-id', self.program.urlname, :type => :string)
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, self.description, :type => :string)
-      bloc.to_xml(:skip_instruct => true, :builder => xml)
+      bloc.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
     end
   end
   

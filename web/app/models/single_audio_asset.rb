@@ -36,20 +36,26 @@ class SingleAudioAsset < AudioAsset
     find(:all, :conditions => ["available = ?", false])
   end
   
+  def kind
+    :single
+  end
+  
   def to_xml(options = {})
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.single do
+    xml.audio(:kind => 'single') do
       xml.tag!(:id, self.id, :type => :integer)
-      xml.tag!(:authored, self.authored, :type => :boolean)
-      xml.tag!(:available, self.available, :type => :boolean)
-      xml.tag!(:deadline, self.deadline, :type => :string)
-      xml.tag!(:length, self.length, :type => :float)
       val, opts = (self.live_source.nil? ? ['', {:nil => true}] : [self.live_source.url, {}])
       xml.tag!('live-source', val, { :type => :string }.merge(opts))
-      val, opts = (self.asset_service.nil? ? ['', {:nil => true}] : [self.asset_service.full_uri, {}])
-      xml.tag!('retrieval-uri', val, { :type => :string }.merge(opts))
+      if !options[:short]
+        xml.tag!(:authored, self.authored, :type => :boolean)
+        xml.tag!(:available, self.available, :type => :boolean)
+        #xml.tag!(:deadline, self.deadline, :type => :string)
+        xml.tag!(:length, self.length, :type => :float)
+        val, opts = (self.asset_service.nil? ? ['', {:nil => true}] : [self.asset_service.full_uri, {}])
+        xml.tag!('retrieval-uri', val, { :type => :string }.merge(opts))
+      end
     end
   end
   

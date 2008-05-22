@@ -9,7 +9,7 @@ class Program < ActiveRecord::Base
     
   has_many :emissions, :dependent => :destroy, :order => 'dtstart ASC'
   
-  # Shorthand to retrieve upcoming FIRST-TIME emissions (not repetitions)
+  # Shorthand to retrieve upcoming emissions (FIRST-TIME broadcasts, not repetitions)
   has_many :upcoming_emissions, :class_name => "Emission", 
                                 :conditions => ["dtstart >= ?", Time.now], 
                                 :order => 'dtstart ASC', 

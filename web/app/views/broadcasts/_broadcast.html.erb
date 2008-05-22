@@ -1,13 +1,21 @@
-<li style="background: <%= "#{broadcast.emission_type.color}" %>;">
+<li>
 	<% 
 		tstart = broadcast.dtstart.to_formatted_s(:long)
 		tend = broadcast.dtend.to_formatted_s(:time)
 	%>
-	<span>
-		<%= link_to "#{tstart}-#{tend}", program_broadcast_path(broadcast.program, broadcast) %>
-	</span>
-	<% if program.nil? then %>
-		<span class="emission_info">
+	<div class="broadcast_head">
+		<span>
+			<% if broadcast.kind_of?(Gap) %>
+				<%= "#{tstart}-#{tend}" %>
+			<% else %>
+				<%= link_to "#{tstart}-#{tend}", program_broadcast_path(broadcast.program, broadcast) %>
+			<% end %>
+		</span>
+		<%= type_tag(broadcast) %>
+	</div>
+	<% if broadcast.kind_of?(Gap) %>
+	<% elsif program.nil? %>
+		<span class="broadcast_info">
 			<%= link_to broadcast.program.name, program_path(broadcast.program) %>
 		</span>
 	<% end %>

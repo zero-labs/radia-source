@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
-
+  
   # Site root
   map.root :controller => 'program_schedule', :action => 'show'
   
@@ -24,8 +24,9 @@ ActionController::Routing::Routes.draw do |map|
     schedule.datestamped_resources :broadcasts do |broadcast|
       broadcast.resources :types, :controller => 'emission_types', 
                         :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_emission_'                
-      broadcast.resource :process, :controller => 'process_configuration', 
-                        :path_prefix => 'schedule/broadcasts/:year/:month/:day/:id'
+      #broadcast.resource :bloc
+      #broadcast.resource :process, :controller => 'process_configuration', 
+      #                  :path_prefix => 'schedule/broadcasts/:year/:month/:day/:id'
     end
     
     schedule.resources :editors

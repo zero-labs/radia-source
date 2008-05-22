@@ -43,7 +43,7 @@ class Bloc < ActiveRecord::Base
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.bloc do
-      elements.to_xml(:skip_instruct => true, :builder => xml)
+      elements.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
     end
   end
   
