@@ -1,5 +1,5 @@
 class AudioAsset < ActiveRecord::Base
-  has_many :bloc_elements
+  has_many :bloc_elements, :dependent => :destroy
   has_many :blocs, :through => :bloc_elements
   
   has_many :playlist_elements, :dependent => :destroy

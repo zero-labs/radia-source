@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 15) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(:version => 14) do
 
   create_table "live_sources", :force => true do |t|
     t.integer "settings_id"
-    t.string  "url"
+    t.string  "uri"
     t.string  "title"
   end
 

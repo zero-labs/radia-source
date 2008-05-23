@@ -69,7 +69,24 @@ namespace :radia do
     end
   end
   
+  desc "Creates a playlist"
+  task :playlist => [:singles, :environment] do
+    play = Playlist.find_or_create_by_title('Some playlist!')
+    if play.playlist_elements.blank?
+      SingleAudioAsset.find(:all, :conditions => ["available = ?", true]).each do |s|
+        play.playlist_elements << PlaylistElement.new(:audio_asset => s)
+      end
+    end
+  end
+  
+  desc "Creates live source"
+  task :live_source => :environment do
+    if (s = LiveSource.find_by_title('Studio')).nil?
+      LiveSource.create(:title => 'Studio', :uri => 'http://stream.radiozero.pt/')
+    end
+  end
+  
   desc "Calls all other tasks"
-  task :all => [:asset_service, :singles, :emission_types, :create_admin, :authors, :environment] do 
+  task :all => [:asset_service, :singles, :emission_types, :create_admin, :authors, :live_source, :playlist,:environment] do 
   end
 end

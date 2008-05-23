@@ -1,10 +1,6 @@
 class Playlist < AudioAsset
   include RadiaSource::AudioAssetGroup
   
-  # The same playlist may belong to different blocs
-  has_many :bloc_elements, :as => :bloc_elementable
-  has_many :blocs, :through => :bloc_elements
-  
   # A playlist is an ordered list of audio assets. 
   # Audio assets may belong to many playlists (thus the join model)
   has_many :playlist_elements, :order => :position
@@ -22,11 +18,20 @@ class Playlist < AudioAsset
     :playlist
   end
   
+  def available?
+    assets = flatten
+    (assets.size != 0) and (assets.select { |a| !a.available? }.size == 0)
+  end
+  
   def to_xml(options = {})
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.audio(:kind => 'playlist') do
+    xml.audio(:type => 'playlist') do 
+      xml.tag!(:id, self.id, :type => :integer)
+      unless options[:short]
+        playlist_elements.to_xml(:skip_instruct => true, :builder => xml)
+      end
     end
   end
   

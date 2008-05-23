@@ -7,20 +7,15 @@ class Emission < Broadcast
   
   # Ensure presence of mandatory attributes
   validates_presence_of :program, :emission_type
-    
+  #validates_presence_of :bloc, :on => :update
+  
+  # Callback to force the creation of a Bloc for this emission,
+  # based on the Bloc of its EmissionType
+  after_create :init_bloc
   
   # Tests if this emission has been changed from its original state
   def modified?
-    !self.description.nil?
-  end
-  
-  # Returns the emission's parent for process configuration
-  def parent
-    self.program
-  end
-  
-  def bloc
-    read_attribute(:bloc).nil? ? new_bloc : read_attribute(:bloc)  
+    bloc.modified?
   end
   
   # Audio assets for this emission
@@ -28,10 +23,9 @@ class Emission < Broadcast
     bloc.audio_assets
   end
   
-  def new_bloc
-    b = Bloc.new(:playable => self)
-    b.elements = emission_type.bloc.elements.collect { |e| e.clone :except => :bloc_id }
-    b
+  def update_bloc
+    self.bloc.destroy unless self.bloc.nil?
+    init_bloc
   end
   
   def to_xml(options = {})
@@ -48,9 +42,20 @@ class Emission < Broadcast
       bloc.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
     end
   end
-  
-  
+
   def gap?
     false
+  end
+  
+  protected
+  
+  def init_bloc
+    self.bloc = Bloc.create(:playable => self)
+    emission_type.bloc.elements.each do |e| 
+      el = e.clone
+      el.audio_asset = e.audio_asset.clone unless el.audio_asset.kind == :playlist
+      self.bloc.add_element(el)
+      el.audio_asset.bloc_elements << el
+    end
   end
 end

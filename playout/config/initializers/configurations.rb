@@ -1,0 +1,1 @@
+$manager_config = YAML.load_file("#{RAILS_ROOT}/config/manager.yml")

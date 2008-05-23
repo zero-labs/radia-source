@@ -1,5 +1,8 @@
 # Edit these values as you prefer and change the name of the file to manager.yml
 
+# Radia Source base URI (without trailing slash)
+base_uri: http://localhost:3000
+
 # Radia Source visit interval (in seconds) 
 interval: 30
 

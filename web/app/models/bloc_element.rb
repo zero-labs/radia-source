@@ -25,7 +25,11 @@ class BlocElement < ActiveRecord::Base
   end
   
   def length
-    read_attribute(:length) || bloc.playable_length
+    if self.fill?
+      bloc.nil? ? nil : bloc.playable_length
+    else
+      read_attribute(:length)
+    end
   end
   
   def length_unit=(value)
@@ -41,7 +45,12 @@ class BlocElement < ActiveRecord::Base
       xml.tag!(:fill, self.fill, :type => :boolean)
       xml.tag!('items-to-play', self.items_to_play, :type => :integer)
       xml.tag!(:random, self.random, :type => :boolean)
-      audio = (options[:replace_unavailable] ? AudioAsset.fill(self.length) : audio_asset)
+      audio = \
+      if ((audio_asset.nil? or !audio_asset.available?) and options[:replace_unavailable]) 
+        AudioAsset.fill(self.length)
+      else
+        audio_asset
+      end
       audio.to_xml(:skip_instruct => true, :builder => xml, :short => true)
     end
   end

@@ -1,22 +1,24 @@
-class Bloc < ActiveResource::Base
-  # TODO self.site
-  
-  def to_broadcast(builder, name, dtstart, dtend)
-    builder.description(name)
-    builder.start(dtstart.strftime("%Y-%m-%d %H:%M"))
-    builder.stop(dtend.strftime("%Y-%m-%d %H:%M"))
-    builder.audio do
-      audio_assets.each do |a|
-        #a.to_broadcast(builder)
-      end
+class Single < ActiveResource::Base
+  self.site = "#{$manager_config['base_uri']}/audio/"
+
+  def asset_service
+    AssetService.find(self.asset_service_id)
+  end
+
+  def fetch
+    SingleAudioAsset.find_or_create_by_id_at_source(self.id)
+    if self.retrieval_uri.nil?
     end
   end
-  
-  private
-  
-  def to_palinsesto(builder, name, dtstart, dtend)
+
+  def self.find_unavailable
+    Single.find :all, :from => :unavailable
+  end
+
+
+  def to_palinsesto(builder, dtstart, dtend, description)
     builder.Palinsesto do
-      builder.Description(name)
+      builder.Description(description)
       builder.Priority(1)
       builder.Start(dtstart.strftime("%Y-%m-%d %H:%M"))
       builder.Stop(dtend.strftime("%Y-%m-%d %H:%M"))
@@ -35,9 +37,21 @@ class Bloc < ActiveResource::Base
       builder.RatioItem()
       builder.RatioSpot()
       builder.PathItem do
+        asset = SingleAudioAsset.find_by_id_at_source(self.id)
         builder.item()
       end
       builder.PathSpot()
+      
     end
+  end
+  
+  protected
+  
+  def live_to_palinsesto
+    
+  end
+  
+  def single_to_palinsesto
+    
   end
 end

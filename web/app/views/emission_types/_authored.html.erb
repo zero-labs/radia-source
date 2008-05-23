@@ -12,9 +12,6 @@
 <div id="not_authored_opts" style="display: none;">
 	<% if single %>
 		<%= select_tag 'bloc_element[asset][id]', single_unauthored_assets %>
-		<p class="centered">
-			<%= submit_tag 'Save' %>
-		</p>
 	<% end %>
 </div>
 <div id="authored_opts" style="display: none;">	
@@ -25,8 +22,5 @@
 		<% base = (single ? 'before' : 'after' ) %>
 		<%= "#{base} broadcast" %>
 		<%= hidden_field_tag 'bloc_element[asset][deadline][]', base %>
-	</p>
-	<p class="centered">
-		<%= submit_tag 'Save' %>
 	</p>
 </div>

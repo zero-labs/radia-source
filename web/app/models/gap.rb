@@ -19,7 +19,7 @@ class Gap < Broadcast
 
   def bloc
     b = Bloc.new
-    el = BlocElement.new(:audio_asset => AudioAsset.fill(self.length))
+    el = BlocElement.new(:audio_asset => AudioAsset.fill(self.length), :fill => true)
     b.elements << el
     b
   end

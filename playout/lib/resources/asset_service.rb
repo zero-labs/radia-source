@@ -1,7 +1,7 @@
 class AssetService < ActiveResource::Base
   extend ServiceInterface::Ftp
   
-  self.site = 'http://localhost:3000/settings/'
+  self.site = "#{$manager_config['base_uri']}/settings/"
   
   def get(partial_location)
     case self.protocol

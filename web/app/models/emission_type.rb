@@ -9,7 +9,7 @@ class EmissionType < ActiveRecord::Base
   validates_presence_of :bloc
   
   # To act as playable
-  def duration
+  def length
     nil
   end
 end
