@@ -18,9 +18,9 @@ class Gap < Broadcast
   end
 
   def bloc
+    asset = ProgramSchedule.instance.content_for_gap(self.length)
     b = Bloc.new
-    el = BlocElement.new(:audio_asset => AudioAsset.fill(self.length), :fill => true)
-    b.elements << el
+    b.elements << BlocElement.new(:audio_asset => asset, :length => self.length)
     b
   end
 
@@ -59,14 +59,18 @@ class Gap < Broadcast
         end
       end
       if in_between.last.dtend < dtend
-        after = Broadcast.find_in_range(in_between.last.dtend, dtend)
-        start_at = (after.empty? ? in_between.last.dtend : after.first.dtend)
+        after = Broadcast.find_in_range(in_between.last.dtend, dtend) 
+        start_at = (after.empty? ? in_between.last.dtend : last_valid_dtend(after, dtend)) # after.last.dtend
         unless start_at >= dtend
           gaps.insert(-1, Gap.new(:dtstart => start_at, :dtend => dtend))
         end
       end
     end
     gaps
+  end
+
+  def self.last_valid_dtend(kollection, top_date)
+    kollection.inject { |res, obj| obj.dtend <= top_date ? obj.dtend : res }
   end
 
 end

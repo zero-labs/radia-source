@@ -56,11 +56,13 @@ class Bloc < ActiveRecord::Base
   
   def to_xml(options = {})
     options[:indent] ||= 2
+    options[:repetition] ||= false
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.bloc do
       elements.to_xml(:skip_instruct => true, :builder => xml, 
-                      :replace_unavailable => options[:replace_unavailable])
+                      :replace_unavailable => options[:replace_unavailable], 
+                      :repetition => options[:repetition])
     end
   end
   

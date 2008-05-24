@@ -6,6 +6,8 @@ class Playlist < AudioAsset
   has_many :playlist_elements, :order => :position
   has_many :audio_assets, :through => :playlist_elements
   
+  #after_save :store_availability
+  
   def asset_name
     'Playlist'
   end
@@ -21,6 +23,10 @@ class Playlist < AudioAsset
   def available?
     assets = flatten
     (assets.size != 0) and (assets.select { |a| !a.available? }.size == 0)
+  end
+  
+  def length
+    flatten.inject { |sum, e| sum + e.length }
   end
   
   def to_xml(options = {})

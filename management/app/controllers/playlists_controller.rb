@@ -33,6 +33,16 @@ class PlaylistsController < ApplicationController
     end
   end
   
+  # GET /audio/playlists/:id
+  # GET /audio/playlists/:id.:format
+  def show
+    @playlist = Playlist.find(params[:id])
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml { render :xml => @playlist.to_xml }
+    end
+  end
+  
   # GET /audio/playlists
   def edit
     @playlist = Playlist.find(params[:id])
@@ -41,7 +51,8 @@ class PlaylistsController < ApplicationController
   # PUT /audio/playlists/:id
   # PUT /audio/playlists/:id.:format
   def update
-    @playlist
+    @playlist = Playlist.find(params[:id])
+    # TODO
   end
   
   protected

@@ -69,6 +69,12 @@ class ProgramSchedule < ActiveRecord::Base
     end
   end
   
+  def content_for_gap(length)
+    assets = AudioAsset.find(:all, :conditions => ["available = ?", true])
+    res = assets.select { |a| (a.length - length).abs < 60 }
+    res.empty? ? Playlist.find(:first) : res.first
+  end
+  
   protected
   
   def parse_calendar(icalendar, type, dtstart, dtend)

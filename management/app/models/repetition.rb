@@ -42,7 +42,8 @@ class Repetition < Broadcast
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, self.description, :type => :string)
-      bloc.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
+      bloc.to_xml(:skip_instruct => true, :builder => xml, 
+                  :replace_unavailable => options[:replace_unavailable], :repetition => true)
     end
   end
 end

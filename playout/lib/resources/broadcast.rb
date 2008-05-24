@@ -12,6 +12,7 @@ class Broadcast < ActiveResource::Base
     
   
   def to_palinsesto(builder)
-    bloc.to_palinsesto(builder, description, dtstart, dtend) unless bloc.nil?
+    self.attributes['type'] == 'gap' ? desc = 'Gap' : desc = program_id
+    bloc.to_palinsesto(builder, desc, dtstart, dtend) unless bloc.nil?
   end
 end

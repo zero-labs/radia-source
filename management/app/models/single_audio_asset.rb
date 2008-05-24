@@ -11,21 +11,8 @@ class SingleAudioAsset < AudioAsset
   validates_numericality_of :length, :allow_nil => true
   
   
-  def asset_name
-    if self.live_source
-      name = "Live"
-    else
-      name = "Single"
-    end
-    name + " (#{self.authored? ? 'New by author' : 'Without author'})"
-  end
-  
   def asset_service_id=(value)
     self.asset_service = AssetService.find(value)
-  end
-  
-  def unavailable?
-    !self.available?
   end
   
   def live?
@@ -37,7 +24,16 @@ class SingleAudioAsset < AudioAsset
   end
   
   def kind
-    :single
+    self.live_source.nil? ? :single : :live
+  end
+  
+  def asset_name
+    if kind == :live
+      name = "Live"
+    elsif kind == :single
+      name = "Single"
+    end
+    name + " (#{self.authored? ? 'New by author' : 'Without author'})"
   end
   
   # An asset is considered to be delivered if it is available at
@@ -50,10 +46,9 @@ class SingleAudioAsset < AudioAsset
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.audio(:type => 'single') do
+    xml.audio(:type => kind) do
       xml.tag!(:id, self.id, :type => :integer)
-      val, opts = (self.live_source.nil? ? ['', {:nil => true}] : [self.live_source.uri, {}])
-      xml.tag!('live-source', val, { :type => :string }.merge(opts))
+      xml.tag!('live-source', self.live_source.uri, :type => :string) if kind == :live
       unless options[:short]
         xml.tag!(:authored, self.authored, :type => :boolean)
         xml.tag!(:available, self.available, :type => :boolean)
