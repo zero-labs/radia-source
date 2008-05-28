@@ -1,5 +1,5 @@
 class Playlist < ActiveResource::Base
-  self.site = "#{$manager_config['base_uri']}/audio/"
+  self.site = "#{$playout_config['base_uri']}/audio/"
   
   def to_palinsesto(builder, dtstart, dtend, description)
     builder.Palinsesto do

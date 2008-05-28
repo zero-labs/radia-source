@@ -24,22 +24,19 @@ ActionController::Routing::Routes.draw do |map|
     schedule.datestamped_resources :broadcasts do |broadcast|
       broadcast.resources :types, :controller => 'emission_types', 
                         :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_emission_'                
-      #broadcast.resource :bloc
-      #broadcast.resource :process, :controller => 'process_configuration', 
-      #                  :path_prefix => 'schedule/broadcasts/:year/:month/:day/:id'
     end
     
     schedule.resources :editors
-    schedule.resource :process, :controller => 'process_configuration', :path_prefix => 'schedule/:process_type'
     schedule.load_calendar 'load', :controller => 'program_schedule', :action => 'load_schedule', :conditions => { :method => :post }
     schedule.gaps 'gaps', :controller => 'gaps'
   end
     
   # Programs, with nested resources
   map.resources :programs do |program|
-    program.datestamped_resources :broadcasts
+    program.datestamped_resources :broadcasts do |broadcast|
+      broadcast.resource :delivery
+    end
     program.resources :authors, :controller => 'program_authors'
-    program.resource :process, :controller => 'process_configuration', :path_prefix => 'programs/:program_id/:process_type'
   end  
   
   # Program Authors
@@ -49,6 +46,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :audio, :controller => 'audio_assets' do |asset|
     asset.resources :playlists
     asset.resources :singles, :collection => { :unavailable => :get }
+    asset.resources :spots, :collection => { :unavailable => :get }
   end
   
   # System settings
@@ -73,10 +71,10 @@ ActionController::Routing::Routes.draw do |map|
   
   # Bloc elements
   map.with_options :controller => 'emission_types' do |emission_type|
-    emission_type.show_bloc_element 'schedule/broadcasts/types/:id/show_bloc_element', 
-                                    :action => 'show_bloc_element', :conditions => { :method => :post }
-    emission_type.create_bloc_element 'schedule/broadcasts/types/:id/create_bloc_element', 
-                                    :action => 'create_bloc_element', :conditions => { :method => :put }
+    emission_type.show_segment 'schedule/broadcasts/types/:id/show_segment', 
+                                    :action => 'show_segment', :conditions => { :method => :post }
+    emission_type.create_segment 'schedule/broadcasts/types/:id/create_segment', 
+                                    :action => 'create_segment', :conditions => { :method => :put }
     
   end
   

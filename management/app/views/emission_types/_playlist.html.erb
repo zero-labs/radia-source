@@ -1,13 +1,13 @@
-<% remote_form_for(@bloc_element, :url => create_bloc_element_path(@emission_type), :html => { :method => :put }) do |f| %>
-<%= hidden_field_tag 'bloc_element[asset][kind]', 'playlist' %>
+<% remote_form_for(@segment, :url => create_segment_path(@emission_type), :html => { :method => :put }) do |f| %>
+<%= hidden_field_tag 'segment[asset][kind]', 'playlist' %>
 
 <fieldset>
 	<legend>Playlist</legend>
 	
 	<p>
-		<label for="bloc_element_asset_id">Playlist:</label>&nbsp;
-		<%= select_tag 'bloc_element[asset][id]', playlist_assets %>
-		<label for="bloc_element[random]">Random?</label>
+		<label for="segment_asset_id">Playlist:</label>&nbsp;
+		<%= select_tag 'segment[asset][id]', playlist_assets %>
+		<label for="segment[random]">Random?</label>
 		<%= f.check_box :random %>
 	</p>
 	

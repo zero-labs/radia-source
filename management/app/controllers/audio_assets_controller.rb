@@ -4,7 +4,7 @@ class AudioAssetsController < ApplicationController
   # GET /audio
   def show
     @playlists = Playlist.find(:all)
-    @singles = SingleAudioAsset.find(:all, :conditions => ["authored = ?", false])
+    @singles = Single.find(:all, :conditions => ["authored = ?", false])
     @audio = { :playlists => @playlists, :singles => @singles }
     respond_to do |format|
       format.html # show.html.erb

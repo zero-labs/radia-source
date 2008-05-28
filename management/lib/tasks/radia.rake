@@ -62,8 +62,8 @@ namespace :radia do
   task :singles => :environment do
     singles = YAML.load_file(File.dirname(__FILE__) + '/../../config/singles.yml')
     singles.each do |s|
-      if (record = SingleAudioAsset.find_by_title(s['title'])).nil?
-        SingleAudioAsset.create(:title => s['title'], :md5_hash => s['md5_hash'], 
+      if (record = Single.find_by_title(s['title'])).nil?
+        Single.create(:title => s['title'], :md5_hash => s['md5_hash'], 
                                 :length => s['length'], :available => true)
       end
     end
@@ -73,7 +73,7 @@ namespace :radia do
   task :playlist => [:singles, :environment] do
     play = Playlist.find_or_create_by_title('Some playlist!')
     if play.playlist_elements.blank?
-      SingleAudioAsset.find(:all, :conditions => ["available = ?", true]).each do |s|
+      Single.find(:all, :conditions => ["available = ?", true]).each do |s|
         play.playlist_elements << PlaylistElement.new(:audio_asset => s)
       end
     end

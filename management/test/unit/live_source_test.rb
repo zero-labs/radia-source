@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class LiveSourceTest < ActiveSupport::TestCase
   def test_should_require_url
     assert_no_difference 'LiveSource.count' do
-      create_live_source :url => ''
+      create_live_source :uri => ''
     end
   end
   
@@ -22,7 +22,7 @@ class LiveSourceTest < ActiveSupport::TestCase
   protected
   
   def create_live_source(opts = {})
-    defaults = { :url => 'http://localhost', :title => 'My source' }
+    defaults = { :uri => 'http://localhost', :title => 'My source' }
     record = LiveSource.new(defaults.merge(opts))
     record.save
     record

@@ -17,7 +17,7 @@ module EmissionTypesHelper
   
   def single_unauthored_assets
     options_for_select([['Select a single...', nil]]) + 
-    options_from_collection_for_select(SingleAudioAsset.find(:all, 
+    options_from_collection_for_select(Single.find(:all, 
         :conditions => ['available = ?', true]), :id, :title)
   end
   

@@ -108,7 +108,7 @@ class CreateTables < ActiveRecord::Migration
       t.timestamps
     end
     
-    create_table :bloc_elements do |t|
+    create_table :segments do |t|
       t.belongs_to :bloc, :audio_asset
       t.string :type
       t.integer :position, :length, :items_to_play
@@ -146,7 +146,7 @@ class CreateTables < ActiveRecord::Migration
     drop_table :urlnames
     drop_table :users
     drop_table :repetitions
-    drop_table :bloc_elements
+    drop_table :segments
     drop_table :playlist_elements
     drop_table :audio_assets
     

@@ -20,7 +20,7 @@ class Gap < Broadcast
   def bloc
     asset = ProgramSchedule.instance.content_for_gap(self.length)
     b = Bloc.new
-    b.elements << BlocElement.new(:audio_asset => asset, :length => self.length)
+    b.segments << Segment.new(:audio_asset => asset, :length => self.length)
     b
   end
 
@@ -32,7 +32,7 @@ class Gap < Broadcast
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, 'Gap', :type => :string)
-      bloc.to_xml(:skip_instruct => true, :builder => xml)
+      #bloc.to_xml(:skip_instruct => true, :builder => xml)
     end
   end
 
@@ -70,7 +70,9 @@ class Gap < Broadcast
   end
 
   def self.last_valid_dtend(kollection, top_date)
-    kollection.inject { |res, obj| obj.dtend <= top_date ? obj.dtend : res }
+    kollection.inject(kollection.first.dtend) do |res, obj| 
+      obj.dtend <= top_date ? obj.dtend : res 
+    end
   end
 
 end

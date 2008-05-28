@@ -1,0 +1,15 @@
+<li><%= segment.name %></li>
+<% if segment.audio_asset.authored? %>
+	<div class="span-10">
+	<% form_tag delivery_path do -%>
+		<div id="file_list">First select the asset service from which to import this asset</div>
+		<%= submit_tag 'Submit' 	%>
+	<% end %>
+	</div>
+	<div class="span-5">
+		<fieldset>
+			<legend>Select asset service</legend>
+			<%= render :partial => 'shared/asset_selector' %>
+		</fieldset>
+	</div>
+<% end %>

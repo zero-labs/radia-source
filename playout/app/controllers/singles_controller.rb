@@ -21,11 +21,17 @@ class SinglesController < ApplicationController
   # GET /singles/available.:format
   def available
     @singles = SingleAudioAsset.find(:all, :conditions => "status = 'available'")
+    respond_to do |format|
+      format.xml { render :xml => @singles.to_xml }
+    end
   end
   
   # GET /singles/downloading.:format
   def downloading
     @singles = SingleAudioAsset.find(:all, :conditions => "status = 'downloading'")
+    respond_to do |format|
+      format.xml { render :xml => @singles.to_xml }
+    end
   end
   
 end

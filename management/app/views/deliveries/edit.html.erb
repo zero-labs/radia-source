@@ -1,0 +1,9 @@
+<%
+	broadcast_crumbs
+%>
+
+<ul>
+<% @broadcast.bloc.elements.each do |e| %>
+	<%= render :partial => 'segment', :locals => { :segment => e }%>
+<% end %>
+</ul>

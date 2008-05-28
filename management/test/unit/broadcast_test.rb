@@ -113,39 +113,8 @@ class BroadcastTest < ActiveSupport::TestCase
     assert_equal 1, Broadcast.find_in_range(range_dates[:c], range_dates[:d] + 10).size
     assert_equal 2, Broadcast.find_in_range(range_dates[:b], range_dates[:d]).size
   end
-  
-  def test_should_find_one_gap_in_interval_with_no_broadcasts    
-    a = Broadcast.gaps(Time.local(2007, 01, 02, 8, 00), Time.local(2007, 01, 03, 8, 00))
-    b = Broadcast.gaps(Time.local(2007, 01, 02, 8, 00), Time.local(2007, 01, 02, 9, 05))
-    assert_equal 1, a.size
-    assert_equal 1, b.size
-    assert_equal 24*60*60, a.first.duration
-    assert_equal 65*60, b.first.duration
-  end
-  
-  def test_should_find_gaps_between_broadcasts
-    assert_equal 3, Broadcast.gaps(gap_dates[0][:dtstart], gap_dates[5][:dtend]).size
-    assert_equal 1, Broadcast.gaps(gap_dates[0][:dtstart], gap_dates[1][:dtstart]).size
-    assert_equal 1, Broadcast.gaps(gap_dates[0][:dtstart], gap_dates[1][:dtend]).size
-    assert_equal 1, Broadcast.gaps(gap_dates[3][:dtend], gap_dates[4][:dtstart]).size
-    assert_equal 1, Broadcast.gaps(gap_dates[4][:dtend], gap_dates[5][:dtstart]).size
-  end
-  
-  def test_should_find_gaps_before_and_after_events_partially_outside_the_interval
-    assert_equal 1, Broadcast.gaps(gap_dates[0][:dtstart] + 60*60, gap_dates[1][:dtstart]).size
-    assert_equal 2, Broadcast.gaps(gap_dates[3][:dtend] - 60*5, gap_dates[5][:dtstart] + 5*60).size
-  end
 
   protected
-  
-  def gap_dates
-    [{ :dtstart => Time.local(2007, 01, 03,  8, 00), :dtend => Time.local(2007, 01, 03, 10, 00) },
-     { :dtstart => Time.local(2007, 01, 03, 10, 05), :dtend => Time.local(2007, 01, 03, 10, 30) },
-     { :dtstart => Time.local(2007, 01, 03, 10, 30), :dtend => Time.local(2007, 01, 03, 11, 00) },
-     { :dtstart => Time.local(2007, 01, 03, 11, 00), :dtend => Time.local(2007, 01, 03, 11, 30) },
-     { :dtstart => Time.local(2007, 01, 03, 12, 00), :dtend => Time.local(2007, 01, 03, 13, 00) },    
-     { :dtstart => Time.local(2007, 01, 03, 13, 05), :dtend => Time.local(2007, 01, 03, 14, 00) }]
-  end
   
   def range_dates
     { :a => Time.local(2008, 2, 1, 12, 00), :b => Time.local(2008, 2, 1, 12, 10),

@@ -5,6 +5,7 @@ author:
 live:
     name: 'Live'
     color: '#222'
+    bloc: live_bloc
     
 playlist:
     name: 'Playlist'

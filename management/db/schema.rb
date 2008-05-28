@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 15) do
+ActiveRecord::Schema.define(:version => 17) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -23,17 +23,17 @@ ActiveRecord::Schema.define(:version => 15) do
   end
 
   create_table "audio_assets", :force => true do |t|
-    t.boolean  "authored",         :default => false
+    t.boolean  "authored",       :default => false
     t.string   "type"
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "asset_service_id"
     t.float    "length"
     t.string   "md5_hash"
     t.string   "deadline"
     t.integer  "live_source_id"
-    t.boolean  "available",        :default => false
+    t.boolean  "available",      :default => false
+    t.string   "retrieval_uri"
   end
 
   create_table "authorships", :force => true do |t|
@@ -47,19 +47,6 @@ ActiveRecord::Schema.define(:version => 15) do
     t.boolean  "friday"
     t.boolean  "saturday"
     t.boolean  "sunday"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "bloc_elements", :force => true do |t|
-    t.integer  "bloc_id"
-    t.integer  "audio_asset_id"
-    t.string   "type"
-    t.integer  "position"
-    t.integer  "length"
-    t.integer  "items_to_play"
-    t.boolean  "random"
-    t.boolean  "fill"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -151,6 +138,19 @@ ActiveRecord::Schema.define(:version => 15) do
   create_table "roles_users", :id => false, :force => true do |t|
     t.integer  "user_id"
     t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "segments", :force => true do |t|
+    t.integer  "bloc_id"
+    t.integer  "audio_asset_id"
+    t.string   "type"
+    t.integer  "position"
+    t.integer  "length"
+    t.integer  "items_to_play"
+    t.boolean  "random"
+    t.boolean  "fill"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

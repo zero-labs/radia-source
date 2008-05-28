@@ -1,8 +1,8 @@
 class EmissionTypesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
-  # GET /schedule/emissions/types
-  # GET /schedule/emissions/types.:format
+  # GET /schedule/broadcasts/types
+  # GET /schedule/broadcasts/types.:format
   def index
     @emission_types = EmissionType.find(:all, :order => :name)
     
@@ -12,8 +12,8 @@ class EmissionTypesController < ApplicationController
     end
   end
   
-  # GET /schedule/emissions/types/:id
-  # GET /schedule/emissions/types/:id.:format
+  # GET /schedule/broadcasts/types/:id
+  # GET /schedule/broadcasts/types/:id.:format
   def show
     @emission_type = EmissionType.find(params[:id])
     
@@ -23,13 +23,13 @@ class EmissionTypesController < ApplicationController
     end
   end
   
-  # GET /schedule/emissions/types/new
+  # GET /schedule/broadcasts/types/new
   def new
     @emission_type = EmissionType.new
   end
   
-  # POST /schedule/emissions/types
-  # POST /schedule/emissions/types.:format
+  # POST /schedule/broadcasts/types
+  # POST /schedule/broadcasts/types.:format
   def create
     @emission_type = EmissionType.new(params[:emission_type])
     
@@ -46,13 +46,13 @@ class EmissionTypesController < ApplicationController
     end
   end
   
-  # GET /schedule/emissions/types/edit
+  # GET /schedule/broadcasts/types/edit
   def edit
     @emission_type = EmissionType.find(params[:id])
   end
   
-  # PUT /schedule/emissions/types/:id
-  # PUT /schedule/emissions/types/:id.:format
+  # PUT /schedule/broadcasts/types/:id
+  # PUT /schedule/broadcasts/types/:id.:format
   def update
     @emission_type = EmissionType.find(params[:id])
     
@@ -69,8 +69,8 @@ class EmissionTypesController < ApplicationController
     end
   end
   
-  # DELETE /schedule/emissions/types/:id
-  # DELETE /schedule/emissions/types/:id.:format
+  # DELETE /schedule/broadcasts/types/:id
+  # DELETE /schedule/broadcasts/types/:id.:format
   def destroy
     @emission_type = EmissionType.find(params[:id])
     @emission_type.destroy
@@ -84,24 +84,24 @@ class EmissionTypesController < ApplicationController
   
   # AJAX methods
   
-  # POST /schedule/emissions/types/show_bloc_element
-  def show_bloc_element
+  # POST /schedule/broadcasts/types/show_segment
+  def show_segment
     @emission_type = EmissionType.find(params[:id])
-    @bloc_element = BlocElement.new
+    @segment = Segment.new
     render :partial => params[:kind]
   end
   
-  # POST /schedule/emissions/types/create_bloc_element
-  def create_bloc_element
+  # POST /schedule/broadcasts/types/:id/create_segment
+  def create_segment
     @bloc = EmissionType.find(params[:id]).bloc
     
     render :update do |page|
-      if @bloc.add_element(BlocElement.new(params[:bloc_element]))
-        flash[:notice] = 'Bloc element created successfully'
+      if @bloc.add_segment(Segment.new(params[:segment]))
+        flash[:notice] = 'Bloc segment created successfully'
       else
-        flash[:error] = 'There were errors creating the bloc element'
+        flash[:error] = 'There were errors creating the bloc segment'
       end
-      page.replace_html 'bloc_element', :text => ''
+      page.replace_html 'segment', :text => ''
       page.replace_html 'bloc', :partial => 'bloc', :object => @bloc
     end
   end

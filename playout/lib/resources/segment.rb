@@ -1,4 +1,4 @@
-class BlocElement < ActiveResource::Base
+class Segment < ActiveResource::Base
   
   self.site = '' # TODO
   

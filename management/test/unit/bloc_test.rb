@@ -9,11 +9,11 @@ class BlocTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_add_element
+  def test_should_add_segment
     b = blocs(:emission_bloc)
     p1 = audio_assets(:playlist_1)
-    assert_difference 'b.elements.count' do
-      b.add_element(BlocElement.new(:audio_asset => p1))
+    assert_difference 'b.segments.count' do
+      b.add_segment(Segment.new(:audio_asset => p1))
       b.save
     end
   end
@@ -23,16 +23,16 @@ class BlocTest < ActiveSupport::TestCase
     p1 = audio_assets(:playlist_1)
     s1 = audio_assets(:unauthored_single_not_present)
     
-    assert_difference 'b.elements.count' do
-      b.add_element(BlocElement.new(:audio_asset => p1, :length => nil))
+    assert_difference 'b.segments.count' do
+      b.add_segment(Segment.new(:audio_asset => p1, :fill => true))
     end
     
-    assert_no_difference 'b.elements.count' do
-      b.add_element(BlocElement.new(:audio_asset => p1, :length => nil))
+    assert_no_difference 'b.segments.count' do
+      b.add_segment(Segment.new(:audio_asset => p1, :length => true))
     end
     
-    assert_difference 'b.elements.count' do
-      b.add_element(BlocElement.new(:audio_asset => s1, :length => 345))
+    assert_difference 'b.segments.count' do
+      b.add_segment(Segment.new(:audio_asset => s1, :length => 345, :fill => false))
     end
   end
   

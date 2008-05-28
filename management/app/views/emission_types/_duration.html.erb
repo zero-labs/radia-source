@@ -1,12 +1,12 @@
 <label for="length">Expected length:</label><br/>
 <p>
 	<%= f.radio_button :fill, 1, :checked => true %>
-	<label for="bloc_element_fill_1">Same as broadcast</label>
+	<label for="segment_fill_1">Same as broadcast</label>
 	
 	<%= f.radio_button :fill, 0 %>
 	<%= f.text_field :length, :size => 2 %>&nbsp;&nbsp;
-	<label for="bloc_element_fill_0">minutes</label>
-	<%= hidden_field_tag 'bloc_element[length_unit]', 'minutes' %>
+	<label for="segment_fill_0">minutes</label>
+	<%= hidden_field_tag 'segment[length_unit]', 'minutes' %>
 </p>
 	<p>
 		

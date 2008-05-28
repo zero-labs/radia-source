@@ -126,10 +126,10 @@ class ProgramSchedule < ActiveRecord::Base
   end
   
   def emission_hash(type, program, dtstart, dtend)
-    hsh = { :type => type, :program => program.id, :start => dtstart.to_s, :end => dtend.to_s }
+    hsh = { :type => type, :program => program, :dtstart => dtstart, :dtend => dtend }
     if type == 0 # repetition
       if e = program.find_first_emission_before_date(dtstart)
-        hsh.merge!(:emission => e.id)
+        hsh.merge!(:emission => e)
       else # there may not be emissions to be found
         return nil
       end
@@ -149,16 +149,16 @@ class ProgramSchedule < ActiveRecord::Base
     e = Emission.new(:program_schedule => self,
                     :program => Program.find(emission[:program]),
                     :emission_type => EmissionType.find(emission[:type]),
-                    :dtstart => DateTime.parse(emission[:start]),
-                    :dtend => DateTime.parse(emission[:end]))
+                    :dtstart => DateTime.parse(emission[:dtstart]),
+                    :dtend => DateTime.parse(emission[:dtend]))
     e.save
   end
   
   def create_repetition(repetition)
     r = Repetition.new(:program_schedule => self,
                        :emission => Emission.find(repetition[:emission]),
-                       :dtstart => DateTime.parse(repetition[:start]),
-                       :dtend => DateTime.parse(repetition[:end]))
+                       :dtstart => DateTime.parse(repetition[:dtstart]),
+                       :dtend => DateTime.parse(repetition[:dtend]))
     r.save
   end
 end

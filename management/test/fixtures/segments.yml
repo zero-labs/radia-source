@@ -1,0 +1,4 @@
+seg1_live_bloc:
+    position: 1
+    bloc: live_bloc
+    fill: true

@@ -1,4 +1,4 @@
-class BlocElement < ActiveRecord::Base
+class Segment < ActiveRecord::Base
   belongs_to :bloc
   belongs_to :audio_asset
   
@@ -21,7 +21,8 @@ class BlocElement < ActiveRecord::Base
   end
   
   def length=(minutes)
-    write_attribute(:length, minutes * ((@unit.nil? or (@unit == 'minutes')) ? 60 : 1)) unless minutes.nil?
+    #write_attribute(:length, minutes * (@unit.nil? or (@unit == 'minutes') ? 60 : 1)) unless minutes.nil?
+    write_attribute(:length, minutes * 60)
   end
   
   def length
@@ -40,7 +41,7 @@ class BlocElement < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.element do
+    xml.segment do
       xml.tag!(:length, self.length, :type => :float)
       xml.tag!(:fill, self.fill, :type => :boolean)
       xml.tag!('items-to-play', self.items_to_play, :type => :integer)
@@ -63,9 +64,9 @@ class BlocElement < ActiveRecord::Base
   def single=(asset)
     if asset[:authored]
       params = authored_hash(asset)
-      self.audio_asset = SingleAudioAsset.create(params)
+      self.audio_asset = Single.create(params)
     else
-      self.audio_asset = SingleAudioAsset.find(asset[:id])
+      self.audio_asset = Single.find(asset[:id])
     end
   end
   
@@ -80,7 +81,7 @@ class BlocElement < ActiveRecord::Base
       params = authored_hash(asset).merge(:authored => false)
     end
     params.merge!(:live_source => LiveSource.find(asset[:live_source]))
-    self.audio_asset = SingleAudioAsset.create(params)
+    self.audio_asset = Single.create(params)
   end
   
   def intermission=(asset)

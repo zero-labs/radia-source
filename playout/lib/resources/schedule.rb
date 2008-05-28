@@ -1,5 +1,5 @@
 class Schedule < ActiveResource::Base
-  self.site = $manager_config['base_uri'] + '/'
+  self.site = $playout_config['base_uri'] + '/'
   
   def self.fetch(dtstart = nil, dtend = nil)
     find(:one, :from => '/schedule.xml')
@@ -19,6 +19,7 @@ class Schedule < ActiveResource::Base
     
     xml.PalinsestoXML do
        self.broadcasts.each do |bc|
+         bc.fill_gap if bc.attributes['type'] == 'gap'
          bc.to_palinsesto(xml)
        end
      end

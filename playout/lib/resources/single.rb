@@ -1,21 +1,32 @@
 class Single < ActiveResource::Base
-  self.site = "#{$manager_config['base_uri']}/audio/"
+  self.site = "#{$playout_config['base_uri']}/audio/"
   
-  def asset_service
-    AssetService.find(self.asset_service_id)
-  end
-
-  def fetch
-    SingleAudioAsset.find_or_create_by_id_at_source(self.id)
-    if self.retrieval_uri.nil?
+  # Flags a SingleAudioAsset as being downloaded
+  def start_download
+    s = SingleAudioAsset.find_or_create_by_id_at_source(self.id)
+    
+    if !retrieval_uri.nil? and s.status != 'downloading'
+      s.status = 'downloading'
+      s.save
+    else
+      false
     end
   end
+  
+  # Flags a SingleAudioAsset as not being downloaded (status = 'idle')
+  def end_download
+    s = SingleAudioAsset.find_or_create_by_id_at_source(self.id)
+    s.status = 'idle'
+    s.save
+  end
 
+  # Fetches the list of unavailable singles from the Management node
   def self.find_unavailable
     Single.find :all, :from => :unavailable
   end
 
-
+  # Export this resource to Palinsesto format (SomaSuite's configuration format)
+  # Takes an XML Builder object, start datetime, end datetime and a description
   def to_palinsesto(builder, dtstart, dtend, description)
     if self.attributes['type'] == 'single'
       single_to_palinsesto(builder, dtstart, dtend, description)

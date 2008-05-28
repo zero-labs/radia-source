@@ -1,5 +1,5 @@
 class Broadcast < ActiveResource::Base
-  self.site = "#{$manager_config['base_uri']}/schedule/"
+  self.site = "#{$playout_config['base_uri']}/schedule/"
     
   def self.find_all_by_date(year, month = nil, day = nil)
     from = self.site.path + "broadcasts/#{year}"

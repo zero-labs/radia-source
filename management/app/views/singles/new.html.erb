@@ -6,9 +6,9 @@
 <div class="span-11">
 	<fieldset>
 		<legend>Single Audio Asset</legend>
-		<% form_for(@single_audio_asset, :url => audio_singles_path) do |f| %>
+		<% form_for(@single, :url => audio_singles_path) do |f| %>
 			<p>
-				<label for="single_audio_asset_title">Title</label><br />
+				<label for="single_title">Title</label><br />
 				<%= f.text_field :title, :size => 20 %>
 			</p>
 			<fieldset>

@@ -1,7 +1,7 @@
 <%= render :partial => 'crumbs' %>
 
 <ul>
-<% @single_audio_assets.each do |a| %>
+<% @singles.each do |a| %>
 	<li><%= link_to a.title, audio_single_path(a) %></li>
 <% end %>
 </ul>
