@@ -1,33 +1,19 @@
 class Repetition < Broadcast
   belongs_to :emission
   
+  # This association is used as a short-hand 
+  # to avoid going through Emissions to get the Program
+  belongs_to :program 
+  
   validates_presence_of :emission
   
-  def program
-    self.emission.program
-  end
+  before_save :update_program
   
-  def description
-    self.emission.description
-  end
-  
-  def modified?
+  def gap?
     false
   end
   
-  def bloc
-    self.emission.bloc
-  end
-  
-  def audio_assets
-    self.emission.audio_assets
-  end
-  
-  def to_broadcast(builder)
-    self.emission.to_broadcast(builder)
-  end
-  
-  def gap?
+  def modified?
     false
   end
   
@@ -45,5 +31,29 @@ class Repetition < Broadcast
       bloc.to_xml(:skip_instruct => true, :builder => xml, 
                   :replace_unavailable => options[:replace_unavailable], :repetition => true)
     end
+  end
+  
+  # Checks if the method is one of those that delegate to the Emission 
+  # and forwards it to this Repetition's Emission
+  # Methods are:
+  # * bloc
+  # * description
+  # * audio_assets
+  # * status
+  # * pretty_print_status
+  # * deliver_single
+  def method_missing(method, *args)
+    to_delegate = /bloc|description|audio_assets|status|pretty_print_status|deliver_single/
+    if method.to_s.match(to_delegate)
+      emission.send(method, *args)
+    else
+      super
+    end
+  end
+  
+  protected
+  
+  def update_program
+    self.program = self.emission.program
   end
 end

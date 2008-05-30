@@ -32,11 +32,11 @@ class SpotsController < ApplicationController
     @spot = Spot.new(params[:spot])
     respond_to do |format|
       if @spot.save
-        flash[:notice] = 'Single registered successfully. It will be downloaded soon.'
-        format.html { redirect_to audio_single_path(@spot) }
+        flash[:notice] = 'Spot registered successfully.'
+        format.html { redirect_to audio_spot_path(@spot) }
         format.xml { head :ok }
       else
-        flash[:error] = 'There were problems creating the single'
+        flash[:error] = 'There were problems creating the spot'
         format.html { render :action => 'new' }
         format.xml { render :xml => @spot.errors.to_xml }
       end
@@ -58,11 +58,11 @@ class SpotsController < ApplicationController
     @spot = Spot.find(params[:id])
     respond_to do |format|
       if @spot.update_attributes(params[:spot])
-        flash[:notice] = 'Single updated successfully'
-        format.html { redirect_to single_path(@single_path) }
+        flash[:notice] = 'Spot updated successfully'
+        format.html { redirect_to spot_path(@spot_path) }
         format.xml { head :ok }
       else
-        flash[:error] = 'There were problems updating the single'
+        flash[:error] = 'There were problems updating the spot'
         format.html { render :action => 'edit' }
         format.xml { render :xml => @spot.errors.to_xml }
       end
@@ -75,7 +75,7 @@ class SpotsController < ApplicationController
     @spot = Spot.find(params[:id])
     @spot.destroy
     respond_to do |format|
-      flash[:notice] = 'Single removed'
+      flash[:notice] = 'Spot removed'
       format.html { redirect_to spots_path }
       format.xml { head :ok }
     end

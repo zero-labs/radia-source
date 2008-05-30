@@ -4,8 +4,9 @@ class AudioAssetsController < ApplicationController
   # GET /audio
   def show
     @playlists = Playlist.find(:all)
-    @singles = Single.find(:all, :conditions => ["authored = ?", false])
-    @audio = { :playlists => @playlists, :singles => @singles }
+    @singles = Single.find(:all)
+    @spots = Spot.find(:all)
+    @audio = { :playlists => @playlists, :singles => @singles, :spots => @spots }
     respond_to do |format|
       format.html # show.html.erb
       format.xml { render :xml => @audio.to_xml }

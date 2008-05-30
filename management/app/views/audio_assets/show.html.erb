@@ -17,15 +17,14 @@
 
 <ul id="type_list">
 	<li><span class="list_title"><%= link_to "Playlists", audio_playlists_path %></span></li>
-	<ul>
-		<% @audio[:playlists].each do |p| %>
-		<li><%= p.title %></li>
-		<% end %>
-	</ul>
+	<% count = @audio[:playlists].size %>
+	<%= "#{count} playlist" + (count > 1 ? 's' : '') %>
+	
 	<li><span class="list_title"><%= link_to "Singles", audio_singles_path %></span></li>
-	<ul>
-		<% @audio[:singles].each do |p| %>
-		<li><%= p.title %></li>
-		<% end %>
-	</ul>
+	<% count = @audio[:singles].size %>
+	<%= "#{count} single" + (count > 1 ? 's' : '') %>
+	
+	<li><span class="list_title"><%= link_to "Spots", audio_spots_path %></span></li>
+	<% count = @audio[:spots].size %>
+	<%= "#{count} spot" + (count > 1 ? 's' : '') %>
 </ul>

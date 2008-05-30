@@ -3,4 +3,30 @@
 	broadcast_crumbs
 %>
 
-<h3>Time:</h3> <%= @broadcast.dtstart.strftime("%H:%M") + " - " + @broadcast.dtend.strftime("%H:%M") %>
+<% content_for :sidebar do %>
+	<%= render :partial => 'sidebar' %>
+<% end %>
+
+<p>
+	<span class="as_label">Time:</span> 
+	<%= @broadcast.dtstart.strftime("%H:%M") + " - " + @broadcast.dtend.strftime("%H:%M") %>
+</p>
+<p>
+	<span class="as_label">Synopsis: </span>
+	<% if @broadcast.description %>
+		<%= @broadcast.description %>
+	<% else %>
+		No description
+	<% end %>
+</p>
+<p>
+	<span class="as_label">Status: </span>
+	<%= @broadcast.pretty_print_status %>
+</p>
+<hr />
+<h3>Segments</h3>
+<ul>
+<% @broadcast.bloc.segments.each do |e| %>
+	<%= render :partial => 'deliveries/show_segment', :locals => { :segment => e }%>
+<% end %>
+</ul>

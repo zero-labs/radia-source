@@ -71,7 +71,7 @@ class AssetServicesController < ApplicationController
     @asset_service = AssetService.find(params[:id])
     begin
       files = @asset_service.list(params[:password])
-      render :partial => 'shared/files', :object => files, :locals => { :service_id => @asset_service.id }
+      render :partial => 'shared/files', :object => files, :locals => { :service => @asset_service }
     rescue Exception => e
       render :partial => 'shared/exception', :object => e
     end

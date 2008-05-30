@@ -100,8 +100,8 @@ class Broadcast < ActiveRecord::Base
   # Validation method.
   # Ensures that there aren't overlapping Broadcasts
   def does_not_conflict_with_others
-    
-    if Broadcast.find_in_range(dtstart, dtend).size > 0
+    b = Broadcast.find_in_range(dtstart, dtend)
+    if (b.size > 1) or (b.size == 1 and b.first != self) 
       errors.add_to_base("There are other broadcasts within the given timeframe (#{dtstart} - #{dtend})")
     end
   end

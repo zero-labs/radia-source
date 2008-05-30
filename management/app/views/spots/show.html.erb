@@ -1,0 +1,16 @@
+<%= render :partial => 'crumbs' %>
+<% add_crumb("#{@spot.title}", audio_spot_path(@spot)) %>
+
+<p>
+	<span class="stronger">Title: </span> <%= @spot.title %>
+</p>
+<p>
+	<span class="stronger"> <%= (@spot.available? ? 'Available' : 'Not available') + ' at broadcast node' %></span>
+</p>
+<p>
+	<% unless @spot.available? %>
+		<span class="stronger">Retrieval URI: </span>
+		<%= link_to @spot.retrieval_uri
+		%><br />
+	<% end %>
+</p>

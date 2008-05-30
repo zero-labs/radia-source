@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 17) do
+ActiveRecord::Schema.define(:version => 20) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -83,6 +83,31 @@ ActiveRecord::Schema.define(:version => 17) do
     t.integer "settings_id"
     t.string  "uri"
     t.string  "title"
+  end
+
+  create_table "mail", :force => true do |t|
+    t.integer  "user_id",                                          :null => false
+    t.integer  "message_id",                                       :null => false
+    t.integer  "conversation_id"
+    t.boolean  "read",                          :default => false
+    t.boolean  "trashed",                       :default => false
+    t.string   "mailbox",         :limit => 25
+    t.datetime "created_at",                                       :null => false
+  end
+
+  create_table "messages", :force => true do |t|
+    t.text     "body"
+    t.string   "subject",         :default => ""
+    t.text     "headers"
+    t.integer  "sender_id",                          :null => false
+    t.integer  "conversation_id"
+    t.boolean  "sent",            :default => false
+    t.datetime "created_at",                         :null => false
+  end
+
+  create_table "messages_recipients", :id => false, :force => true do |t|
+    t.integer "message_id",   :null => false
+    t.integer "recipient_id", :null => false
   end
 
   create_table "open_id_authentication_associations", :force => true do |t|

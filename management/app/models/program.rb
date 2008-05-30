@@ -7,7 +7,10 @@ class Program < ActiveRecord::Base
   
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
     
-  has_many :emissions, :dependent => :destroy, :order => 'dtstart ASC'
+  has_many :broadcasts, :dependent => :destroy, :order => 'dtstart ASC'
+  
+  has_many :emissions
+  has_many :repetitions
   
   # Shorthand to retrieve upcoming emissions (FIRST-TIME broadcasts, not repetitions)
   has_many :upcoming_emissions, :class_name => "Emission", 
@@ -28,24 +31,13 @@ class Program < ActiveRecord::Base
   end
 
   # Find all broadcasts on a given date (includes repetitions)
-  # TODO FIX!
   def find_broadcasts_by_date(year, month = nil, day = nil)
-    if !year.blank?
-      from, to = self.class.time_delta(year, month, day)
-      emissions.find(:all, :conditions => ["dtstart BETWEEN ? AND ?", from, to])
-    else
-      emissions.find(:all)
-    end
+    find_broadcasts_by_date_on_collection(broadcasts, year, month, day)
   end
 
-  # Find all broadcasts on a given date (includes repetitions)
+  # Find all broadcasts on a given date (does not include repetitions)
   def find_emissions_by_date(year, month = nil, day = nil)
-    if !year.blank?
-      from, to = self.class.time_delta(year, month, day)
-      emissions.find(:all, :conditions => ["dtstart BETWEEN ? AND ?", from, to])
-    else
-      emissions.find(:all)
-    end
+    find_broadcasts_by_date_on_collection(emissions, year, month, day)
   end
 
   # Find one broadcast on a given date (emissions + repetitions)
@@ -60,5 +52,16 @@ class Program < ActiveRecord::Base
   
   def parent
     ProgramSchedule.instance
+  end
+  
+  protected
+  
+  def find_broadcasts_by_date_on_collection(kollection, year, month = nil, day = nil)
+    if !year.blank?
+      from, to = self.class.time_delta(year, month, day)
+      kollection.find(:all, :conditions => ["dtstart BETWEEN ? AND ?", from, to])
+    else
+      kollection.find(:all)
+    end
   end
 end

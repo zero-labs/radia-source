@@ -1,7 +1,7 @@
 class Bloc < ActiveRecord::Base
   
   # Playables are anything that has a broadcast structure,
-  # i.e. Broadcast (and sub-classes) and EmissionType
+  # i.e. Broadcast (including its sub-classes) and EmissionType
   belongs_to :playable, :polymorphic => true
   
   # Segments associate AudioAssets with Blocs, 
@@ -44,11 +44,16 @@ class Bloc < ActiveRecord::Base
   
   # Mass update for audio assets in this bloc (for forms)
   def audio_assets=(kollection)
-    audio_assets.each do |params|
+    kollection.each do |params|
       asset = AudioAsset.find(params.id)
       next unless asset
       asset.update_attributes(params)
     end
+  end
+  
+  def update_single(params)
+    segment = self.segments.find(params[:segment])
+    segment.audio_asset.update_attributes(params[:single])
   end
   
   # There can only be one element with fill == true 
@@ -60,7 +65,18 @@ class Bloc < ActiveRecord::Base
     else
       false
     end
-  end 
+  end
+  
+  def status
+    status_array = segments.collect { |s| s.delivered? }.select { |s| s }
+    if status_array.size == 0
+      :pending
+    elsif status_array.size == segments.size
+      :delivered
+    else
+      :partial
+    end
+  end
   
   def to_xml(options = {})
     options[:indent] ||= 2

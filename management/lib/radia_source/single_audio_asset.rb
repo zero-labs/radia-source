@@ -15,6 +15,8 @@ module RadiaSource
     end
 
     module InstanceMethods
+      
+      # Returns true
       def single?
         true
       end
@@ -30,7 +32,7 @@ module RadiaSource
       # An asset is considered to be delivered if it is available at
       # the broadcast node or if an AssetService has been defined for it
       def delivered?
-        self.available? or !self.asset_service.nil?
+        self.available? or !self.retrieval_uri.nil?
       end
       
       protected 

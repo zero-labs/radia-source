@@ -1,9 +1,13 @@
-<%= hidden_field_tag 'single[asset_service_id]', service_id %>
+<%= hidden_field_tag 'single[asset_service_id]', service.id %>
+<p>
+	Select the file you want to add...
+</p>
 <ul id="files">
 <% files.each do |f| %>
 	<li>
 		<%= radio_button_tag 'single[partial_retrieval_uri]', f, false, :id => f.hash %>
-		<label for="<%= f.hash %>"><%= f %></label>
+		<label for="<%= f.hash %>" class="soft"><%= f %></label>
 	</li>
 <% end %>
 </ul>
+<p><%= submit_tag 'Submit' %></p>

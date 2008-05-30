@@ -12,15 +12,22 @@ ActionController::Routing::Routes.draw do |map|
   map.login 'login', :controller => 'sessions', :action => 'new', :conditions => { :method => :get }
   map.logout 'logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   
-  # User registration
-  map.resources :users
+  # Users
+  map.resources :users do |user|
+    user.resource :mailbox do |box|
+      box.resources :incoming, :controller => 'incoming_messages'
+      box.resources :outgoing, :controller => 'outgoing_messages'
+      box.resources :trash, :controller => 'trash_messages'
+    end
+  end
+  # Registration
   map.signup 'signup', :controller => 'users', :action => 'new'
   map.activate 'activate/:activation_code', :controller => 'users', :action => 'activate'
   
   # Program schedule
   map.resource :schedule, :controller => 'program_schedule' do |schedule|
     
-    # Emissions (as resources accessible by date)
+    # Broadcasts (as resources accessible by date)
     schedule.datestamped_resources :broadcasts do |broadcast|
       broadcast.resources :types, :controller => 'emission_types', 
                         :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_emission_'                

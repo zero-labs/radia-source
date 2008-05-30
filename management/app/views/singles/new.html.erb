@@ -3,28 +3,18 @@
 	add_crumb("New", new_audio_single_path)
 %>
 
-<div class="span-11">
-	<fieldset>
-		<legend>Single Audio Asset</legend>
-		<% form_for(@single, :url => audio_singles_path) do |f| %>
-			<p>
-				<label for="single_title">Title</label><br />
-				<%= f.text_field :title, :size => 20 %>
-			</p>
-			<fieldset>
-				<legend>Resource</legend>
-				<div id="file_list">First select the asset service from which to import this asset</div>
-			</fieldset>
-			<p>
-				<%= submit_tag 'Submit' %>
-			</p>
-		<% end %>
-	</fieldset>
-</div>
+<% content_for :sidebar do %>
+	<%= render :partial => 'shared/asset_selector' %>
+<% end %>
 
-<div class="span-5">
-	<fieldset>
-		<legend>Select asset service</legend>
-		<%= render :partial => 'shared/asset_selector' %>
-	</fieldset>
-</div>
+
+<% form_for(@single, :url => audio_singles_path) do |f| %>
+	<p>
+		<label for="single_title">Title</label><br />
+		<%= f.text_field :title, :size => 20 %>
+	</p>
+	<p>
+		<span class="as_label">Asset</span>
+		<div id="file_list">First select the asset service from which to import this asset</div>
+	</p>
+<% end %>

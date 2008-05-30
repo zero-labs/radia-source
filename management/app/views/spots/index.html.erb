@@ -1,0 +1,7 @@
+<%= render :partial => 'crumbs' %>
+
+<ul>
+<% @spots.each do |a| %>
+	<li><%= link_to a.title, audio_spot_path(a) %></li>
+<% end %>
+</ul>

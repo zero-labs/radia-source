@@ -4,7 +4,9 @@ class Segment < ActiveRecord::Base
   
   validates_presence_of :bloc
   validates_presence_of :audio_asset
-      
+  
+  #validates_presence_of :length, :unless => :does_not_need_length_field
+  
   acts_as_list
     
   def name
@@ -28,6 +30,8 @@ class Segment < ActiveRecord::Base
   def length
     if self.fill?
       bloc.nil? ? nil : bloc.playable_length
+    elsif read_attribute(:length).nil?
+      audio_asset.length
     else
       read_attribute(:length)
     end
@@ -35,6 +39,10 @@ class Segment < ActiveRecord::Base
   
   def length_unit=(value)
     @unit = value
+  end
+  
+  def delivered?
+    audio_asset.delivered?
   end
   
   def to_xml(options = {})
@@ -46,20 +54,24 @@ class Segment < ActiveRecord::Base
       xml.tag!(:fill, self.fill, :type => :boolean)
       xml.tag!('items-to-play', self.items_to_play, :type => :integer)
       xml.tag!(:random, self.random, :type => :boolean)
-      audio = \
-      if options[:replace_unavailable] and 
-        (audio_asset.nil? or 
-        (audio_asset.unavailable? and audio_asset.kind == :live and options[:repetition]) or 
-        (audio_asset.unavailable? and audio_asset.kind != :live))
-        ProgramSchedule.instance.content_for_gap(self.length || bloc.playable_length)
-      else
-        audio_asset
-      end
-      audio.to_xml(:skip_instruct => true, :builder => xml, :short => true)
+      #audio = \
+      #if options[:replace_unavailable] and 
+      #  (audio_asset.nil? or 
+      #  (audio_asset.unavailable? and audio_asset.kind == :live and options[:repetition]) or 
+      #  (audio_asset.unavailable? and audio_asset.kind != :live))
+      #  ProgramSchedule.instance.content_for_gap(self.length || bloc.playable_length)
+      #else
+      #  audio_asset
+      #end
+      audio_asset.to_xml(:skip_instruct => true, :builder => xml, :short => true)
     end
   end
 
   protected
+  
+  def does_not_need_length_field
+    self.fill? or !self.audio_asset.single?
+  end
   
   def single=(asset)
     if asset[:authored]

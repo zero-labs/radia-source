@@ -1,0 +1,2 @@
+class TrashMessagesController < ApplicationController
+end

@@ -256,11 +256,17 @@ span.broadcast_info
 
 /*** Misc ***/
 
+label.soft {
+	font-weight: normal;
+}
+
 span.list_title, span.list_title a { 
 	font-size: 1.1em;
 	font-weight: bold;
 	color: #000;
 }
+
+span.as_label { font-weight: bold; font-size: 1em; }
 
 span.stronger { font-weight: bold; font-size: 1.1em;}
 

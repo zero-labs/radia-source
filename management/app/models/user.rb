@@ -1,8 +1,10 @@
 require 'digest/sha1'
+
 class User < ActiveRecord::Base
   acts_as_authorizable
   acts_as_authorized_user
   acts_as_urlnameable :login, :overwrite => true
+  acts_as_messageable
   
   # Virtual attribute for the unencrypted password
   attr_accessor :password

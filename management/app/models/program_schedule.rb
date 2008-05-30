@@ -65,7 +65,7 @@ class ProgramSchedule < ActiveRecord::Base
     xml.instruct! unless options[:skip_instruct]
     bcs = self.broadcasts_and_gaps(options[:dtstart], options[:dtend])
     xml.schedule do
-      bcs.to_xml(:root => 'broadcasts', :skip_instruct => true, :builder => xml, :replace_unavailable => true)
+      bcs.to_xml(:root => 'broadcasts', :skip_instruct => true, :builder => xml)
     end
   end
   

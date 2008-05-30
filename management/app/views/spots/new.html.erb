@@ -1,0 +1,20 @@
+<%= render :partial => 'crumbs' %>
+<%
+	add_crumb("New", new_audio_spot_path)
+%>
+
+<% content_for :sidebar do %>
+	<%= render :partial => 'shared/asset_selector' %>
+<% end %>
+
+
+<% form_for(@spot, :url => audio_spots_path) do |f| %>
+	<p>
+		<label for="spot_title">Title</label><br />
+		<%= f.text_field :title, :size => 20 %>
+	</p>
+	<p>
+		<span class="as_label">Asset</span>
+		<div id="file_list">First select the asset service from which to import this asset</div>
+	</p>
+<% end %>

@@ -12,6 +12,7 @@ class Emission < Broadcast
   # based on the Bloc of its EmissionType
   after_create :init_bloc
   
+  # Returns false
   def gap?
     false
   end
@@ -26,13 +27,28 @@ class Emission < Broadcast
     bloc.audio_assets
   end
   
-  def deliver_asset(asset_info)
-    bloc.update_segment(asset_info)
-  end
-  
   def update_bloc
     self.bloc.destroy unless self.bloc.nil?
     init_bloc
+  end
+  
+  def deliver_single(params)
+    self.bloc.update_single(params)
+  end
+  
+  def status
+    self.bloc.status
+  end
+  
+  def pretty_print_status
+    case status
+    when :delivered
+      'Delivered'
+    when :partial
+      'Partially delivered'
+    when :pending
+      'Pending'
+    end  
   end
   
   def to_xml(options = {})
@@ -50,15 +66,17 @@ class Emission < Broadcast
     end
   end
   
-  protected
-  
   def init_bloc
     self.bloc = Bloc.create(:playable => self)
     emission_type.bloc.segments.each do |e| 
-      el = e.clone
-      el.audio_asset = e.audio_asset.clone unless el.audio_asset.kind == :playlist
-      self.bloc.add_segment(el)
-      el.audio_asset.segments << el
+      segment = e.clone
+      asset = (e.audio_asset.kind != :playlist ? e.audio_asset.clone : e.audio_asset)
+      asset.save
+      segment.audio_asset = asset 
+      #asset.segments << segment
+      self.bloc.add_segment(segment)
     end
   end
+  
+  protected
 end
