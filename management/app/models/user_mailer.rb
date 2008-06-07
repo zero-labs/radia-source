@@ -3,13 +3,13 @@ class UserMailer < ActionMailer::Base
     setup_email(user)
     @subject    += 'Please activate your new account'
   
-    @body[:url]  = url_for(:host => 'localhost', :port => 3000, :controller => 'users', :action => 'activate', :activation_code => "#{user.activation_code}")
+    @body[:url]  = url_for(:host => 'source.radiozero.pt', :controller => 'users', :action => 'activate', :activation_code => "#{user.activation_code}")
   end
   
   def activation(user)
     setup_email(user)
     @subject    += 'Your account has been activated!'
-    @body[:url]  = url_for(:host => 'localhost', :port => 3000, :controller => 'sessions', :action => 'new')
+    @body[:url]  = url_for(:host => 'source.radiozero.pt', :controller => 'sessions', :action => 'new')
   end
   
   protected
