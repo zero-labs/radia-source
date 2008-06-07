@@ -2,7 +2,7 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   # Site root
-  map.root :controller => 'program_schedule', :action => 'show'
+  map.root :controller => 'dashboard', :action => 'index'
   
   # User login
   map.open_id_complete 'session', :controller => 'sessions', :action => 'create', :requirements => { :method => :get }  
@@ -14,10 +14,8 @@ ActionController::Routing::Routes.draw do |map|
   
   # Users
   map.resources :users do |user|
-    user.resource :mailbox do |box|
-      box.resources :incoming, :controller => 'incoming_messages'
-      box.resources :outgoing, :controller => 'outgoing_messages'
-      box.resources :trash, :controller => 'trash_messages'
+    user.resources :mailboxes do |box|
+      box.resources :messages, :collection => { :empty => :delete }
     end
   end
   # Registration
@@ -61,6 +59,8 @@ ActionController::Routing::Routes.draw do |map|
     settings.resources :asset_services
     settings.resources :live_sources
   end
+  
+  map.dashboard 'dashboard', :controller => 'dashboard'
   
   ### Routes for AJAX methods
   

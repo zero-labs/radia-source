@@ -39,6 +39,8 @@ class Broadcast < ActiveRecord::Base
     end
   end
   
+  ### Instance methods
+  
   def same_time?(other)
     (self.dtstart == other.dtstart) && (self.dtend == other.dtend)
   end
@@ -46,8 +48,6 @@ class Broadcast < ActiveRecord::Base
   def same_time?(dtstart, dtend)
     (self.dtstart == dtstart) && (self.dtend == dtend)
   end
-  
-  ### Instance methods
   
   # Creates an array for params (to use the emission's date)
   def to_param

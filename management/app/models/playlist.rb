@@ -20,7 +20,7 @@ class Playlist < AudioAsset
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.audio(:type => 'playlist') do 
+    xml.playlist do 
       xml.tag!(:id, self.id, :type => :integer)
       unless options[:short]
         playlist_elements.to_xml(:skip_instruct => true, :builder => xml, :short => true)

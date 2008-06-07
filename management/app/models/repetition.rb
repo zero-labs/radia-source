@@ -43,7 +43,7 @@ class Repetition < Broadcast
   # * pretty_print_status
   # * deliver_single
   def method_missing(method, *args)
-    to_delegate = /bloc|description|audio_assets|status|pretty_print_status|deliver_single/
+    to_delegate = /bloc|description|audio_assets|status|pretty_print_status|deliver_single|authors|name/
     if method.to_s.match(to_delegate)
       emission.send(method, *args)
     else

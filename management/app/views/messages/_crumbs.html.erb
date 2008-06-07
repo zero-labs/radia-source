@@ -1,0 +1,8 @@
+<%
+	add_crumb('Users', users_path)
+	add_crumb(@user.name, user_path(@user))
+	add_crumb('Mailboxes', user_mailboxes_path(@user))
+	add_crumb(@mailbox_name.to_s.humanize, user_mailbox_path(@user, :id => @mailbox_name))
+	add_crumb('Messages', user_mailbox_messages_path(@user, :mailbox_id => @mailbox_name), true)
+	
+%>

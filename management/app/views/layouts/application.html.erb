@@ -1,34 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%= render :partial => 'layouts/head' %>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Radia Source<%= (@pagetitle.blank? ? '' : ": #{@pagetitle}") %></title>	
-	
-	<%= stylesheet_link_tag 'blueprint/src/reset', :media => 'screen, projection' %>
-	<%= stylesheet_link_tag 'blueprint/src/typography', :media => 'screen, projection' %>
-	<%= stylesheet_link_tag 'blueprint/src/grid', :media => 'screen, projection' %>
-	<%= stylesheet_link_tag 'blueprint/src/forms', :media => 'screen, projection' %>
-
-	<%= stylesheet_link_tag 'blueprint/print', :media => 'print' %>
-	<!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-	<%= stylesheet_link_tag 'display', :media => 'screen, projection' %>
-	<%= stylesheet_link_tag 'navigation', :media => 'screen, projection' %>
-	<%= stylesheet_link_tag 'calendar', :media => 'screen, projection' %>
-	<%= javascript_include_tag :defaults %>
-	
-	<!--[if lt IE 8]>
-	    <style type="text/css" media="screen">
-	      #calendars li a, #calendars table {
-	        display: inline;
-	      }
-	    </style>
-	  <![endif]-->
-	  <!--[if lt IE 7]>
-	    <link rel="stylesheet" href="stylesheets/ie6.css" type="text/css" media="screen" title="ie6" charset="utf-8"/>
-	  <![endif]-->
-	
-</head>
 <body id="<%= @body_id %>">
 	<div id="header">
 		<div id="header_top">
@@ -41,8 +12,8 @@
 					<% if logged_in? %>
 						<li class="first">Hello, <%= link_to "#{current_user.name}", user_path(current_user) %>
 						<li>
-							<!-- <%= image_tag 'icons/email.png' %> -->
-							<%= link_to 'Inbox', logout_path, { :method => :delete } %>
+							<%= mailbox_icon %>
+							<%= link_to 'Inbox', user_mailbox_path(current_user, :id => :inbox) %>
 						</li>
 						<li><%= link_to 'Logout', logout_path, { :method => :delete } %></li>
 					<% else %>
@@ -54,18 +25,7 @@
 		
 		<div id="header_bottom">
 			<div id="main_nav">
-				<ul>
-					<%= navigation_item(:editorial_dashboard, root_path, false, []) if logged_in? %>
-					<%= navigation_item(:author_dashboard, author_path(current_user), false, []) if logged_in? %>
-					<%= navigation_item(:schedule) if logged_in? %>
-					<%= navigation_item(:programs) if logged_in? %>
-					<%= navigation_item(:audio_assets, audio_path) if logged_in? %>
-					<%= navigation_item(:settings, settings_path, false, []) if logged_in? %>
-        	       
-					<%= navigation_item(:my_account, user_path(current_user), true, []) if logged_in? %>
-					<%= navigation_item(:users, users_path, true, []) if logged_in? %>
-        	       
-				</ul>
+				<%= render :partial => 'layouts/navigation' %>
 			</div>
 		</div>
 	</div>

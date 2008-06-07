@@ -1,0 +1,40 @@
+<%
+	add_crumb('Users', users_path)
+	add_crumb(@user.name, user_path(@user))
+	add_crumb('Edit', edit_user_path(@user))
+%>
+
+<h3>Edit account</h3>
+
+<% form_for(@user) do |f| %>
+<div class="span-8">
+	<p>
+		<label for="user_name">Name:</label><br />
+		<%= f.text_field :name %>
+	</p>
+	
+	<p>
+		<label for="user_login">Login:</label><br />
+		<%= f.text_field :login %>
+	</p>
+	
+	<p>
+		<label for="user_email">Email:</label><br />
+		<%= f.text_field :email %>
+	</p>
+</div>
+<div class="span-8">
+	Leave this fields empty if you don't want to change your password.
+	<p>
+		<label for="user_password">Password</label><br/>
+		<%= f.password_field :password %>
+	</p>
+
+	<p>
+		<label for="user_password_confirmation">Confirm Password</label><br/>
+		<%= f.password_field :password_confirmation %>
+	<p>
+</p>
+		<%= submit_tag 'Update' %>
+	</p>
+<% end %>

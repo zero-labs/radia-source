@@ -4,6 +4,24 @@
 %>
 
 <% content_for :sidebar do %>
-		<h1>Roles</h1>
-		
+	<%= render :partial => 'list_roles' %>
+	<%= render :partial => 'list_programs' %>
 <% end %>
+
+<p>
+	<ul class="horizontal_options">
+		<li><%= link_to "Edit account details", edit_user_path(@user) %></li>
+	</ul>
+</p>
+
+<p>
+	<span class="as_label">Name:</span> <%= @user.name %>
+</p>
+
+<p>
+	<span class="as_label">Login:</span> <%= @user.login %>
+</p>
+
+<p>
+	<span class="as_label">Email:</span> <%= @user.email %>
+</p>

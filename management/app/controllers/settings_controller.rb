@@ -5,13 +5,7 @@ class SettingsController < ApplicationController
   def show
     @settings = Settings.instance
   end
-  
-  # GET /settings/edit
-  def edit
-    
-  end
-  
-  
+
   protected
   
   def active_nav

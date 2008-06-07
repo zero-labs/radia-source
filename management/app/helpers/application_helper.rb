@@ -10,12 +10,17 @@ module ApplicationHelper
     @breadcrumbs.push({ :text => text, :link => link, :highlight => highlight })
   end
   
-  def navigation_item(item, url = {}, separate = false, permissions = [])
+  # The block should be a boolean expression that represents the permissions
+  # the user must have for this link to be shown 
+  def navigation_item(item, url = {}, separate = false, &block)
+    if block_given?
+      return unless yield
+    end
     path = (url.empty? ? self.send("#{item}_path".to_sym) : url)
     item_class = (separate ? 'separate' : '')
     out = "<li id=\"#{item}_nav\" class=\"#{item_class}\">" 
     out << link_to("#{item.to_s.split('_').collect{|e| e.capitalize}.join(' ')}", 
-                    path, :class => (@active == "#{item}" ? 'active' : ''))
+    path, :class => (@active == "#{item}" ? 'active' : ''))
     out << "</li>"
   end
   
@@ -115,5 +120,14 @@ module ApplicationHelper
   
   def asset_services
     options_from_collection_for_select(AssetService.find(:all), :id, :name)
+  end
+  
+  def mailbox_icon
+    icon = if current_user.mailbox[:inbox].unread_mail.empty?
+      'email'
+    else
+      'email_open'
+    end
+    image_tag "icons/#{icon}.png", :class => 'img_icon'
   end
 end

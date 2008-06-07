@@ -86,26 +86,26 @@
 
 /*** Activity Navigation ***/
 
-#activity_nav 
+.horizontal_options 
 {
 	padding: 0;
 	margin: 5px 0 0 0;
 	text-align: center;
 }
 
-#activity_nav a:link, #activity_nav a:visited
+.horizontal_options a:link, .horizontal_options a:visited
 {
 	color: #8B0000;
 	text-decoration:none;
-	font-size: 1.2em;
+	font-size: 1em;
 }
 
-#activity_nav a:hover
+.horizontal_options a:hover
 {
 	text-decoration: underline;
 }
 
-#activity_nav li 
+.horizontal_options li 
 {
 	margin: 0; 
 	padding: 0;
@@ -113,12 +113,12 @@
 	list-style: none;
 }
 
-#activity_nav ul li:before {
+.horizontal_options ul li:before {
 	content: "\2192 \0020";
 	color: #333;
 }
 	
-#activity_nav ul li.first:before {
+.horizontal_options ul li.first:before {
 	content: "\0020";
 }
 

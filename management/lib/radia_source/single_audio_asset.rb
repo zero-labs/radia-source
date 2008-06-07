@@ -12,6 +12,10 @@ module RadiaSource
       def find_all_unavailable
         find(:all, :conditions => ["available = ? AND retrieval_uri IS NOT NULL", false])
       end
+      
+      def find_all_delivered_after(dtime)
+        find(:all, :conditions => ["delivered_at >= ?", dtime], :order => "delivered_at DESC")
+      end
     end
 
     module InstanceMethods
@@ -40,6 +44,7 @@ module RadiaSource
       def store_retrieval_uri
         if @asset_service and @partial_uri
           self.retrieval_uri = @asset_service.full_uri + '/' + @partial_uri
+          self.delivered_at = Time.now
         end
       end
     end

@@ -9,17 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 1) do
+ActiveRecord::Schema.define(:version => 3) do
 
-  create_table "single_audio_assets", :force => true do |t|
+  create_table "audio_assets", :force => true do |t|
     t.integer  "id_at_source"
     t.string   "location"
     t.string   "hash_code"
-    t.string   "archive_uri"
     t.string   "status"
     t.float    "length"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "logs", :force => true do |t|
+    t.integer  "audio_asset_id"
+    t.datetime "played_at"
   end
 
 end

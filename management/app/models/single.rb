@@ -27,7 +27,7 @@ class Single < AudioAsset
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.audio(:type => kind) do
+    xml.single(:type => kind) do
       xml.tag!(:id, self.id, :type => :integer)
       xml.tag!('live-source', self.live_source.uri, :type => :string) if kind == :live
       unless options[:short]

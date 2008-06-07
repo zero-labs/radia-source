@@ -1,5 +1,6 @@
 class LiveSource < ActiveRecord::Base
-  validates_presence_of :title, :uri
-  
+  belongs_to :settings
   has_many :audio_assets
+  
+  validates_presence_of :title, :uri
 end

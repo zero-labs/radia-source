@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-  layout 'login', :only => :new
-  layout 'application', :only => [:index, :show, :edit]
+  #layout 'application', :only => [:index, :show, :edit], :except => :new
   
   before_filter :login_required, :except => [:new, :create, :activate]
   before_filter :check_logged_in, :only => [:new, :create]
@@ -19,7 +18,7 @@ class UsersController < ApplicationController
   # GET /users/:id.:format
   def show
     @user = User.find_by_urlname(params[:id])
-    @active = 'account' if @user == current_user
+    @active = 'my_account' if @user == current_user
     
     respond_to do |format|
       format.html # show.html.erb
@@ -30,6 +29,7 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    render :action => 'new', :layout => 'login' # new.html.erb
   end
 
   # POST /users
@@ -44,13 +44,14 @@ class UsersController < ApplicationController
       redirect_back_or_default root_path
     else
       flash[:error] = "There was an error during signup"
-      render :action => 'new'
+      render :action => 'new', :layout => 'login'
     end
   end
   
   # GET /users/:id/edit
   def edit
     @user = User.find_by_urlname(params[:id])
+    @active = 'my_account' if @user == current_user
   end
   
   # POST /users/:id
@@ -59,7 +60,7 @@ class UsersController < ApplicationController
     @user = User.find_by_urlname(params[:id])
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        flash[:notice] = "Profile updated successfully"
+        flash[:notice] = "Account updated successfully"
         format.html { redirect_to user_path(@user) }
         format.xml { head :ok }
       else

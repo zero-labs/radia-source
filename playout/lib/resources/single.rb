@@ -27,11 +27,16 @@ class Single < ActiveResource::Base
 
   # Export this resource to Palinsesto format (SomaSuite's configuration format)
   # Takes an XML Builder object, start datetime, end datetime and a description
-  def to_palinsesto(builder, dtstart, dtend, description)
-    if self.attributes['type'] == 'single'
-      single_to_palinsesto(builder, dtstart, dtend, description)
-    elsif self.attributes['type'] == 'live'
-      live_to_palinsesto(builder, dtstart, dtend, description)
+  def to_palinsesto(builder, position, total, dtstart, dtend, description)
+    local_single = SingleAudioAsset.find_by_id_at_source(self.id)
+    if local_single.nil? or local_single.unavailable?
+      # replace
+    else
+      if self.attributes['type'] == 'single'
+        single_to_palinsesto(builder, dtstart, dtend, description)
+      elsif self.attributes['type'] == 'live'
+        live_to_palinsesto(builder, dtstart, dtend, description)
+      end
     end
   end
   
@@ -84,7 +89,7 @@ class Single < ActiveResource::Base
       builder.RatioSpot()
       builder.PathItem do
         asset = SingleAudioAsset.find_by_id_at_source(self.id)
-        builder.item(asset.location)
+        builder.item(asset.location) unless asset.nil?
       end
       builder.PathSpot()
     end

@@ -1,0 +1,25 @@
+<li>
+	<% 
+		tstart = broadcast.dtstart.to_formatted_s(:short)
+		tend = broadcast.dtend.to_formatted_s(:time)
+	%>
+	<div class="broadcast_head">
+		<span>
+			<% if broadcast.kind_of?(Gap) %>
+				<%= "#{tstart}-#{tend}" %>
+			<% else %>
+				<%= link_to "#{tstart}-#{tend}", program_broadcast_path(broadcast.program, broadcast) %>
+			<% end %>
+		</span>
+		<%= type_tag(broadcast) %>
+	</div>
+	<% if broadcast.gap? %>
+	<% else %>
+		<span class="broadcast_info">
+			<%= link_to broadcast.program.name, program_path(broadcast.program) %><br/>
+			<%= status_icon(broadcast) %>
+		</span>
+		
+	<% end %>
+</li>
+

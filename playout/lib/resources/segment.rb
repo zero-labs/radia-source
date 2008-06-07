@@ -2,27 +2,18 @@ class Segment < ActiveResource::Base
   
   self.site = '' # TODO
   
-  def to_palinsesto(builder, description, dtstart, dtend)
-    asset = asset_instance(audio)
-    asset.to_palinsesto(builder, dtstart, dtend, description)
-    
-    #if fill?
-    #  asset.to_palinsesto(builder)
-    #else
-    #end
+  def to_palinsesto(builder, position, total, description, dtstart, dtend)
+    #asset = asset_instance(audio)
+    self.send(asset_type).send(:to_palinsesto, builder, position, total, dtstart, dtend, description)
   end
   
   protected
   
-  def asset_instance(audio)
-    asset = case audio.attributes['type']
-    when 'single'
-      Single.new
-    when 'live' 
-      Single.new
-    when 'playlist'
-      Playlist.find(audio.attributes['id'])
+  def asset_type
+    if self.respond_to?('single')
+      :single
+    elsif self.respond_to?('playlist')
+      :playlist
     end
-    asset.load(audio.attributes)
   end
 end

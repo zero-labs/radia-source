@@ -226,6 +226,21 @@ span.broadcast_info
 	padding: 0.5em;
 }
 
+span.broadcast_status_partial {
+	background-color: #ff0;
+	padding: 2px;
+}
+
+span.broadcast_status_delivered {
+	background-color: #0f0;
+	padding: 2px;
+	
+}
+
+span.broadcast_status_pending {
+	background-color: #f00;
+}
+
 .type_tag
 {
 	padding: 2px 4px 2px 4px;
@@ -255,6 +270,18 @@ span.broadcast_info
 }
 
 /*** Misc ***/
+.read {
+	font-weight: normal;
+	color: #333;
+}
+
+.unread {
+	font-weight: bold;
+}
+
+.img_icon {
+	vertical-align: middle;
+}
 
 label.soft {
 	font-weight: normal;

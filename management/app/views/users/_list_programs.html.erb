@@ -1,0 +1,9 @@
+<% if @user.is_author? %>
+	<h1>Programs</h1>
+	<ul>
+		<% @user.programs.each do |p| %>
+			<li><%= link_to p.name, program_path(p) %></li>
+		<% end %>
+	</ul>
+<% end %>
+

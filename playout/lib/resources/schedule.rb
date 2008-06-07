@@ -19,7 +19,6 @@ class Schedule < ActiveResource::Base
     
     xml.PalinsestoXML do
        self.broadcasts.each do |bc|
-         bc.fill_gap if bc.attributes['type'] == 'gap'
          bc.to_palinsesto(xml)
        end
      end

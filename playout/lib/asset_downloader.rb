@@ -4,7 +4,7 @@ module AssetDownloader
   
   # 
   def self.check_and_download
-    unavailable = Single.find_unavailable
+    unavailable = Single.find_unavailable + Spot.find_unavailable
     unavailable.each do |u|
       next unless u.start_download
       

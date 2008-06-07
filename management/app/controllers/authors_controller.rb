@@ -2,11 +2,11 @@ class AuthorsController < ApplicationController
   
   # GET /authors
   def index
-    @authors = User.find_authors
+    @authors = User.authors
     
     respond_to do |format|
       format.html # index.html.erb
-      format.xml { render :xml => @authors.to_xml(:root => 'authors') }
+      format.xml { render :xml => @authors.to_xml }
     end
   end
   
@@ -16,7 +16,7 @@ class AuthorsController < ApplicationController
     @author = User.find_author_by_urlname(params[:id])
     respond_to do |format|
       format.html # show.html.erb
-      format.xml { render :xml => @author.to_xml(:root => 'author') }
+      format.xml { render :xml => @author.to_xml }
     end
   end
   

@@ -1,0 +1,5 @@
+<%
+	add_crumb('Users', users_path)
+	add_crumb(@user.name, user_path(@user))
+	add_crumb('Mailboxes', user_mailboxes_path(@user))
+%>

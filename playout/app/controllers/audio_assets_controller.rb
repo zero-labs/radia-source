@@ -1,0 +1,2 @@
+class AudioAssetsController < ApplicationController
+end

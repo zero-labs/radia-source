@@ -23,6 +23,22 @@ class Gap < Broadcast
     b.segments << Segment.new(:audio_asset => asset, :length => self.length)
     b
   end
+  
+  def find_next_broadcast
+    Broadcast.find(:first, :conditions => ["dtstart > ?", self.dtstart], :order => :dtstart)
+  end
+  
+  def status
+    :pending
+  end
+  
+  def pretty_print_status
+    "Pending"
+  end
+  
+  def name
+    "Gap"
+  end
 
   def to_xml(options = {})
     options[:indent] ||= 2
@@ -32,7 +48,6 @@ class Gap < Broadcast
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, 'Gap', :type => :string)
-      #bloc.to_xml(:skip_instruct => true, :builder => xml)
     end
   end
 

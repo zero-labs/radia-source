@@ -3,8 +3,8 @@ class Bloc < ActiveResource::Base
   self.site = ''
   
   def to_palinsesto(builder, name, dtstart, dtend)
-    segments.each_with_index do |be, i|
-      be.to_palinsesto(builder, name + " (part #{i+1})", dtstart, dtend)
+    segments.each_with_index do |s, i|
+      s.to_palinsesto(builder, i, segments.size, name, dtstart, dtend)
     end
   end
 end

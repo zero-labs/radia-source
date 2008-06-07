@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TrashMessagesControllerTest < ActionController::TestCase
+class AudioAssetTest < ActiveSupport::TestCase
   # Replace this with your real tests.
   def test_truth
     assert true

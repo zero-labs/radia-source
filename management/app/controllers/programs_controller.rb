@@ -45,7 +45,7 @@ class ProgramsController < ApplicationController
       else
         flash[:error] = "An error occurred."
         format.html { render :action => 'new' }
-        format.xml { head :xml => @program.errors.to_xml }
+        format.xml { render :xml => @program.errors.to_xml }
       end
     end
   end

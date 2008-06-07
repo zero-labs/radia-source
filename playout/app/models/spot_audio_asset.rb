@@ -1,0 +1,2 @@
+class SpotAudioAsset < AudioAsset
+end

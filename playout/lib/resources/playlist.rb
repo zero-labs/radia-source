@@ -1,7 +1,7 @@
 class Playlist < ActiveResource::Base
   self.site = "#{$playout_config['base_uri']}/audio/"
   
-  def to_palinsesto(builder, dtstart, dtend, description)
+  def to_palinsesto(builder, position, total, dtstart, dtend, description)
     builder.Palinsesto do
       builder.Description(description)
       builder.Priority(1)
@@ -30,7 +30,17 @@ class Playlist < ActiveResource::Base
   
   protected
   
+  # Avoids problems when reloading because it doesn't
+  # use the find method (that instantiates self and nested objects). 
+  # Since the get method returns a vanilla Hash, we're good to go
+  def alternative_reload
+    self.load(self.class.get(id, :params => @prefix_options))
+  end
+  
   def elements_to_palinsesto(builder)
+    if !respond_to?(:playlist_elements)
+      alternative_reload
+    end
     playlist_elements.each { |e| e.to_palinsesto(builder) }
   end
 end

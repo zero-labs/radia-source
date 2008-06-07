@@ -41,8 +41,12 @@ class User < ActiveRecord::Base
     self.activation_code = nil
     save(false)
   end
+  
+  def self.editors
+    find(:all).select { |u| u.has_role?('editor') }
+  end
 
-  def self.find_authors
+  def self.authors
     find(:all).select { |u| u.is_author? }
   end
   
@@ -137,6 +141,16 @@ class User < ActiveRecord::Base
   # Takes a name and tests if the user is an author for that program
   def is_author_of?(name)
     self.is_author? and !self.programs.find_by_name(name).nil?
+  end
+  
+  def to_xml(options = {})
+    options[:indent] ||= 2
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.user do
+      xml.tag!(:id, self.urlname, :type => 'string')
+      xml.tag!(:name, self.name, :type => 'string')
+    end
   end
 
   protected

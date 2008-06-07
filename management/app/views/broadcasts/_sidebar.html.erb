@@ -2,5 +2,6 @@
 <ul>
 	<li><%= link_to 'Deliver content', edit_delivery_path(@program, @broadcast) %></li>
 	<li><%= link_to 'Reschedule broadcast', program_edit_broadcast_path(@program, @broadcast) %></li>
-	<li><%= link_to 'Cancel broadcast', program_broadcast_path(@program, @broadcast), :method => :delete %></li>
+	<li><%= link_to 'Cancel broadcast', program_broadcast_path(@program, @broadcast), 
+					:method => :delete, :confirm => 'Are you sure you want to cancel this broadcast?' %></li>
 </ul>

@@ -54,15 +54,6 @@ class Segment < ActiveRecord::Base
       xml.tag!(:fill, self.fill, :type => :boolean)
       xml.tag!('items-to-play', self.items_to_play, :type => :integer)
       xml.tag!(:random, self.random, :type => :boolean)
-      #audio = \
-      #if options[:replace_unavailable] and 
-      #  (audio_asset.nil? or 
-      #  (audio_asset.unavailable? and audio_asset.kind == :live and options[:repetition]) or 
-      #  (audio_asset.unavailable? and audio_asset.kind != :live))
-      #  ProgramSchedule.instance.content_for_gap(self.length || bloc.playable_length)
-      #else
-      #  audio_asset
-      #end
       audio_asset.to_xml(:skip_instruct => true, :builder => xml, :short => true)
     end
   end

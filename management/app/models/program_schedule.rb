@@ -56,6 +56,17 @@ class ProgramSchedule < ActiveRecord::Base
   def broadcasts_and_gaps(dtstart, dtend)
     (self.broadcasts.find_in_range(dtstart, dtend) + Gap.find_all(dtstart, dtend)).sort
   end
+
+  def content_for_gap(length)
+    assets = AudioAsset.find(:all, :conditions => ["available = ?", true])
+    res = assets.select { |a| (a.length - length).abs < 60 }
+    res.empty? ? Playlist.find(:first) : res.first
+  end
+  
+  def now_playing
+    t = Time.now
+    broadcasts.find(:first, :conditions => ["dtstart <= ? AND dtend >= ?", t, t], :order => 'dtstart ASC') || Gap.new
+  end
   
   def to_xml(options = {})
     options[:indent] ||= 2
@@ -69,11 +80,6 @@ class ProgramSchedule < ActiveRecord::Base
     end
   end
   
-  def content_for_gap(length)
-    assets = AudioAsset.find(:all, :conditions => ["available = ?", true])
-    res = assets.select { |a| (a.length - length).abs < 60 }
-    res.empty? ? Playlist.find(:first) : res.first
-  end
   
   protected
   

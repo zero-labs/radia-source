@@ -1,6 +1,6 @@
 class SinglesController < ApplicationController
   
-  # GET /singles.:format
+  # GET /audio/singles.:format
   def index
     @singles = SingleAudioAsset.find(:all)
     respond_to do |format|
@@ -8,7 +8,7 @@ class SinglesController < ApplicationController
     end
   end
   
-  # GET /singles/:id.:format
+  # GET /audio/singles/:id.:format
   def show
     @single = SingleAudioAsset.find(params[:id])
     respond_to do |format|
@@ -18,7 +18,7 @@ class SinglesController < ApplicationController
   
   # Other views over these resources: Available and Downloading
   
-  # GET /singles/available.:format
+  # GET /audio/singles/available.:format
   def available
     @singles = SingleAudioAsset.find(:all, :conditions => "status = 'available'")
     respond_to do |format|
@@ -26,7 +26,7 @@ class SinglesController < ApplicationController
     end
   end
   
-  # GET /singles/downloading.:format
+  # GET /audio/singles/downloading.:format
   def downloading
     @singles = SingleAudioAsset.find(:all, :conditions => "status = 'downloading'")
     respond_to do |format|

@@ -13,11 +13,13 @@
 		</span>
 		<%= type_tag(broadcast) %>
 	</div>
-	<% if broadcast.kind_of?(Gap) %>
+	<% if broadcast.gap? %>
 	<% elsif program.nil? %>
 		<span class="broadcast_info">
-			<%= link_to broadcast.program.name, program_path(broadcast.program) %>
+			<%= link_to broadcast.program.name, program_path(broadcast.program) %><br/>
+			<%= status_icon(broadcast) %>
 		</span>
+		
 	<% end %>
 </li>
 

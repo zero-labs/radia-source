@@ -1,0 +1,32 @@
+<%
+	render :partial => 'crumbs'
+	add_crumb(@mailbox_name.to_s.humanize, user_mailbox_path(@user, :id => @mailbox_name), true)
+%>
+
+<% content_for :sidebar do %>
+	<%= render :partial => 'sidebar' %>
+<% end %>
+
+<h3>Messages</h3>
+
+<% if @mailbox.mail.empty? %>
+	There are no messages in this mailbox
+<% else %>
+<table>
+	<tr>
+		<th style="text-align: left;">Subject</th>
+		<th style="text-align: left;">Sender</th>
+		<th style="text-align: left;">Date</th>
+	</tr>
+	<% @mailbox.mail.each do |m| %>
+		<%= render :partial => 'message_item', :object => m %>
+	<% end %>
+</table>
+<% end %>
+
+<%= #(m.read? ? 'read' : 'unread')
+ %>
+
+<ul id="messages">
+	
+</ul>

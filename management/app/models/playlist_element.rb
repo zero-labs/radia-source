@@ -12,10 +12,7 @@ class PlaylistElement < ActiveRecord::Base
     xml.tag!('playlist-element') do
       xml.tag!(:id, self.id, :type => :integer)
       xml.tag!(:position, self.position, :type => :integer)
-      
-      xml.audio(:type => audio_asset.kind) do
-        xml.tag!(:id, audio_asset.id, :type => :integer)
-      end
+      audio_asset.to_xml(:builder => xml, :skip_instruct => true, :short => true)
     end
   end
 end

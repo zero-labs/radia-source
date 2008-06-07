@@ -27,6 +27,10 @@ class Emission < Broadcast
     bloc.audio_assets
   end
   
+  def authors
+    program.authors
+  end
+  
   def update_bloc
     self.bloc.destroy unless self.bloc.nil?
     init_bloc
@@ -38,6 +42,10 @@ class Emission < Broadcast
   
   def status
     self.bloc.status
+  end
+  
+  def name
+    self.program.name
   end
   
   def pretty_print_status
@@ -66,6 +74,8 @@ class Emission < Broadcast
     end
   end
   
+  protected
+  
   def init_bloc
     self.bloc = Bloc.create(:playable => self)
     emission_type.bloc.segments.each do |e| 
@@ -77,6 +87,4 @@ class Emission < Broadcast
       self.bloc.add_segment(segment)
     end
   end
-  
-  protected
 end

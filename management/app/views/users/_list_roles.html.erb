@@ -1,0 +1,8 @@
+<% unless @user.roles.empty? %>
+	<h1>Roles</h1>
+	<ul>
+		<% @user.roles.each do |r| %>
+			<li><%= r.name %></li>
+		<% end %>
+	</ul>
+<% end %>

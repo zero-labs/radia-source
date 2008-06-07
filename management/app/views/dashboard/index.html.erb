@@ -1,0 +1,45 @@
+<%
+	add_crumb('Dashboard', dashboard_path, true)
+%>
+
+<% content_for :sidebar do %>
+	<h1>Late programs</h1>
+	<ul>
+	</ul>
+<% end %>
+
+
+<div id="status">
+	<h3>Current status</h3>
+	<div class="span-7 append-1">
+		<span class="as_label">Now playing: </span><%= current_broadcast %>
+	</div>
+	<div class="span-9 last">
+		<span class="as_label">Status: </span><%= status_icon %>
+	</div>
+</div>
+
+<div>
+	&nbsp;
+</div>
+
+<div class="span-7 append-1">
+	<h3>Upcoming programming</h3>
+	<ul class="horizontal_options">
+		<li><%= link_to 'Complete schedule', schedule_path %></li>
+		<li><%= link_to 'Only gaps', schedule_gaps_path %></li>
+	</ul>
+	<ul id="broadcasts">
+		<% upcoming_broadcasts.each do |b| %>
+		<li><%= small_print_broadcast(b) %></li>
+		<% end %>
+	</ul>
+</div>
+<div class="span-9 last">
+	<h3>Recently delivered audio assets</h3>
+	<ul>
+		<% recently_delivered_singles.each do |s| %>
+		<li><%= link_to s.title, audio_single_path(s) %> - <%= s.delivered_at.to_formatted_s(:short) %></li>
+		<% end %>
+	</ul>
+</div>

@@ -51,11 +51,21 @@ module BroadcastsHelper
     render :partial => 'broadcasts/broadcast', :locals => { :broadcast => broadcast, :program => program }
   end 
   
-  def program_emission_tag(program, emission)
-    
+  def small_print_broadcast(broadcast, program = nil)
+    render :partial => 'broadcasts/small_broadcast', :locals => { :broadcast => broadcast }
   end
   
-  def status_tag(emission)
-    emission.status
+  def status_icon(broadcast = nil)
+    b = broadcast.nil? ? ProgramSchedule.instance.now_playing : broadcast
+    color = case b.status
+    when :pending
+      'red'
+    when :delivered
+      'yellow'
+    when :partial
+      'yellow'
+    end
+    out = image_tag "icons/#{color}_status.png", :class => 'img_icon', :size => '10x10'
+    out << "\n<span class=\"as_label\"> #{b.pretty_print_status} </span>"
   end
 end
