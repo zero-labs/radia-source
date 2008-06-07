@@ -4,7 +4,10 @@
 %>
 
 <% content_for :sidebar do %>
-	<%= link_to "New emission type", new_schedule_emission_type_path %>
+	<h1>Administration</h1>
+	<ul>
+		<li><%= link_to "New emission type", new_schedule_emission_type_path %></li>
+	</ul>
 <% end %>
 
 <% unless @emission_types.empty? then %>
