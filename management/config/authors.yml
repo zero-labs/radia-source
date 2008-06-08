@@ -1,0 +1,474 @@
+--- 
+- name: Ricardo Reis
+  nick: Reis
+  mail: rreis@radiozero.pt
+  programs: 
+  - "Matin\xC3\xA9"
+- name: Filipe Palha
+  nick: Palha
+  mail: filipepalha@radiozero.pt
+  programs: 
+  - PIB
+- name: Filipe Roque
+  nick: flip
+  mail: filipe@radiozero.pt
+  programs: 
+  - PIB
+- name: "Jo\xC3\xA3o Bacalhau"
+  nick: Bacalhau
+  mail: bacalhau@radiozero.pt
+  programs: 
+  - PIB
+  - "Puntz! [S\xC3\xA1bado]"
+- name: Miguel Santos
+  nick: MS
+  mail: miguel@radiozero.pt
+  programs: 
+  - Radioswap
+- name: Nuno Pinheiro
+  nick: Pinheiro
+  mail: nunopinheiro@radiozero.pt
+  programs: 
+  - PIB
+- name: Pedro Lopes
+  nick: PLopes
+  mail: jazz@radiozero.pt
+  programs: 
+  - 4x3
+- name: Rute Correia
+  nick: ""
+  mail: rutecorreia@radiozero.pt
+  programs: 
+  - PIB
+  - Marca Branca
+- name: "Andr\xC3\xA9 Santos"
+  nick: ""
+  mail: andre@radiozero.pt
+  programs: 
+  - Estado da Arte
+- name: Alexandre Gil
+  nick: ""
+  mail: alexandre.matoso.gil@gmail.com
+  programs: 
+  - The Wild Rover
+- name: Alfredo Sota
+  nick: ""
+  mail: high-vibes@hotmail.com
+  programs: 
+  - High Vibes Sound
+- name: Amadeu Dias
+  nick: ""
+  mail: amabok@gmail.com
+  programs: 
+  - Radiologia
+- name: Ana Caldeira
+  nick: ""
+  mail: dolphin_lovestosing@hotmail.com
+  programs: 
+  - Soul Time
+- name: Ana Martins
+  nick: ""
+  mail: amartins@mcr.clix.pt
+  programs: 
+  - Boa Noite e Um Queijo
+- name: "Ant\xC3\xB3nio Serzedelo"
+  nick: ""
+  mail: anser1@clix.pt
+  programs: 
+  - Vidas Alternativas
+- name: "Ant\xC3\xB3nio Silva"
+  nick: "T\xC3\xB3 Man\xC3\xA9"
+  mail: neozed71@hotmail.com
+  programs: 
+  - "M\xC3\xBAsica de Peso"
+  - "Conc\xC3\xADlio Dos Deuses"
+- name: Artur Silva
+  nick: ""
+  mail: thepurplebottle22@gmail.com
+  programs: 
+  - Director's Cut
+- name: Bruno Cardoso
+  nick: Xinobi
+  mail: xinobi@gmail.com
+  programs: 
+  - Puntz! [Xinobi + EgoVision]
+- name: Bruno Fuste
+  nick: ""
+  mail: brunofuste@gmail.com
+  programs: 
+  - Estado da Arte
+- name: Bruno Safara
+  nick: ""
+  mail: bsafara@gmail.com
+  programs: 
+  - "Outra Esta\xC3\xA7\xC3\xA3o"
+- name: Bruno Souza
+  nick: Mitri
+  mail: mitriates@gmail.com
+  programs: 
+  - Bandidos Desesperados
+- name: Carlos Neves
+  nick: ""
+  mail: djsnowman@gmail.com
+  programs: 
+  - "A Minha Almofada Tem R\xC3\xA1dio"
+- name: Carlos Resende
+  nick: Joe Latino
+  mail: joelatino@netcabo.pt
+  programs: 
+  - O Dia Em Que A Terra Parou
+- name: Carlos Terenas
+  nick: ""
+  mail: carlosterenas@netcabo.pt
+  programs: 
+  - Carter Hotel
+- name: Catarina Sousa
+  nick: ""
+  mail: cat_sousa15@hotmail.com
+  programs: 
+  - "Ch\xC3\xA1 com Mel"
+- name: "Cec\xC3\xADlia Barros"
+  nick: ""
+  mail: cecilia.ann@hotmail.com
+  programs: 
+  - AGaragem.com
+- name: "C\xC3\xA9sar Rodrigues"
+  nick: ""
+  mail: cesar.rodrigues@sapo.pt
+  programs: 
+  - "Patag\xC3\xB3nia"
+- name: "Cl\xC3\xA1udia Matos Silva"
+  nick: ""
+  mail: claudiamatossilva@gmail.com
+  programs: 
+  - Pretty In Pink
+- name: Daniela Domingos
+  nick: ""
+  mail: daniela_domingos@hotmail.com
+  programs: 
+  - Pronto-a-Ouvir
+- name: Diana Guerra
+  nick: ""
+  mail: dianacaldeiraguerra@gmail.com
+  programs: 
+  - PIB
+  - "S\xC3\xA9timo Som"
+- name: Diogo Ferreira
+  nick: 90k
+  mail: diogoferreira@netcabo.pt
+  programs: 
+  - Puntz! [Prego no Prato]
+- name: Edgar Barreira
+  nick: Pan
+  mail: edgar.barreira@atleta-digital.com
+  programs: 
+  - AtletOnews
+- name: "F\xC3\xA1bio Cruz"
+  nick: ""
+  mail: fabiomatoscruz@gmail.com
+  programs: 
+  - Osso De Rodes
+- name: "F\xC3\xA1bio Neno"
+  nick: Neno
+  mail: zeta2xplor@gmail.com
+  programs: 
+  - Director's Cut
+- name: "F\xC3\xA1tima Casanova"
+  nick: ""
+  mail: fatygomes@gmail.com
+  programs: 
+  - PIB
+- name: Guilherme Caxaria
+  nick: ""
+  mail: gui.caxaria@gmail.com
+  programs: 
+  - Break & Enter
+  - Gravidade Zero
+- name: Guilherme Silva
+  nick: ""
+  mail: guilherme_csilva@hotmail.com
+  programs: 
+  - AGaragem.com
+- name: Helder Gomes
+  nick: ""
+  mail: hefgomes@gmail.com
+  programs: 
+  - Coffee Breakz
+- name: Hugo Rafael Borges
+  nick: ""
+  mail: uhgo@mail.pt
+  programs: 
+  - Electricfukkers
+- name: "Jo\xC3\xA3o Azevedo e Silva"
+  nick: "Jo\xC3\xA3o Blake"
+  mail: thethingiam@hotmail.com
+  programs: 
+  - "Esta\xC3\xA7\xC3\xA3o de Inverno"
+- name: "Jo\xC3\xA3o Caxias"
+  nick: ""
+  mail: jcaxias15@hotmail.com
+  programs: 
+  - Ritualis Metallum Infernalium
+- name: "Jo\xC3\xA3o David Santos"
+  nick: ""
+  mail: jdsantos@gmail.com
+  programs: 
+  - Radiologia
+- name: "Jo\xC3\xA3o Guilhoto"
+  nick: ""
+  mail: jguilho@msn.com
+  programs: 
+  - "Conc\xC3\xADlio Dos Deuses"
+- name: "Jo\xC3\xA3o Pateira"
+  nick: Pateira
+  mail: jo.at.work@hotmail.com
+  programs: 
+  - AtletOnews
+- name: "Jo\xC3\xA3o Pereira"
+  nick: Jaxx
+  mail: jappereira@gmail.com
+  programs: 
+  - Puntz! [Prego no Prato]
+- name: Joel Ildefonso
+  nick: ""
+  mail: joelpedro2816@hotmail.com
+  programs: 
+  - Electricfukkers
+- name: "Jos\xC3\xA9 Rainho"
+  nick: ""
+  mail: jose.rainho@gmail.com
+  programs: 
+  - Radiologia
+- name: Lia Pereira
+  nick: ""
+  mail: liap@blitz.pt
+  programs: 
+  - Boa Noite e Um Queijo
+- name: "Lu\xC3\xADs Cruz"
+  nick: sty, roca
+  mail: roca@conspira.net
+  programs: 
+  - "TransMiss\xC3\xA3o Conspira"
+- name: "Lu\xC3\xADs Franco-Bastos"
+  nick: ""
+  mail: luis_bastos_@hotmail.com
+  programs: 
+  - "Conc\xC3\xADlio Dos Deuses"
+- name: "Lu\xC3\xADs Rei"
+  nick: yggdrasil
+  mail: reiluis2001@yahoo.com
+  programs: 
+  - Terra Pura
+- name: "Lu\xC3\xADs Silva"
+  nick: ""
+  mail: o.azevedo.silva@gmail.com
+  programs: 
+  - Contrabando
+- name: "Lu\xC3\xADsa Jacinto"
+  nick: ""
+  mail: luisa.jacinto@gmail.com
+  programs: 
+  - Until
+- name: Mafalda Melo
+  nick: ""
+  mail: mafalda.melo@gmail.com
+  programs: 
+  - Radiologia
+- name: Marco Miranda
+  nick: M-PeX
+  mail: mpex79@gmail.com
+  programs: 
+  - Puntz! [M-PeX]
+- name: Marcos Farrajota
+  nick: ""
+  mail: m_farrajota@netcabo.pt
+  programs: 
+  - Invisual
+- name: "Maria Ros\xC3\xA1rio Crujo"
+  nick: "Ros\xC3\xA1rio"
+  mail: rosariocrujo@netcabo.pt
+  programs: 
+  - Bside
+- name: "M\xC3\xA1rio Lino"
+  nick: ""
+  mail: doktorcaligari@aero.ist.utl.pt
+  programs: 
+  - "Matin\xC3\xA9"
+- name: Marta Jales
+  nick: ""
+  mail: martajales@hotmail.com
+  programs: 
+  - "S\xC3\xA9timo Som"
+- name: Miguel de Sousa
+  nick: M.
+  mail: info@connexionbizarre.net
+  programs: 
+  - Connexion Bizarre
+- name: Miguel Pacheco Gomes
+  nick: ""
+  mail: miguelpachecogomes@gmail.com
+  programs: 
+  - Until
+- name: Miguel van-der Kellen
+  nick: ""
+  mail: miguel.vanderkellen@gmail.com
+  programs: 
+  - "Outra Esta\xC3\xA7\xC3\xA3o"
+- name: Nuno Camarinhas
+  nick: ""
+  mail: camarinhas@free.fr
+  programs: 
+  - Naquelas Tardes Sem Nada Para Fazer
+- name: "Nuno Ov\xC3\xADdio"
+  nick: ""
+  mail: nuno_ovidio@net.sapo.pt
+  programs: 
+  - "M\xC3\xBAsica Livre"
+- name: Nuno Quartilho
+  nick: xu
+  mail: nquartilho@unidadegrafica.com
+  programs: 
+  - "TransMiss\xC3\xA3o Conspira"
+- name: Paulo Henriques
+  nick: ""
+  mail: paulo.henriques73@gmail.com
+  programs: 
+  - "Patag\xC3\xB3nia"
+- name: Paulo Paiva
+  nick: ""
+  mail: patilhaspretas@hotmail.com
+  programs: 
+  - Brasil
+- name: Paulo Raposo
+  nick: ""
+  mail: sirr@sirr-ecords.com
+  programs: 
+  - The Sound Of Space
+- name: Pedro Corredoura
+  nick: ""
+  mail: wrabs_slb@hotmail.com
+  programs: 
+  - Ritualis Metallum Infernalium
+- name: "Pedro Bar\xC3\xA3o"
+  nick: ""
+  mail: pedro_barao@hotmail.com
+  programs: 
+  - Insert Coin
+- name: Pedro Esteves
+  nick: ""
+  mail: pesteves@gmail.com
+  programs: 
+  - Lado B
+- name: Pedro Garcia
+  nick: ""
+  mail: pedroccgarcia@hotmail.com
+  programs: 
+  - "Conc\xC3\xADlio Dos Deuses"
+- name: Pedro Moreira
+  nick: ""
+  mail: im.not.pedro@gmail.com
+  programs: 
+  - Contrabando
+- name: Pedro Silva
+  nick: ""
+  mail: sekas_@hotmail.com
+  programs: 
+  - Ritualis Metallum Infernalium
+- name: Renato Duarte
+  nick: ""
+  mail: renato_fd@hotmail.com
+  programs: 
+  - Pronto-a-Ouvir
+  - "Conc\xC3\xADlio Dos Deuses"
+- name: Ricardo Amaral
+  nick: ""
+  mail: ricardo.m.f.amaral@gmail.com
+  programs: 
+  - "Hora Obl\xC3\xADqua"
+- name: Ricardo Baeta
+  nick: ""
+  mail: ricardo.baeta@ist.utl.pt
+  programs: 
+  - Beat Oven
+- name: Ricardo Marcos
+  nick: ""
+  mail: marcos.ric@clix.pt
+  programs: 
+  - Puntz! [Silas Francisco + Ricardo Matos]
+  - Gravidade Zero
+- name: Ricardo Pinto
+  nick: ""
+  mail: ricardo.pinto@ist.utl.pt
+  programs: 
+  - Gravidade Zero
+- name: Ricardo Santana
+  nick: EgoVision
+  mail: egovision@gmail.com
+  programs: 
+  - Puntz! [Xinobi + EgoVision]
+- name: Ruben Portinha
+  nick: ""
+  mail: ruben.portinha@gmail.com
+  programs: 
+  - PIB
+  - Brasil
+- name: Rui Silva
+  nick: ADS
+  mail: sunset.in.trance@hotmail.com
+  programs: 
+  - Puntz! [ADS presents Melodic Euphoria]
+- name: Rui Teixeira
+  nick: Rui M
+  mail: emaerre@gmail.com
+  programs: 
+  - Bandidos Desesperados
+- name: "Rui Tom\xC3\xA1s"
+  nick: ""
+  mail: ruitomas@mcr.iol.pt
+  programs: 
+  - Invisual
+- name: Sara Rocha
+  nick: ""
+  mail: saramelorocha@hotmail.com
+  programs: 
+  - PIB
+- name: "S\xC3\xA9rgio Loureiro"
+  nick: ""
+  mail: sergio.loureiro@netcabo.pt
+  programs: 
+  - Break & Enter
+- name: "S\xC3\xA9rgio Pinto"
+  nick: "S\xC3\xA9rgio Hydalgo"
+  mail: sergiohydalgo@gmail.com
+  programs: 
+  - "M\xC3\xA1 Fama"
+- name: Silas Francisco
+  nick: ""
+  mail: silas.francisco@ist.utl.pt
+  programs: 
+  - Puntz! [Silas Francisco + Ricardo Matos]
+- name: "T\xC3\xA2nia Costa"
+  nick: ""
+  mail: taniamaria_costa@hotmail.com
+  programs: 
+  - PIB
+- name: "T\xC3\xA2nia Lucas"
+  nick: ""
+  mail: tania_lucas24@hotmail.com
+  programs: 
+  - Bside
+- name: Tatiana Pereira
+  nick: ""
+  mail: tvazpereira@gmail.com
+  programs: 
+  - Brasil
+- name: Tiago Crispim
+  nick: Crispim
+  mail: crispim.tiago@gmail.com
+  programs: 
+  - Registos Sonoros
+- name: Victor Correia
+  nick: ""
+  mail: correiavictor@sapo.pt
+  programs: 
+  - "A Arte A Uma S\xC3\xB3 Voz"
