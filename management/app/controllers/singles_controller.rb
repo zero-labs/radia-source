@@ -4,7 +4,7 @@ class SinglesController < ApplicationController
   # GET /audio/singles
   # GET /audio/singles.:format
   def index
-    @singles = Single.find(:all, :conditions => ["available = ?", true])
+    @singles = Single.find(:all, :conditions => 'delivered_at IS NOT NULL')
     respond_to do |format|
       format.html # index.html.erb
       format.xml { render :xml => @singles.to_xml }

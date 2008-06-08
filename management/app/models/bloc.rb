@@ -72,7 +72,12 @@ class Bloc < ActiveRecord::Base
     if status_array.size == 0
       :pending
     elsif status_array.size == segments.size
-      :delivered
+      av = segments.collect { |s| s.available? }.select { |s| s }
+      if av.size == segments.size
+        :available
+      else
+        :delivered
+      end
     else
       :partial
     end

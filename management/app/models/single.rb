@@ -13,6 +13,17 @@ class Single < AudioAsset
     self.live_source.nil? ? :single : :live
   end
   
+  def available?
+    begin
+      s = PlayoutResources::Single.find(self.id)
+      s.available?
+    rescue ActiveResource::ResourceNotFound
+      false
+    rescue Exception
+      nil
+    end
+  end
+  
   def asset_name
     name = case kind
     when :live
@@ -32,7 +43,7 @@ class Single < AudioAsset
       xml.tag!('live-source', self.live_source.uri, :type => :string) if kind == :live
       unless options[:short]
         xml.tag!(:authored, self.authored, :type => :boolean)
-        xml.tag!(:available, self.available, :type => :boolean)
+        #xml.tag!(:available, self.available, :type => :boolean)
         #xml.tag!(:deadline, self.deadline, :type => :string)
         xml.tag!(:length, self.length, :type => :float)
         xml.tag!('retrieval-uri', self.retrieval_uri, :type => :string)

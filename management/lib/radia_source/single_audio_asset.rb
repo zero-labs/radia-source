@@ -10,7 +10,7 @@ module RadiaSource
       end
       
       def find_all_unavailable
-        find(:all, :conditions => ["available = ? AND retrieval_uri IS NOT NULL", false])
+        find(:all, :conditions => ["retrieval_uri IS NOT NULL", false])
       end
       
       def find_all_delivered_after(dtime)

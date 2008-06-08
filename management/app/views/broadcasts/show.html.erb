@@ -19,10 +19,9 @@
 		No description
 	<% end %>
 </p>
-<p>
-	<span class="as_label">Status: </span>
-	<%= @broadcast.pretty_print_status %>
-</p>
+<div>
+	<%= status_icon(@broadcast) %>
+</div>
 <hr />
 <h3>Segments</h3>
 <ul>

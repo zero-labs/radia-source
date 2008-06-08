@@ -67,7 +67,9 @@ module BroadcastsHelper
     when :partial
       'yellow'
     end
-    out = image_tag "icons/#{color}_status.png", :class => 'img_icon', :size => '10x10'
-    out << "\n<span class=\"as_label\"> #{b.pretty_print_status} </span>"
+    out = "\n<span class=\"as_label\">Status:</span>\n"
+    out << image_tag( "icons/#{color}_status.png", :class => 'img_icon', :size => '10x10')
+    out << " #{b.pretty_print_status}<br/><br/>"
+    
   end
 end

@@ -50,6 +50,8 @@ class Emission < Broadcast
   
   def pretty_print_status
     case status
+    when :available
+      'Available'
     when :delivered
       'Delivered'
     when :partial

@@ -41,6 +41,10 @@ class Segment < ActiveRecord::Base
     @unit = value
   end
   
+  def available?
+    audio_asset.available?
+  end
+  
   def delivered?
     audio_asset.delivered?
   end

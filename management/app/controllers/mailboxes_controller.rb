@@ -6,9 +6,10 @@ class MailboxesController < ApplicationController
   # GET /users/:user_id/mailboxes.:format
   def index
     @active = 'my_account' if @user == current_user
+    @mailboxes = @user.mailboxes
     respond_to do |format|
       format.html # index.html.erb
-      format.xml {  } # TODO
+      format.xml { render :xml => @mailboxes.to_xml(:root => 'mailboxes') }
     end
   end
   
@@ -23,11 +24,17 @@ class MailboxesController < ApplicationController
     end
   end
   
+  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty
+  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty.:format
+  def empty
+    # TODO
+  end
+  
   protected
   
   def find_user_and_mailbox_from_params
     @user = User.find_by_urlname(params[:user_id])
-    @mailbox = @user.mailbox[params[:id]]
+    @mailbox = @user.mailbox[params[:id]] if params[:id]
     @mailbox_name = params[:id]
   end
   

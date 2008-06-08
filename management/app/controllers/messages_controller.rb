@@ -60,10 +60,20 @@ class MessagesController < ApplicationController
     end
   end
   
-  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty
-  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty.:format
-  def empty
-    # TODO
+  # AJAX methods
+  
+  # POST /users/:user_id/mailboxes/:mailbox_id/messages/add_recipient
+  def add_recipient
+    respond_to do |format|
+      format.rjs { }
+    end
+  end
+  
+  # POST /users/:user_id/mailboxes/:mailbox_id/messages/remove_recipient
+  def remove_recipient
+    respond_to do |format|
+      format.rjs { }
+    end
   end
   
   protected

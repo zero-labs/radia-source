@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 22) do
+ActiveRecord::Schema.define(:version => 23) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -32,7 +32,6 @@ ActiveRecord::Schema.define(:version => 22) do
     t.string   "md5_hash"
     t.string   "deadline"
     t.integer  "live_source_id"
-    t.boolean  "available",      :default => false
     t.string   "retrieval_uri"
     t.datetime "delivered_at"
   end

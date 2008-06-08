@@ -10,6 +10,6 @@
 		<%= link_to 'Inbox', user_mailbox_path(current_user, :id => :inbox) %>
 		(<%= current_user.mailbox[:inbox].mail.size %> messages)
 	</li>
-	<li><%= link_to 'Sent', user_mailbox_path(current_user, :id => :sent) %></li>
+	<li><%= link_to 'Sent', user_mailbox_path(current_user, :id => :sentbox) %></li>
 	<li><%= link_to 'Trash', user_mailbox_path(current_user, :id => :trash) %></li>
 </ul>

@@ -16,8 +16,7 @@
 	<% if broadcast.gap? %>
 	<% elsif program.nil? %>
 		<span class="broadcast_info">
-			Program: <%= link_to broadcast.program.name, program_path(broadcast.program) %><br/>
-			<%= status_icon(broadcast) %>
+			<%= link_to broadcast.program.name, program_path(broadcast.program) %><br/>
 		</span>
 		
 	<% end %>

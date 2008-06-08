@@ -7,4 +7,15 @@ class Spot < AudioAsset
     'Spot'
   end
   
+  def available?
+    begin
+      s = PlayoutResources::Spot.find(self.id)
+      s.available?
+    rescue ActiveResource::ResourceNotFound
+      false
+    rescue Exception
+      nil
+    end
+  end
+  
 end
