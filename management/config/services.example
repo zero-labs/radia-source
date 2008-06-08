@@ -1,0 +1,5 @@
+# Rename this file to services.yml and define here the URIs for the different Radia services
+
+playout: http://playout.example.com
+
+archive: http://archive.example.com

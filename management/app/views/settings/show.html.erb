@@ -2,17 +2,14 @@
 	add_crumb("Settings", settings_path, true)
 %>
 
-<ul id="type_list">
-	<li><span class="list_title"><%= link_to "Asset services", settings_asset_services_path %></span></li>
-	<ul id="asset_services">
-		<% @settings.asset_services.each do |s| %>
-			<li><%= link_to s.name, edit_settings_asset_service_path(s) %></li>
-		<% end %>
-	</ul>
-	<li><span class="list_title"><%= link_to "Live sources", settings_live_sources_path %></span></li>
-	<ul id="live_sources">
-		<% @settings.live_sources.each do |s| %>
-			<li><%= link_to s.title, edit_settings_live_source_path(s) %></li>
-		<% end %>
-	</ul>
+<ul>
+	<li class="type_list_element">
+		<%= link_to "Asset services", settings_asset_services_path %>
+	</li>
+	<%= render :partial => 'shared/asset_services', :object => @settings.asset_services %>
+
+	<li class="type_list_element">
+		<%= link_to "Live sources", settings_live_sources_path %>
+	</li>
+	<%= render :partial => 'shared/live_sources', :object => @settings.live_sources %>
 </ul>

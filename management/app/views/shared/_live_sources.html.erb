@@ -1,0 +1,13 @@
+<ul>
+	<% live_sources.each do |s| %>
+	<li <%= %( onmouseover="$('ls_#{s.id}').show();" onmouseout="$('ls_#{s.id}').hide();") %>>
+		<%= link_to s.name, settings_live_source_path(s) %>
+		<span style="display:none;" id="ls_<%= s.id %>">
+			<%= link_to('edit', edit_settings_live_source_path(s), :class => "utility") %> |
+			<%= link_to('delete', settings_live_source_path(s), 
+						:class => "utility", :method => :delete, 
+						:confirm => "Delete this live source forever?") %>
+		</span>
+	</li>
+	<% end %>
+</ul>

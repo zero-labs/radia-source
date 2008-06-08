@@ -62,6 +62,8 @@ module BroadcastsHelper
       'red'
     when :delivered
       'yellow'
+    when :available
+      'green'
     when :partial
       'yellow'
     end

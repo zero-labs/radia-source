@@ -1,7 +1,3 @@
 <%= render :partial => 'crumbs' %>
 
-<ul>
-<% @live_sources.each do |a| %>
-	<li><%= link_to a.title, edit_settings_live_source_path(a) %></li>
-<% end %>
-</ul>
+<%= render :partial => 'shared/live_sources', :object => @live_sources %>

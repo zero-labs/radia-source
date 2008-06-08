@@ -11,16 +11,16 @@
 	</ul>
 <% end %>
 
-<ul id="type_list">
-	<li><span class="list_title"><%= link_to "Playlists", audio_playlists_path %></span></li>
+<ul>
+	<li class="type_list_element"><%= link_to "Playlists", audio_playlists_path %></li>
 	<% count = @audio[:playlists].size %>
 	<%= "#{count} playlist" + (count > 1 ? 's' : '') %>
 	
-	<li><span class="list_title"><%= link_to "Singles", audio_singles_path %></span></li>
+	<li class="type_list_element"><%= link_to "Singles", audio_singles_path %></li>
 	<% count = @audio[:singles].size %>
 	<%= "#{count} single" + (count > 1 ? 's' : '') %>
 	
-	<li><span class="list_title"><%= link_to "Spots", audio_spots_path %></span></li>
+	<li class="type_list_element"><%= link_to "Spots", audio_spots_path %></li>
 	<% count = @audio[:spots].size %>
 	<%= "#{count} spot" + (count > 1 ? 's' : '') %>
 </ul>

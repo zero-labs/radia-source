@@ -145,16 +145,23 @@ a.utility:hover
 
 /** Type List **/
 
-#type_list li { 
+li.type_list_element { 
 	list-style: none; 
 	padding-bottom: 3px;
 	margin: 15px 0 5px 0;
 	border-bottom: 1px dotted #aaa;
+	font-weight: bold;
+	font-size: 1.1em;
 }
 
-#type_list li a:link, #type_list li a:visited { text-decoration: none; }
+li.type_list_element a {
+	color: #000;
+	font-size: 1.1em;
+}
 
-#type_list li a:hover { text-decoration: underline; }
+li.type_list_element a:link, li.type_list_element a:visited { text-decoration: none;}
+
+li.type_list_element a:hover { text-decoration: underline; }
 
 /** Bloc Element types **/
 

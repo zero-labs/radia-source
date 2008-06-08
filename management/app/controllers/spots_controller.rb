@@ -4,7 +4,7 @@ class SpotsController < ApplicationController
   # GET /audio/spots
   # GET /audio/spots.:format
   def index
-    @spots = Spot.find(:all, :conditions => ["available = ?", true])
+    @spots = Spot.find(:all)
     respond_to do |format|
       format.html # index.html.erb
       format.xml { render :xml => @spots.to_xml }

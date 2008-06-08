@@ -1,1 +1,18 @@
 <%= render :partial => 'crumbs' %>
+<% add_crumb(@asset_service.name, settings_asset_service_path(@asset_service)) %>
+
+<p>
+	<span class="as_label">Name: </span><%= @asset_service.name %>
+</p>
+
+<p>
+	<span class="as_label">Protocol: </span><%= @asset_service.protocol %>
+</p>
+
+<p>
+	<span class="as_label">URI: </span><%= @asset_service.uri %>
+</p>
+
+<p>
+	<span class="as_label">Login: </span><%= @asset_service.login %>
+</p>

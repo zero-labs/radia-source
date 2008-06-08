@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 21) do
+ActiveRecord::Schema.define(:version => 22) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(:version => 21) do
   create_table "live_sources", :force => true do |t|
     t.integer "settings_id"
     t.string  "uri"
-    t.string  "title"
+    t.string  "name"
   end
 
   create_table "mail", :force => true do |t|

@@ -37,10 +37,10 @@ module RadiaSource
         @partial_uri = value
       end
       
-      # An asset is considered to be delivered if it is available at
-      # the broadcast node or if an AssetService has been defined for it
+      # An asset is considered to be delivered if has
+      # delivered_at datetime != nil
       def delivered?
-        self.available? or !self.retrieval_uri.nil?
+        !self.delivered_at.nil?
       end
       
       protected 

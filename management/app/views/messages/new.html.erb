@@ -6,7 +6,7 @@
 <% form_for(@message, :url => new_user_mailbox_message_path(current_user, :mailbox_id => :sent)) do |f| %>
 	<p>
 		<label for="message_subject">Recipients</label><br/>
-		<%= f.text_field :subject %>
+		<%= list_recipients %>
 	</p>
 	
 	<p>

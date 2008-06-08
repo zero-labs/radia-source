@@ -1,0 +1,13 @@
+<ul>
+	<% asset_services.each do |s| %>
+	<li <%= %( onmouseover="$('as_#{s.id}').show();" onmouseout="$('as_#{s.id}').hide();") %>>
+		<%= link_to s.name, settings_asset_service_path(s) %>
+		<span style="display:none;" id="as_<%= s.id %>">
+			<%= link_to('edit', edit_settings_asset_service_path(s), :class => "utility") %> |
+			<%= link_to('delete', settings_asset_service_path(s), 
+						:class => "utility", :method => :delete, 
+						:confirm => "Delete this asset service forever?") %>
+		</span>
+	</li>
+	<% end %>
+</ul>

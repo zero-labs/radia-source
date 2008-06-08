@@ -1,6 +1,5 @@
-<%
-	add_crumb("Settings", settings_path)
-%>
+<%= render :partial => 'crumbs' %>
+<% add_crumb("New", new_settings_asset_service_path) %>
 
 <% form_for(@asset_service, :url => settings_asset_services_path) do |f| %>
 	<%= hidden_field_tag :settings_id, :value => 1 %>

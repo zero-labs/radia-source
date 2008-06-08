@@ -1,5 +1,15 @@
 class AssetServicesController < ApplicationController
   
+  # GET /settings/asset_services
+  # GET /settings/asset_services.:format
+  def index
+    @asset_services = AssetService.find(:all)
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml { render :xml => @asset_services.to_xml }
+    end
+  end
+  
   # GET /settings/asset_services/new
   def new
     @asset_service = AssetService.new
