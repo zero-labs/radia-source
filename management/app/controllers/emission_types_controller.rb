@@ -36,11 +36,11 @@ class EmissionTypesController < ApplicationController
     respond_to do |format|
       if @emission_type.save
         flash[:notice] = "Emission type successfully created"
-        format.html
+        format.html { redirect_to schedule_emission_types_path }
         format.xml { head :ok }
       else
-        flash[:error] = "There were problems creating the emission type"
-        format.html { render :action => 'new' }
+        flash[:error] = "There were problems creating the emission type."
+        format.html { render :action => 'new' }
         format.xml { render :xml => @emission_type.errors.to_xml }
       end
     end

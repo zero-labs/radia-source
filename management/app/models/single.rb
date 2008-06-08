@@ -33,7 +33,7 @@ class Single < AudioAsset
       unless options[:short]
         xml.tag!(:authored, self.authored, :type => :boolean)
         xml.tag!(:available, self.available, :type => :boolean)
-        xml.tag!(:deadline, self.deadline, :type => :string)
+        #xml.tag!(:deadline, self.deadline, :type => :string)
         xml.tag!(:length, self.length, :type => :float)
         xml.tag!('retrieval-uri', self.retrieval_uri, :type => :string)
       end

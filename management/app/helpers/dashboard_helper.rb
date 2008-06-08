@@ -10,8 +10,7 @@ module DashboardHelper
   end
   
   def recently_delivered_singles
-    base = 1.day.ago
-    Single.find_all_delivered_after(base) + Spot.find_all_delivered_after(base)
+    Single.find_recently_delivered(10) + Spot.find_recently_delivered(10)
   end
   
   def upcoming_broadcasts

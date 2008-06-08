@@ -16,6 +16,10 @@ module RadiaSource
       def find_all_delivered_after(dtime)
         find(:all, :conditions => ["delivered_at >= ?", dtime], :order => "delivered_at DESC")
       end
+      
+      def find_recently_delivered(top = 5)
+        find(:all, :conditions => "delivered_at IS NOT NULL", :order => "delivered_at DESC", :limit => top)
+      end
     end
 
     module InstanceMethods

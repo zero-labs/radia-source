@@ -1,7 +1,7 @@
 <p>
 	<label for="authored">Produced by an author?</label><br/>
 
-	<%= radio_button_tag 'segment[asset][authored]', 1 %> 
+	<%= radio_button_tag 'segment[asset][authored]', 1, true %> 
 	<label for="segment_asset_authored_1">Yes</label> or 
 	<%= radio_button_tag 'segment[asset][authored]', 0 %> 
 	<label for="segment_asset_authored_0">No</label>
@@ -15,12 +15,12 @@
 	<% end %>
 </div>
 <div id="authored_opts" style="display: none;">	
-	<p>
+	<!--><p>
 		<label>Audio must be delivered...</label><br />
 		<%= select_tag 'segment[asset][deadline][]', deadline_values %>
 		<%= select_tag 'segment[asset][deadline][]', deadline_units %>
 		<% base = (single ? 'before' : 'after' ) %>
 		<%= "#{base} broadcast" %>
 		<%= hidden_field_tag 'segment[asset][deadline][]', base %>
-	</p>
+	</p>-->
 </div>
