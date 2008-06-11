@@ -18,8 +18,7 @@ class MessagesController < ApplicationController
   # GET /users/:user_id/mailboxes/:mailbox_id/messages/:id.:format
   def show
     @mail = Mail.find_by_message_id(params[:id])
-    @mail.mark_as_read
-    @mail.save
+    @mail.mark_as_read; @mail.save
     
     @message = @mail.message
     @active = 'my_account' if @user == current_user

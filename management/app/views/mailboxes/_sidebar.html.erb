@@ -1,7 +1,7 @@
 <h1>Actions</h1>
 <ul>
 	<li><%= link_to "Compose message", new_user_mailbox_message_path(current_user, :mailbox_id => :sent) %></li>
-	<li><%= link_to "Empty trash", user_mailbox_messages_path(current_user, :mailbox_id => :trash) %></li>
+	<li><%= link_to "Empty trash", empty_user_mailbox_path(current_user, :mailbox_id => :trash), :method => :post %></li>
 </ul>
 
 <h1>Mailboxes</h1>

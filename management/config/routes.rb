@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # Users
   map.resources :users do |user|
-    user.resources :mailboxes, :member => { :empty => :delete } do |box|
+    user.resources :mailboxes, :member => { :empty => :post } do |box|
       box.resources :messages
     end
   end

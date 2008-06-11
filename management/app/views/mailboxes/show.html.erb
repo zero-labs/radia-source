@@ -19,7 +19,7 @@
 		<th style="text-align: left;">Date</th>
 	</tr>
 	<% @mailbox.mail.each do |m| %>
-		<%= render :partial => 'message_item', :object => m %>
+		<%= render :partial => 'mail', :object => m %>
 	<% end %>
 </table>
 <% end %>

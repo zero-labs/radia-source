@@ -202,7 +202,7 @@ module Sergi #:nocdoc:
               ELSE '#{mailbox.to_s}'
             END", default_options, options)
           end
-          return update_mail("mail.trashed = true", default_options, options)
+          return update_mail("trashed = true", default_options, options)
         end
         #permanantly deletes all the mail messages matched by the options. Use move_to(:trash) instead if you want to send to user's trash without deleting.
         #

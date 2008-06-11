@@ -24,10 +24,14 @@ class MailboxesController < ApplicationController
     end
   end
   
-  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty
-  # DELETE /users/:user_id/mailboxes/:mailbox_id/messages/empty.:format
+  # POST /users/:user_id/mailboxes/:mailbox_id/messages/empty
+  # POST /users/:user_id/mailboxes/:mailbox_id/messages/empty.:format
   def empty
-    # TODO
+    if @mailbox.type == :trash
+      @mailbox.empty_trash
+    else
+      @mailbox.move_to(:trash)
+    end
   end
   
   protected
