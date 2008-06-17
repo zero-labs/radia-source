@@ -7,7 +7,7 @@ module EmissionTypesHelper
   
   def live_assets
     options_for_select([['Select a live source...', nil]]) +
-    options_from_collection_for_select(LiveSource.find(:all), :id, :title)
+    options_from_collection_for_select(LiveSource.find(:all), :id, :name)
   end
   
   def playlist_assets
