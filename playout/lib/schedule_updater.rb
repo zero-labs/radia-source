@@ -1,5 +1,5 @@
 module ScheduleUpdater
   def self.check_and_download
-    Schedule.fetch
+    ManagementResources::Schedule.fetch
   end
 end
