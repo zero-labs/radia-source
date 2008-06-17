@@ -101,8 +101,8 @@ class Segment < ActiveRecord::Base
   
   def authored_hash(asset)
     params = { :authored => true, 
-               :length => asset[:length], 
-               :deadline => get_deadline(asset[:deadline]) }
+               :length => asset[:length] }
+               # , :deadline => get_deadline(asset[:deadline])
   end
   
 end
