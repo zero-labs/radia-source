@@ -1,0 +1,13 @@
+<% html_class = (mail.read? ? 'read' : 'unread')%>
+<tr>
+	<td>
+		<%= link_to mail.message.subject, 
+					user_mailbox_message_path({:user_id => @user.urlname, :id => mail.message.id, :mailbox_id => @mailbox_name}), 
+					:class => html_class %>
+	</td>
+	<td>
+		<%= link_to mail.message.sender.name, user_path(mail.message.sender), 
+					:class => html_class %>
+	</td>
+	<td class="<%= html_class %>"><%= mail.message.created_at.to_formatted_s(:short) %></td>
+</tr>
