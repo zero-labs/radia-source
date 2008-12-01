@@ -34,7 +34,7 @@ class ProgramSchedule < ActiveRecord::Base
   # 
   # Returns an Array with all the emissions that were not created
   def update_emissions(to_create, to_destroy)
-    to_destroy.each { |broadcast| broadcast.destroy } unless to_destroy.nil?
+    to_destroy.each_key { |b| Broadcast.find(b).destroy } unless to_destroy.nil? or to_destroy.empty?
     problems = to_create.select { |id, broadcast| !create_broadcast(broadcast) } unless to_create.nil?
     return true if to_destroy.nil? and to_create.nil?
     problems
@@ -47,10 +47,6 @@ class ProgramSchedule < ActiveRecord::Base
     return [] if emission_type.nil?
     
     self.emissions.find(:all, :conditions => ["emission_type_id = ?", emission_type.id])
-  end
-  
-  def parent
-    nil
   end
   
   def broadcasts_and_gaps(dtstart, dtend)
@@ -104,7 +100,9 @@ class ProgramSchedule < ActiveRecord::Base
           check = check_event(type, program, occurrence, occurrence + event.duration)
           next if check.nil? # there's nothing to create, destroy or conflict! :)
           e = emission_hash(type, program, occurrence, occurrence + event.duration)
-          to_create << e unless e.nil?; to_destroy += check[0]; conflicting += check[1]
+          to_create << e unless e.nil?
+          to_destroy += check[0]
+          conflicting += check[1]
         end
       end
     end
@@ -123,9 +121,9 @@ class ProgramSchedule < ActiveRecord::Base
     
     bcs.each do |b|
       if b.modified? 
-        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :broadcast => b }
+        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.emission_type, :broadcast => b }
       elsif !b.same_time?(dtstart, dtend) or (b.program != program)                              
-        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :broadcast => b  }
+        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.emission_type, :broadcast => b }
       end
     end
     [to_destroy, conflicting]

@@ -22,8 +22,8 @@
 	</div>
 	
 	<div id="to_be_destroyed" style="display: none;">
-		<% @result[:to_destroy].each_with_index do |e, i| %>
-			<%= destroy_emission(e, i) %>
+		<% @result[:to_destroy].each do |e| %>
+			<%= destroy_emission(e) %>
 		<% end %>
 	</div>
 	

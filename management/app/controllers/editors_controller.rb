@@ -41,7 +41,7 @@ class EditorsController < ApplicationController
       else
         flash[:error] = 'There was an error making this user an editor'
         format.html { render :action => 'new' }
-        format.xml {}
+        format.xml { render :xml => @editor.errors.to_xml }
       end
     end
   end

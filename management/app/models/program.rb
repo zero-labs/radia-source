@@ -54,6 +54,17 @@ class Program < ActiveRecord::Base
     ProgramSchedule.instance
   end
   
+  def to_xml(options = {})
+    options[:indent] ||= 2
+    options[:replace_unavailable] ||= false
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.program do 
+      xml.tag!(:id, self.urlname, :type => :string)
+      xml.tag!(:description, self.description, :type => :string)
+    end
+  end
+  
   protected
   
   def find_broadcasts_by_date_on_collection(kollection, year, month = nil, day = nil)
