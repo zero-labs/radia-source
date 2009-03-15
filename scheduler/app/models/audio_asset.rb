@@ -1,6 +1,6 @@
 class AudioAsset < ActiveRecord::Base
   has_many :segments, :dependent => :destroy
-  has_many :blocs, :through => :segments
+  has_many :structures, :through => :segments
   
   has_many :playlist_elements, :dependent => :destroy
   

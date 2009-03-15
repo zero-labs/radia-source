@@ -1,16 +1,16 @@
 class Emission < Broadcast
   belongs_to :program
-  belongs_to :emission_type
+  belongs_to :structure_template
   
   has_many :repetitions, :dependent => :destroy
-  has_one :bloc, :as => :playable, :dependent => :destroy
+  has_one :structure, :as => :playable, :dependent => :destroy
   
   # Ensure presence of mandatory attributes
-  validates_presence_of :program, :emission_type
+  validates_presence_of :program, :structure_template
   
-  # Callback to force the creation of a Bloc for this emission,
-  # based on the Bloc of its EmissionType
-  after_create :init_bloc
+  # Callback to force the creation of a Structure for this emission,
+  # based on the Structure of its StructureTemplate
+  after_create :init_structure
   
   # Returns false
   def gap?
@@ -19,29 +19,29 @@ class Emission < Broadcast
   
   # Tests if this emission has been changed from its original state
   def modified?
-    bloc.modified?
+    structure.modified?
   end
   
   # Audio assets for this emission
   def audio_assets
-    bloc.audio_assets
+    structure.audio_assets
   end
   
   def authors
     program.authors
   end
   
-  def update_bloc
-    self.bloc.destroy unless self.bloc.nil?
-    init_bloc
+  def update_structure
+    self.structure.destroy unless self.structure.nil?
+    init_structure
   end
   
   def deliver_single(params)
-    self.bloc.update_single(params)
+    self.structure.update_single(params)
   end
   
   def status
-    self.bloc.status
+    self.structure.status
   end
   
   def name
@@ -72,21 +72,21 @@ class Emission < Broadcast
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, self.description, :type => :string)
-      bloc.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
+      structure.to_xml(:skip_instruct => true, :builder => xml, :replace_unavailable => options[:replace_unavailable])
     end
   end
   
   protected
   
-  def init_bloc
-    self.bloc = Bloc.create(:playable => self)
-    emission_type.bloc.segments.each do |e| 
+  def init_structure
+    self.structure = Structure.create(:playable => self)
+    structure_template.structure.segments.each do |e| 
       segment = e.clone
       asset = (e.audio_asset.kind != :playlist ? e.audio_asset.clone : e.audio_asset)
       asset.save
       segment.audio_asset = asset 
       #asset.segments << segment
-      self.bloc.add_segment(segment)
+      self.structure.add_segment(segment)
     end
   end
 end

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class StructureTest < ActiveSupport::TestCase
-  fixtures :structures, :emission_types, :audio_assets
+  fixtures :structures, :structure_templates, :audio_assets
   
   def test_should_create_structure
     assert_difference 'Structure.count' do 
@@ -39,7 +39,7 @@ class StructureTest < ActiveSupport::TestCase
   protected
   
   def create_structure(opts = {})
-    defaults = { :playable => emission_types(:author) }
+    defaults = { :playable => structure_templates(:author) }
     record = Structure.new(defaults.merge(opts))
     record.save
     record

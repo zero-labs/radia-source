@@ -35,11 +35,11 @@ class StructureTemplatesController < ApplicationController
     
     respond_to do |format|
       if @structure_template.save
-        flash[:notice] = "Emission type successfully created"
+        flash[:notice] = "Structure template successfully created"
         format.html { redirect_to schedule_structure_templates_path }
         format.xml { head :ok }
       else
-        flash[:error] = "There were problems creating the emission type."
+        flash[:error] = "There were problems creating the structure template."
         format.html { render :action => 'new' }
         format.xml { render :xml => @structure_template.errors.to_xml }
       end
@@ -58,11 +58,11 @@ class StructureTemplatesController < ApplicationController
     
     respond_to do |format|
       if @structure_template.update_attributes(params[:structure_template])
-        flash[:notice] = "Emission type successfully updated"
+        flash[:notice] = "Structure template successfully updated"
         format.html { redirect_to schedule_structure_template_path(@structure_template) }
         format.xml { head :ok }
       else
-        flash[:error] = "There were problems updating the emission type"
+        flash[:error] = "There were problems updating the structure template"
         format.html { render :action => 'edit' }
         format.xml { render :xml => @structure_template.errors.to_xml }
       end
@@ -76,7 +76,7 @@ class StructureTemplatesController < ApplicationController
     @structure_template.destroy
     
     respond_to do |format|
-      flash[:notice] = "Emission type was removed"
+      flash[:notice] = "Structure template was removed"
       format.html { redirect_to schedule_structure_templates_path }
       format.xml { head :ok }
     end

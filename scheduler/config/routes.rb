@@ -27,7 +27,7 @@ ActionController::Routing::Routes.draw do |map|
     
     # Broadcasts (as resources accessible by date)
     schedule.datestamped_resources :broadcasts do |broadcast|
-      broadcast.resources :types, :controller => 'emission_types', 
+      broadcast.resources :types, :controller => 'structure_templates', 
                         :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_emission_'                
     end
     
@@ -76,11 +76,11 @@ ActionController::Routing::Routes.draw do |map|
                                     :action => 'date_selection', :conditions => { :method => :post }
   end
   
-  # Bloc elements
-  map.with_options :controller => 'emission_types' do |emission_type|
-    emission_type.show_segment 'schedule/broadcasts/types/:id/show_segment', 
+  # Structure elements
+  map.with_options :controller => 'structure_templates' do |structure_template|
+    structure_template.show_segment 'schedule/broadcasts/types/:id/show_segment', 
                                     :action => 'show_segment', :conditions => { :method => :post }
-    emission_type.create_segment 'schedule/broadcasts/types/:id/create_segment', 
+    structure_template.create_segment 'schedule/broadcasts/types/:id/create_segment', 
                                     :action => 'create_segment', :conditions => { :method => :put }
     
   end

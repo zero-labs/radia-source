@@ -7,10 +7,10 @@
 <% end %>
 <p>
 	<span class="as_label">Broadcast length: </span>
-	<%= render :partial => 'shared/length', :object => @broadcast.bloc.playable_length %>
+	<%= render :partial => 'shared/length', :object => @broadcast.structure.playable_length %>
 </p>
 <ul>
-<% @broadcast.bloc.segments.each do |e| %>
+<% @broadcast.structure.segments.each do |e| %>
 	<%= render :partial => 'segment', :locals => { :segment => e } %>
 <% end %>
 </ul>

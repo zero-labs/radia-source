@@ -1,5 +1,5 @@
 namespace :radia do 
-  namespace :management do 
+  namespace :scheduler do 
     def urlnameify(text)
       t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
       t = t.to_s.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
@@ -14,16 +14,16 @@ namespace :radia do
       end
     end
     
-    desc "Creates emission types"
-    task :emission_types => :environment do
-      b = Bloc.create
-      recorded = EmissionType.new(:name => 'Recorded', :color => '#69C', :bloc => b)
+    desc "Creates structure templates"
+    task :structure_templates => :environment do
+      b = Structure.create
+      recorded = StructureTemplate.new(:name => 'Recorded', :color => '#69C', :structure => b)
       recorded.save
-      b = Bloc.create
-      live = EmissionType.new(:name => 'Live', :color => '#96F', :bloc => b)
+      b = Structure.create
+      live = StructureTemplate.new(:name => 'Live', :color => '#96F', :structure => b)
       live.save
-      b = Bloc.create
-      playlist = EmissionType.new(:name => 'Playlist', :color => '#9C3', :bloc => b)
+      b = Structure.create
+      playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
       playlist.save
     end
   
@@ -87,7 +87,14 @@ namespace :radia do
     end
     
     desc "Calls all other tasks"
-    task :all => [:asset_service, :singles, :emission_types, :create_admin, :authors, :live_source, :playlist,:environment] do 
+    task :all => [:asset_service, :singles, :structure_templates, :create_admin, :authors, :live_source, :playlist,:environment] do 
+    end
+    
+    namespace :schedule do
+      desc "Create first schedule"
+      task :create => :environment do
+        ProgramSchedule.create
+      end
     end
   end
 end

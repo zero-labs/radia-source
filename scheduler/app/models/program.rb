@@ -3,7 +3,7 @@ class Program < ActiveRecord::Base
   
   acts_as_urlnameable :name, :overwrite => true
   #acts_as_emission_process_configurable :recorded => true
-  acts_as_authorizable
+  #acts_as_authorizable
   
   validates_uniqueness_of :name, :on => :save, :message => "must be unique"
     

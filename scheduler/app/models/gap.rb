@@ -17,9 +17,9 @@ class Gap < Broadcast
     all_gaps(date_start, date_end, find_by_sql([query, date_start, date_end]))
   end
 
-  def bloc
+  def structure
     asset = ProgramSchedule.instance.content_for_gap(self.length)
-    b = Bloc.new
+    b = Structure.new
     b.segments << Segment.new(:audio_asset => asset, :length => self.length)
     b
   end

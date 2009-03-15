@@ -1,7 +1,7 @@
 module ProgramScheduleHelper
-  def emission_types
+  def structure_templates
     options_for_select([['Select a structure template...', nil]]) + 
-    options_from_collection_for_select( EmissionType.find(:all), :id, :name)
+    options_from_collection_for_select( StructureTemplate.find(:all), :id, :name)
   end
   
   def create_emission(emission, index)

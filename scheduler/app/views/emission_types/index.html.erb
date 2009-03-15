@@ -1,26 +1,26 @@
 <%
-	@pagetitle = "Emission types"
-	emission_types_crumbs
+	@pagetitle = "Structure templates"
+	structure_templates_crumbs
 %>
 
 <% content_for :sidebar do %>
 	<h1>Administration</h1>
 	<ul>
-		<li><%= link_to "New emission type", new_schedule_emission_type_path %></li>
+		<li><%= link_to "New structure template", new_schedule_structure_template_path %></li>
 	</ul>
 <% end %>
 
-<% unless @emission_types.empty? then %>
+<% unless @structure_templates.empty? then %>
 
 <ul id="type_list">
-	<% @emission_types.each do |type| %>
+	<% @structure_templates.each do |type| %>
 		<li <%= %( onmouseover="$('mod_#{type.id}').show();" onmouseout="$('mod_#{type.id}').hide();") %>>
 			<span class="list_title">
-				<%= link_to type.name, schedule_emission_type_path(type) %>
+				<%= link_to type.name, schedule_structure_template_path(type) %>
 			</span>
 			<span style="display:none;" id="mod_<%= type.id %>" class="df">
-			    <%= link_to('edit', edit_schedule_emission_type_path(type), :class => "utility") %> |
-			    <%= link_to('delete', schedule_emission_type_path(type), :class => "utility", 
+			    <%= link_to('edit', edit_schedule_structure_template_path(type), :class => "utility") %> |
+			    <%= link_to('delete', schedule_structure_template_path(type), :class => "utility", 
 					:method => :delete, :confirm => 'Delete this broadcast type (and associated emissions) forever?') %>
 			</span>
 		</li>

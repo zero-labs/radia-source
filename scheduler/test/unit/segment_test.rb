@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SegmentTest < ActiveSupport::TestCase
-  fixtures :blocs, :audio_assets
+  fixtures :structures, :audio_assets
   
   def test_should_require_audio_asset
     assert_no_difference 'Segment.count' do
@@ -9,9 +9,9 @@ class SegmentTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_require_bloc
+  def test_should_require_structure
     assert_no_difference 'Segment.count' do
-      create_segment :bloc => nil
+      create_segment :structure => nil
     end
   end
   
@@ -28,7 +28,7 @@ class SegmentTest < ActiveSupport::TestCase
   protected
   
   def create_segment(options = {})
-    defaults = { :bloc => blocs(:author_bloc), :audio_asset => audio_assets(:playlist_1)}
+    defaults = { :structure => structures(:author_structure), :audio_asset => audio_assets(:playlist_1)}
     
     record = Segment.new(defaults.merge(options))
     record.save

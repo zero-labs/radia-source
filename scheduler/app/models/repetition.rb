@@ -28,7 +28,7 @@ class Repetition < Broadcast
       xml.tag!(:dtstart, self.dtstart, :type => :datetime)
       xml.tag!(:dtend, self.dtend, :type => :datetime)
       xml.tag!(:description, self.description, :type => :string)
-      bloc.to_xml(:skip_instruct => true, :builder => xml, 
+      structure.to_xml(:skip_instruct => true, :builder => xml, 
                   :replace_unavailable => options[:replace_unavailable], :repetition => true)
     end
   end
@@ -36,14 +36,14 @@ class Repetition < Broadcast
   # Checks if the method is one of those that delegate to the Emission 
   # and forwards it to this Repetition's Emission
   # Methods are:
-  # * bloc
+  # * structure
   # * description
   # * audio_assets
   # * status
   # * pretty_print_status
   # * deliver_single
   def method_missing(method, *args)
-    to_delegate = /bloc|description|audio_assets|status|pretty_print_status|deliver_single|authors|name/
+    to_delegate = /structure|description|audio_assets|status|pretty_print_status|deliver_single|authors|name/
     if method.to_s.match(to_delegate)
       emission.send(method, *args)
     else

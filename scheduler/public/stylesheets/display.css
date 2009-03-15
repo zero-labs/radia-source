@@ -163,7 +163,7 @@ li.type_list_element a:link, li.type_list_element a:visited { text-decoration: n
 
 li.type_list_element a:hover { text-decoration: underline; }
 
-/** Bloc Element types **/
+/** Structure Element types **/
 
 #element_types {
 	text-align: center;

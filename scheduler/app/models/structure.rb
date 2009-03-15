@@ -1,7 +1,7 @@
 class Structure < ActiveRecord::Base
   
   # Playables are anything that has a broadcast structure,
-  # i.e. Broadcast (including its sub-classes) and EmissionType
+  # i.e. Broadcast (including its sub-classes) and StructureTemplate
   belongs_to :playable, :polymorphic => true
   
   # Segments associate AudioAssets with structures, 
@@ -23,7 +23,7 @@ class Structure < ActiveRecord::Base
   end
   
   # Returns the length (in seconds) of the associated Playable entity:
-  # * nil for EmissionType
+  # * nil for StructureTemplate
   # * Integer for other Broadcasts 
   def playable_length
     playable.length

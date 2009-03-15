@@ -7,26 +7,26 @@
 		</li>
 		<li>
 			<%= link_to_remote "Single", :update => 'segment', 
-			:url => { :action => 'show_segment', :controller => 'emission_types', :id => @emission_type, :kind => 'single' }, :html => { :class => 'element_type'} %>
+			:url => { :action => 'show_segment', :controller => 'structure_templates', :id => @structure_template, :kind => 'single' }, :html => { :class => 'element_type'} %>
 		</li>
 		<li>
 			<%= link_to_remote "Live", :update => 'segment', 
-			:url => { :action => 'show_segment', :controller => 'emission_types', :id => @emission_type, :kind => 'live' }, :html => { :class => 'element_type'} %>	
+			:url => { :action => 'show_segment', :controller => 'structure_templates', :id => @structure_template, :kind => 'live' }, :html => { :class => 'element_type'} %>	
 		</li>
 		<li>
 			<%= link_to_remote "Playlist", :update => 'segment', 
-			:url => { :action => 'show_segment', :controller => 'emission_types', :id => @emission_type, :kind => 'playlist' }, :html => { :class => 'element_type'} %> 
+			:url => { :action => 'show_segment', :controller => 'structure_templates', :id => @structure_template, :kind => 'playlist' }, :html => { :class => 'element_type'} %> 
 		</li>
 		<li>
 			<%= link_to_remote "Intermission", :update => 'segment',
-			:url => { :action => 'show_segment', :controller => 'emission_types', :id => @emission_type, :kind => 'intermission' }, :html => { :class => 'element_type'} %>
+			:url => { :action => 'show_segment', :controller => 'structure_templates', :id => @structure_template, :kind => 'intermission' }, :html => { :class => 'element_type'} %>
 		</li>
 	</ul>
 	
 	<div id="segment"></div>
 	<hr />
-	<div id="bloc">
-		<%= render :partial => 'bloc', :object => @emission_type.bloc %>
+	<div id="structure">
+		<%= render :partial => 'structure', :object => @structure_template.structure %>
 	</div>
 
 </fieldset>
