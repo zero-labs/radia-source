@@ -1,0 +1,14 @@
+live_structure:
+    playable: live
+    playable_type: EmissionType        
+
+recorded_structure:
+    playable_type: EmissionType
+    
+author_structure:
+    playable: author
+    playable_type: EmissionType
+    
+emission_structure:
+    playable: live1
+    playable_type: Emission
