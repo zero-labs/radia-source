@@ -1,0 +1,16 @@
+author:
+    name: 'Author'
+    color: '#111'
+    
+live:
+    name: 'Live'
+    color: '#222'
+#    structure: live_structure
+    
+playlist:
+    name: 'Playlist'
+    color: '#333'
+    
+recorded:
+    name: 'Recorded'
+    color: '#444'
