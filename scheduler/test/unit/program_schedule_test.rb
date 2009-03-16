@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require 'array'
 
 class ProgramScheduleTest < ActiveSupport::TestCase
-  fixtures :emission_types
+  fixtures :structure_templates
   
   def setup
     reset_singleton ProgramSchedule
@@ -42,7 +42,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
     to_use = "#{RAILS_ROOT}/test/calendars/playlist-test.ics" if type == :playlist
     to_use = "#{RAILS_ROOT}/test/calendars/repeated-test.ics" if type == :repetitions
 
-    type_id = (type == :repetitions ? 0 : emission_types(type).id)    
+    type_id = (type == :repetitions ? 0 : structure_templates(type).id)    
     dtstart = { :year => 2008, :month => 04, :day => 01, :hour => 12, :minute => 00 }
     dtend   = { :year => 2008, :month => 07, :day => 01, :hour => 12, :minute => 00 }
     calendar = File.open(to_use, 'r')

@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 23) do
+ActiveRecord::Schema.define(:version => 20090315205011) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -51,18 +51,11 @@ ActiveRecord::Schema.define(:version => 23) do
     t.datetime "updated_at"
   end
 
-  create_table "blocs", :force => true do |t|
-    t.integer  "playable_id"
-    t.string   "playable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "broadcasts", :force => true do |t|
     t.string   "type"
     t.datetime "dtstart"
     t.datetime "dtend"
-    t.integer  "emission_type_id"
+    t.integer  "structure_template_id"
     t.integer  "program_id"
     t.integer  "program_schedule_id"
     t.text     "description"
@@ -74,14 +67,6 @@ ActiveRecord::Schema.define(:version => 23) do
   create_table "conversations", :force => true do |t|
     t.string   "subject",    :default => ""
     t.datetime "created_at",                 :null => false
-  end
-
-  create_table "emission_types", :force => true do |t|
-    t.string   "name"
-    t.string   "color"
-    t.string   "calendar_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "live_sources", :force => true do |t|
@@ -173,7 +158,7 @@ ActiveRecord::Schema.define(:version => 23) do
   end
 
   create_table "segments", :force => true do |t|
-    t.integer  "bloc_id"
+    t.integer  "structure_id"
     t.integer  "audio_asset_id"
     t.string   "type"
     t.integer  "position"
@@ -187,6 +172,21 @@ ActiveRecord::Schema.define(:version => 23) do
 
   create_table "settings", :force => true do |t|
     t.string   "station_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "structure_templates", :force => true do |t|
+    t.string   "name"
+    t.string   "color"
+    t.string   "calendar_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "structures", :force => true do |t|
+    t.integer  "playable_id"
+    t.string   "playable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

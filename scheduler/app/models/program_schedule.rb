@@ -12,7 +12,7 @@ class ProgramSchedule < ActiveRecord::Base
   # * :start => { :year => <start year>, :month => <start month>, :day => <start day>, :hour => <start hour>, :day => <start day> } 
   # * :end => { :year => <end year>, :month => <end month>, :day => <end day>, :hour => <end hour>, :day => <end day> } 
   # * :emissions => "1" or "0"
-  # * :type => EmissionType id (or 0 for repetitions)
+  # * :type => StructureTemplate id (or 0 for repetitions)
   # 
   # Returns an Array with 3 elements (also Arrays): 
   # * :to_create => Broadcasts to be created
@@ -43,10 +43,10 @@ class ProgramSchedule < ActiveRecord::Base
   # Receives a String and finds emissions of that type.
   # Returns an Array with the requested emissions.
   def emissions_by_type(type)
-    emission_type = EmissionType.find_by_name(type)
-    return [] if emission_type.nil?
+    structure_template = StructureTemplate.find_by_name(type)
+    return [] if structure_template.nil?
     
-    self.emissions.find(:all, :conditions => ["emission_type_id = ?", emission_type.id])
+    self.emissions.find(:all, :conditions => ["structure_template_id = ?", structure_template.id])
   end
   
   def broadcasts_and_gaps(dtstart, dtend)
@@ -121,9 +121,9 @@ class ProgramSchedule < ActiveRecord::Base
     
     bcs.each do |b|
       if b.modified? 
-        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.emission_type, :broadcast => b }
+        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.structure_template, :broadcast => b }
       elsif !b.same_time?(dtstart, dtend) or (b.program != program)                              
-        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.emission_type, :broadcast => b }
+        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.structure_template, :broadcast => b }
       end
     end
     [to_destroy, conflicting]
@@ -152,7 +152,7 @@ class ProgramSchedule < ActiveRecord::Base
   def create_emission(emission)
     e = Emission.new(:program_schedule => self,
                     :program => Program.find(emission[:program]),
-                    :emission_type => EmissionType.find(emission[:type]),
+                    :structure_template => StructureTemplate.find(emission[:type]),
                     :dtstart => DateTime.parse(emission[:dtstart]),
                     :dtend => DateTime.parse(emission[:dtend]))
     e.save

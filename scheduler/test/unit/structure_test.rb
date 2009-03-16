@@ -1,16 +1,16 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BlocTest < ActiveSupport::TestCase
-  fixtures :blocs, :emission_types, :audio_assets
+class StructureTest < ActiveSupport::TestCase
+  fixtures :structures, :structure_templates, :audio_assets
   
-  def test_should_create_bloc
-    assert_difference 'Bloc.count' do 
-      create_bloc
+  def test_should_create_structure
+    assert_difference 'Structure.count' do 
+      create_structure
     end
   end
   
   def test_should_add_segment
-    b = blocs(:emission_bloc)
+    b = structures(:emission_structure)
     p1 = audio_assets(:playlist_1)
     assert_difference 'b.segments.count' do
       b.add_segment(Segment.new(:audio_asset => p1))
@@ -19,7 +19,7 @@ class BlocTest < ActiveSupport::TestCase
   end
   
   def test_should_only_allow_one_element_to_have_broadcast_length
-    b = blocs(:emission_bloc)
+    b = structures(:emission_structure)
     p1 = audio_assets(:playlist_1)
     s1 = audio_assets(:unauthored_single_not_present)
     
@@ -38,9 +38,9 @@ class BlocTest < ActiveSupport::TestCase
   
   protected
   
-  def create_bloc(opts = {})
-    defaults = { :playable => emission_types(:author) }
-    record = Bloc.new(defaults.merge(opts))
+  def create_structure(opts = {})
+    defaults = { :playable => structure_templates(:author) }
+    record = Structure.new(defaults.merge(opts))
     record.save
     record
   end

@@ -1,0 +1,14 @@
+live_structure:
+    playable: live
+    playable_type: StructureTemplate        
+
+recorded_structure:
+    playable_type: StructureTemplate
+    
+author_structure:
+    playable: author
+    playable_type: StructureTemplate
+    
+emission_structure:
+    playable: live1
+    playable_type: Emission

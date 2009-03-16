@@ -1,4 +1,4 @@
-seg1_live_bloc:
+seg1_live_structure:
     position: 1
-    bloc: live_bloc
+    structure: live_structure
     fill: true

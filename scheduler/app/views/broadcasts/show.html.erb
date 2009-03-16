@@ -25,7 +25,7 @@
 <hr />
 <h3>Segments</h3>
 <ul>
-<% @broadcast.bloc.segments.each do |e| %>
+<% @broadcast.structure.segments.each do |e| %>
 	<%= render :partial => 'deliveries/show_segment', :locals => { :segment => e }%>
 <% end %>
 </ul>

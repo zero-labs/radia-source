@@ -1,8 +1,8 @@
-module EmissionTypesHelper
-  def emission_types_crumbs(type = nil)
+module StructureTemplatesHelper
+  def structure_templates_crumbs(type = nil)
     add_crumb("Schedule", schedule_path)
-    add_crumb("Emission types", schedule_emission_types_path, (type.nil? ? true : false))
-    add_crumb(type.name, schedule_emission_type_path(type), true) unless type.nil?
+    add_crumb("Broadcast Structure Templates", schedule_structure_templates_path, (type.nil? ? true : false))
+    add_crumb(type.name, schedule_structure_template_path(type), true) unless type.nil?
   end
   
   def live_assets

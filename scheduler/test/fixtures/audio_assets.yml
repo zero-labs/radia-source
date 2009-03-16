@@ -7,22 +7,22 @@ playlist_2:
 unauthored_single_unavailable:
     type: Single
     authored: false
-    available: false
+#    available: false
 
 unauthored_single_available:
     type: Single
     authored: false
-    available: true
+#    available: true
 
 authored_single_unavailable:
     type: Single
     authored: true
-    available: false
+#    available: false
 
 authored_single_available:
     type: Single
     authored: true
-    available: true
+#    available: true
     
 authored_live_single:
     type: Single

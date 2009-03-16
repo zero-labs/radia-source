@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class EmissionTest < ActiveSupport::TestCase
-  fixtures :broadcasts, :emission_types
+  fixtures :broadcasts, :structure_templates
   
   def test_should_require_program
     assert_no_difference 'Emission.count' do
@@ -9,9 +9,9 @@ class EmissionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_require_emission_type
+  def test_should_require_structure_template
     assert_no_difference 'Emission.count' do
-      create_emission :emission_type => nil
+      create_emission :structure_template => nil
     end
   end
   
@@ -32,7 +32,7 @@ class EmissionTest < ActiveSupport::TestCase
   
   def create_emission(options = {})
     defaults = {:dtstart => DateTime.new(2008, 01, 01, 12, 00), :dtend => DateTime.new(2008, 01, 01, 13, 00), 
-                :program => programs(:program_1), :emission_type => emission_types(:live), 
+                :program => programs(:program_1), :structure_template => structure_templates(:live), 
                 :program_schedule => ProgramSchedule.instance}
     record = Emission.new(defaults.merge(options))
     record.save

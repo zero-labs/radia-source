@@ -1,4 +1,4 @@
-<% remote_form_for(@segment, :url => create_segment_path(@emission_type), :html => { :method => :put }) do |f| %>
+<% remote_form_for(@segment, :url => create_segment_path(@structure_template), :html => { :method => :put }) do |f| %>
 <%= hidden_field_tag 'segment[asset][kind]', 'intermission' %>
 <fieldset>
 	<legend>Intermission</legend>

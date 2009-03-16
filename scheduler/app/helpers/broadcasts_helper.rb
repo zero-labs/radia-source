@@ -41,8 +41,8 @@ module BroadcastsHelper
       color = '#FA8072'
       type = 'Gap'
     else
-      type = broadcast.emission_type.name
-      color = broadcast.emission_type.color
+      type = broadcast.structure_template.name
+      color = broadcast.structure_template.color
     end
     "<span class=\"type_tag\" style=\"background:#{color}\">#{type}</span>"
   end

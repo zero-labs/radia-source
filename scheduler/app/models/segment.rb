@@ -1,8 +1,8 @@
 class Segment < ActiveRecord::Base
-  belongs_to :bloc
+  belongs_to :structure
   belongs_to :audio_asset
   
-  validates_presence_of :bloc
+  validates_presence_of :structure
   validates_presence_of :audio_asset
   
   #validates_presence_of :length, :unless => :does_not_need_length_field
@@ -29,7 +29,7 @@ class Segment < ActiveRecord::Base
   
   def length
     if self.fill?
-      bloc.nil? ? nil : bloc.playable_length
+      structure.nil? ? nil : structure.playable_length
     elsif read_attribute(:length).nil?
       audio_asset.length
     else
