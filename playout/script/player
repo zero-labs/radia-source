@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'daemons'
+APP_DIR = File.join(File.dirname(File.expand_path(__FILE__)), '..')
+
+Daemons.run_proc(
+  'periodic',
+  :dir_mode => :normal, 
+  :dir => File.join(APP_DIR, 'log'),
+  :multiple => false,
+  :backtrace => true,
+  :monitor => true,
+  :log_output => true
+) do
+
+  # Daemonising changes the pwd to /, so we need to switch 
+  # back to RAILS_ROOT.
+  Dir.chdir(APP_DIR)
+
+  # Load our Rails environment.
+  require File.join('config', 'environment')
+  
+  begin
+    # Initialise the Rufus scheduler object.
+    require 'rufus/scheduler'
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
+
+    # Now assign jobs to the scheduler (see API)
+    
+    # Check for unavailable audio assets and download them
+    scheduler.schedule_every('30s', :first_in => '1s') { AssetDownloader.check_and_download }
+    
+    # Get broadcast schedule
+    scheduler.schedule_every('30s') { ScheduleUpdater.check_and_download }
+
+    # Tell the scheduler to perform these jobs until the 
+    # process is stopped.
+    scheduler.join
+  rescue => e
+    RAILS_DEFAULT_LOGGER.warn "Exception in schedule: #{e.inspect}"
+    exit
+  end
+end

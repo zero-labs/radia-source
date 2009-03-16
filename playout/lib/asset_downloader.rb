@@ -4,6 +4,7 @@ module AssetDownloader
   
   # 
   def self.check_and_download
+    puts "DEBUG";0
     unavailable = ManagementResources::Single.find_unavailable + ManagementResources::Spot.find_unavailable
     unavailable.each do |u|
       next unless u.start_download
@@ -45,6 +46,7 @@ module AssetDownloader
 
     case uri_array[0]
     when 'ftp'  
+      puts uri_array[2], uri_array[5], userinfo;0
       ServiceInterface::Ftp.get(uri_array[2], uri_array[5], userinfo)
     when 'http'
     end
