@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class StructureTemplateTest < ActiveSupport::TestCase
-  fixtures :structure_templates, :structures
 
   def test_should_ensure_correct_color_string_format
     assert_no_difference 'StructureTemplate.count' do
@@ -16,24 +15,24 @@ class StructureTemplateTest < ActiveSupport::TestCase
     assert_no_difference 'StructureTemplate.count' do
       create_structure_template(:color => '#123456A')
     end
-    et = nil
+
     assert_difference 'StructureTemplate.count' do
-      et = create_structure_template(:color => '#123ABC')
+      create_structure_template(:name => 'Recorded_t1', :color => '#123ABC')
     end
-    et.destroy
+
     assert_difference 'StructureTemplate.count' do
-      et = create_structure_template(:color => '#123456')
+      create_structure_template(:name => 'Recorded_t2', :color => '#123456')
     end
-    et.destroy
+
     assert_difference 'StructureTemplate.count' do
-      et = create_structure_template(:color => '#ABC')
+      create_structure_template(:name => 'Recorded_t3', :color => '#ABC')
     end
-    et.destroy
+
     assert_difference 'StructureTemplate.count' do
-      et = create_structure_template(:color => '#123')
+      create_structure_template(:name => 'Recorded_t4', :color => '#123')
     end
   end
-  
+    
   def test_should_ensure_name_presence
     assert_no_difference 'StructureTemplate.count' do
       create_structure_template(:name => nil)
@@ -41,9 +40,12 @@ class StructureTemplateTest < ActiveSupport::TestCase
   end
   
   def test_should_ensure_structure_presence
-    assert_no_difference 'StructureTemplate.count' do
+    assert_difference 'StructureTemplate.count' do
       create_structure_template :structure => nil
     end
+    
+    e = create_structure_template :structure => nil, :name => 'Another'
+    assert_not_nil e.structure
   end
   
   def test_should_ensure_name_uniqueness

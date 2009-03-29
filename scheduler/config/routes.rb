@@ -27,8 +27,8 @@ ActionController::Routing::Routes.draw do |map|
     
     # Broadcasts (as resources accessible by date)
     schedule.datestamped_resources :broadcasts do |broadcast|
-      broadcast.resources :types, :controller => 'structure_templates', 
-                        :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_emission_'                
+      broadcast.resources :templates, :controller => 'structure_templates', 
+                        :path_prefix => 'schedule/broadcasts', :name_prefix => 'schedule_structure_'                
     end
     
     schedule.resources :editors

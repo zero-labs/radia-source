@@ -1,6 +1,6 @@
 <%= hidden_field_tag "to_create[#{index}][emission]", emission[:emission].id if emission[:emission] %>
 <%= hidden_field_tag "to_create[#{index}][program]", emission[:program].id %>
 <%= hidden_field_tag "to_create[#{index}][type]", emission[:type] %>
-<%= hidden_field_tag "to_create[#{index}][dtstart]", emission[:dtstart].to_s %>
-<%= hidden_field_tag "to_create[#{index}][dtend]", emission[:dtend].to_s %>
-<li><%= emission[:dtstart].to_formatted_s(:long) + emission[:program].name %></li>
+<%= hidden_field_tag "to_create[#{index}][dtstart]", emission[:dtstart] %>
+<%= hidden_field_tag "to_create[#{index}][dtend]", emission[:dtend] %>
+<li><%= DateTime.parse(emission[:dtstart]).to_formatted_s(:long) + emission[:program].name %></li>

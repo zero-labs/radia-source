@@ -4,8 +4,7 @@ author:
     
 live:
     name: 'Live'
-    color: '#222'
-#    structure: live_structure
+    color: '#AAA'
     
 playlist:
     name: 'Playlist'

@@ -87,14 +87,14 @@ class ProgramSchedule < ActiveRecord::Base
     to_create = []; to_destroy = []; ignored = []; conflicting = []
     
     calendars.each do |cal|
-      cal.components(Vpim::Icalendar::Vevent) do |event|
+      cal.events do |event|
         
         if !(program = Program.find_by_name(event.summary))
           ignored << event.summary
           next
         end
         
-        event.occurences.each(dtend) do |occurrence|
+        event.occurrences(dtend) do |occurrence|
           next if occurrence < dtstart
 
           check = check_event(type, program, occurrence, occurrence + event.duration)
@@ -121,16 +121,16 @@ class ProgramSchedule < ActiveRecord::Base
     
     bcs.each do |b|
       if b.modified? 
-        conflicting << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.structure_template, :broadcast => b }
+        conflicting << { :program => program, :dtstart => dtstart.to_s, :dtend => dtend.to_s, :type => b.structure_template, :broadcast => b }
       elsif !b.same_time?(dtstart, dtend) or (b.program != program)                              
-        to_destroy  << { :program => program, :dtstart => dtstart, :dtend => dtend, :type => b.structure_template, :broadcast => b }
+        to_destroy  << { :program => program, :dtstart => dtstart.to_s, :dtend => dtend.to_s, :type => b.structure_template, :broadcast => b }
       end
     end
     [to_destroy, conflicting]
   end
   
   def emission_hash(type, program, dtstart, dtend)
-    hsh = { :type => type, :program => program, :dtstart => dtstart, :dtend => dtend }
+    hsh = { :type => type, :program => program, :dtstart => dtstart.to_s, :dtend => dtend.to_s }
     if type == 0 # repetition
       if e = program.find_first_emission_before_date(dtstart)
         hsh.merge!(:emission => e)

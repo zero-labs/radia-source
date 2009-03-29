@@ -1,8 +1,8 @@
 class StructureTemplatesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
-  # GET /schedule/broadcasts/types
-  # GET /schedule/broadcasts/types.:format
+  # GET /schedule/broadcasts/templates
+  # GET /schedule/broadcasts/templates.:format
   def index
     @structure_templates = StructureTemplate.find(:all, :order => :name)
     
@@ -12,8 +12,8 @@ class StructureTemplatesController < ApplicationController
     end
   end
   
-  # GET /schedule/broadcasts/types/:id
-  # GET /schedule/broadcasts/types/:id.:format
+  # GET /schedule/broadcasts/templates/:id
+  # GET /schedule/broadcasts/templates/:id.:format
   def show
     @structure_template = StructureTemplate.find(params[:id])
     
@@ -23,13 +23,13 @@ class StructureTemplatesController < ApplicationController
     end
   end
   
-  # GET /schedule/broadcasts/types/new
+  # GET /schedule/broadcasts/templates/new
   def new
     @structure_template = StructureTemplate.new
   end
   
-  # POST /schedule/broadcasts/types
-  # POST /schedule/broadcasts/types.:format
+  # POST /schedule/broadcasts/templates
+  # POST /schedule/broadcasts/templates.:format
   def create
     @structure_template = StructureTemplate.new(params[:structure_template])
     
@@ -46,13 +46,13 @@ class StructureTemplatesController < ApplicationController
     end
   end
   
-  # GET /schedule/broadcasts/types/edit
+  # GET /schedule/broadcasts/templates/edit
   def edit
     @structure_template = StructureTemplate.find(params[:id])
   end
   
-  # PUT /schedule/broadcasts/types/:id
-  # PUT /schedule/broadcasts/types/:id.:format
+  # PUT /schedule/broadcasts/templates/:id
+  # PUT /schedule/broadcasts/templates/:id.:format
   def update
     @structure_template = StructureTemplate.find(params[:id])
     
@@ -69,8 +69,8 @@ class StructureTemplatesController < ApplicationController
     end
   end
   
-  # DELETE /schedule/broadcasts/types/:id
-  # DELETE /schedule/broadcasts/types/:id.:format
+  # DELETE /schedule/broadcasts/templates/:id
+  # DELETE /schedule/broadcasts/templates/:id.:format
   def destroy
     @structure_template = StructureTemplate.find(params[:id])
     @structure_template.destroy
@@ -84,14 +84,14 @@ class StructureTemplatesController < ApplicationController
   
   # AJAX methods
   
-  # POST /schedule/broadcasts/types/show_segment
+  # POST /schedule/broadcasts/templates/:id/show_segment
   def show_segment
     @structure_template = StructureTemplate.find(params[:id])
     @segment = Segment.new
     render :partial => params[:kind]
   end
   
-  # POST /schedule/broadcasts/types/:id/create_segment
+  # POST /schedule/broadcasts/templates/:id/create_segment
   def create_segment
     @structure = StructureTemplate.find(params[:id]).structure
     

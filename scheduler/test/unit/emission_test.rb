@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class EmissionTest < ActiveSupport::TestCase
-  fixtures :broadcasts, :structure_templates
   
   def test_should_require_program
     assert_no_difference 'Emission.count' do
@@ -21,8 +20,9 @@ class EmissionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_be_modified
-    e = broadcasts(:live1)
+  def test_should_be_modified_after_changed_description
+    #e = broadcasts(:live1)
+    e = create_emission    
     assert_equal false, e.modified?
     e.description = "changed!"
     assert_equal true, e.modified?

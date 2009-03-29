@@ -7,9 +7,9 @@ class LiveSourceTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_require_title
+  def test_should_require_name
     assert_no_difference 'LiveSource.count' do
-      create_live_source :title => ''
+      create_live_source :name => ''
     end
   end
   
@@ -22,7 +22,7 @@ class LiveSourceTest < ActiveSupport::TestCase
   protected
   
   def create_live_source(opts = {})
-    defaults = { :uri => 'http://localhost', :title => 'My source' }
+    defaults = { :uri => 'http://localhost', :name => 'My source' }
     record = LiveSource.new(defaults.merge(opts))
     record.save
     record

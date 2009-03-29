@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SegmentTest < ActiveSupport::TestCase
-  fixtures :structures, :audio_assets
   
   def test_should_require_audio_asset
     assert_no_difference 'Segment.count' do

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class RepetitionTest < ActiveSupport::TestCase
-  fixtures :broadcasts
   
   def test_should_ensure_presence_of_start_time
     assert_no_difference 'Repetition.count' do
