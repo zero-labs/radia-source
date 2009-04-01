@@ -86,8 +86,8 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   # Asset services
-  map.service_navigator 'settings/asset_services/browser',:controller => 'asset_services', 
-                        :action => 'browser', :conditions => { :method => :post }
+  map.asset_service_browser 'settings/asset_services/browse',:controller => 'asset_services', 
+                            :action => 'browse', :conditions => { :method => :post }
                         
   # Message recipients
   map.with_options :controller => 'messages' do |message|

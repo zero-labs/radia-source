@@ -1,5 +1,10 @@
-class ProgramsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show]
+class ProgramsController < ApplicationController  
+  before_filter :load_program, :only => [:show, :edit, :update, :destroy]
+  before_filter :new_program, :only => :new
+  before_filter :new_program_from_params, :only => :create
+  
+  filter_access_to :all, :attribute_check => true
+  filter_access_to :index, :attribute_check => false
   
   # GET /programs
   # GET /programs.:format
@@ -14,9 +19,7 @@ class ProgramsController < ApplicationController
   
   # GET /programs/:id
   # GET /programs/:id.:format
-  def show
-    @program = Program.find_by_urlname(params[:id])
-    
+  def show    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @program.to_xml }
@@ -25,18 +28,21 @@ class ProgramsController < ApplicationController
   
   # GET /programs/new
   def new
-    @program = Program.new
+    respond_to do |format|
+      format.html # new.html.erb
+    end
   end
   
-  # GET /programs/edit
+  # GET /programs/:id/edit
   def edit
-    @program = Program.find_by_urlname(params[:id])
+    respond_to do |format|
+      format.html # edit.html.erb
+    end
   end
   
   # POST /programs
   # POST /programs.:format
   def create
-    @program = Program.new(params[:program])
     respond_to do |format|
       if @program.save
         flash[:notice] = "Program successfully saved."
@@ -52,9 +58,7 @@ class ProgramsController < ApplicationController
   
   # PUT /programs/:id
   # PUT /programs/:id.:format
-  def update
-    @program = Program.find_by_urlname(params[:id])  
-    
+  def update    
     respond_to do |format|
       if @program.update_attributes(params[:program])
         flash[:notice] = "Program was succesfully updated."
@@ -72,7 +76,6 @@ class ProgramsController < ApplicationController
   # DELETE /programs/:id
   # DELETE /programs/:id.:format
   def destroy
-    @program = Program.find_by_urlname(params[:id])
     @program.destroy
     
     respond_to do |format|
@@ -86,5 +89,17 @@ class ProgramsController < ApplicationController
   
   def active_nav
     @active = 'programs'
+  end
+  
+  def load_program
+    @program = Program.find_by_urlname(params[:id])
+  end
+  
+  def new_program
+    @program = Program.new
+  end
+  
+  def new_program_from_params
+    @program = Program.new(params[:program])
   end
 end

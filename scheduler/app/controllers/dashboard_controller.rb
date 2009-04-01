@@ -5,7 +5,9 @@ class DashboardController < ApplicationController
   
   # GET /dashboard
   def index
-    # index.html.erb
+    respond_to do |format|
+      format.html # index.html.erb
+    end
   end
   
   protected

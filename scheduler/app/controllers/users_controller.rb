@@ -1,6 +1,4 @@
-class UsersController < ApplicationController
-  #layout 'application', :only => [:index, :show, :edit], :except => :new
-  
+class UsersController < ApplicationController  
   before_filter :login_required, :except => [:new, :create, :activate]
   before_filter :check_logged_in, :only => [:new, :create]
   

@@ -2,8 +2,6 @@ authorization do
   role :guest do
     has_permission_on :programs, :to => :read
     has_permission_on :broadcasts, :to => :read
-    has_permission_on :authorization_rules, :to => :read
-    has_permission_on :authorization_usages, :to => :read
   end
   
   role :registered do
@@ -17,9 +15,12 @@ authorization do
       if_attribute :authors => contains {user}
     end
     
-    has_permission_on :programs, :to => [:update] do 
+    # 'oversee' privilege lets authors access their dashboard
+    has_permission_on :programs, :to => [:update, :oversee] do 
       if_attribute :authors => contains {user}
     end
+    
+    has_permission_on :asset_services, :to => :browse
   end
   
   role :editor do
@@ -27,11 +28,7 @@ authorization do
     
     has_permission_on :asset_services,      :to => :manage
     has_permission_on :audio_assets,        :to => :manage
-    # Author's dashboard, only supports read
-    has_permission_on :authors,             :to => :read
     has_permission_on :broadcasts,          :to => :manage
-    # Schedule's dashboard, only supports read
-    has_permission_on :dashboard,           :to => :read
     has_permission_on :deliveries,          :to => :manage
     has_permission_on :gaps,                :to => :manage
     has_permission_on :live_sources,        :to => :manage
@@ -49,11 +46,7 @@ authorization do
   role :admin do
     has_permission_on :asset_services,      :to => :manage
     has_permission_on :audio_assets,        :to => :manage
-    # Author's dashboard, only supports read
-    has_permission_on :authors,             :to => :read
     has_permission_on :broadcasts,          :to => :manage
-    # Schedule's dashboard, only supports read
-    has_permission_on :dashboard,           :to => :read
     has_permission_on :deliveries,          :to => :manage
     has_permission_on :editors,             :to => :manage
     has_permission_on :gaps,                :to => :manage
@@ -73,10 +66,20 @@ authorization do
 end
 
 privileges do
-  # default privilege hierarchies to facilitate RESTful Rails apps
-  privilege :manage, :includes => [:create, :read, :update, :delete]
+  # Default privilege hierarchies to facilitate RESTful Rails apps
+  privilege :manage do
+    includes :create, :read, :update, :delete, :oversee, :browse
+  end
+  
   privilege :read,   :includes => [:index, :show]
   privilege :create, :includes => :new
   privilege :update, :includes => :edit
   privilege :delete, :includes => :destroy
+  
+  # Radia Source specific privileges
+  
+  # Privilege for 'dashboard' controllers. Applied to objects that may be 'overseen'
+  privilege :oversee, :includes => [:index, :show]
+  # Privilege for Asset Services, allowing access to the 'browse' AJAX action and reading actions
+  privilege :browse, :includes => [:browse, :read]
 end

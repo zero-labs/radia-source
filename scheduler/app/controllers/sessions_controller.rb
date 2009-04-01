@@ -1,5 +1,8 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
+  # This controller has no filter_access_to statements, as anyone
+  # may try to login or logout.
+  
   layout 'login'
   
   before_filter :check_logged_in, :only => [:new, :create]
