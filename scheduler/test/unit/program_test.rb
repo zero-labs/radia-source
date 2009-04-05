@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProgramTest < ActiveSupport::TestCase
-  fixtures :programs, :broadcasts
   
   def test_should_find_correct_first_emission_before_date
     found = programs(:program_2).find_first_emission_before_date(DateTime.new(2008, 03, 03, 03, 00))

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class AuthorshipTest < ActiveSupport::TestCase
-  fixtures :users, :authorships, :programs
   
   def test_should_not_create_authorship
     assert_no_difference 'Authorship.count' do

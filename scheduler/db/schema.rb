@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(:version => 20090315205011) do
   end
 
   create_table "live_sources", :force => true do |t|
-    t.integer "settings_id"
+    t.integer "settings_id", :default => 1
     t.string  "uri"
     t.string  "name"
   end

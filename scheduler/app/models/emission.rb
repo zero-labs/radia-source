@@ -17,9 +17,12 @@ class Emission < Broadcast
     false
   end
   
-  # Tests if this emission has been changed from its original state
+  # Tests if this emission has been changed from its original state:
+  # Creation datetime different from update time OR
+  # a description has been added OR
+  # its structure has been modified (e.g. an audio asset has been delivered)
   def modified?
-    structure.modified?
+    (self.created_at != self.updated_at) || (description != nil) || (structure.modified?)
   end
   
   # Audio assets for this emission

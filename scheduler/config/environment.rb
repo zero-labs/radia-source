@@ -24,6 +24,12 @@ Rails::Initializer.run do |config|
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
+  
+  # Required gems:
+  
+  config.gem 'vpim'
+  
+  config.gem 'ruby-openid', :lib => 'openid'
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
@@ -37,8 +43,8 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_web_session',
-    :secret      => 'bee5987501bf58fd554a9d75bb1c39bd3e6b22635ad26ebd8869a5866ef2e9593cd727fea5d3a29babf5ca927b3f20f15e7e74617ccec265c2d396675ea6fb3d'
+    :key => '_web_session',
+    :secret => 'bee5987501bf58fd554a9d75bb1c39bd3e6b22635ad26ebd8869a5866ef2e9593cd727fea5d3a29babf5ca927b3f20f15e7e74617ccec265c2d396675ea6fb3d'
   }
 
   # Use the database for sessions instead of the cookie-based default,

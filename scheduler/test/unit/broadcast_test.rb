@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class BroadcastTest < ActiveSupport::TestCase
-  fixtures :broadcasts
 
   def test_should_require_start_and_end_date
     assert_no_difference 'Broadcast.count' do

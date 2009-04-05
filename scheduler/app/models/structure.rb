@@ -19,7 +19,8 @@ class Structure < ActiveRecord::Base
   # structure is considered modified). 
   # Unauthored AudioAssets don't influence this result
   def modified?
-    segments.collect { |e| e.audio_asset.authored? and e.audio_asset.delivered? }.include?(true) 
+    ((self.created_at != self.updated_at) ||
+     (segments.collect { |e| e.audio_asset.authored? && e.audio_asset.delivered? }.include?(true))) 
   end
   
   # Returns the length (in seconds) of the associated Playable entity:
