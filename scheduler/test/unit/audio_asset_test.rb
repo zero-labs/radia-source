@@ -34,6 +34,19 @@ class AudioAssetTest < ActiveSupport::TestCase
     end
   end
   
+  def test_creator_should_exist
+    assert_not_nil audio_assets(:created_single).creator
+  end
+  
+  def test_should_only_have_creator_as_author
+    assert [audio_assets(:created_single)], audio_assets(:created_single).authors
+  end
+  
+  def test_should_not_have_authors_or_creators
+    assert [], audio_assets(:unauthored_single_unavailable).authors
+    assert_nil audio_assets(:unauthored_single_unavailable).creator
+  end
+  
   protected 
   
   def create_audio_asset(opts = {})

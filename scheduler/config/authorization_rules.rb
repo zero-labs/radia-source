@@ -1,7 +1,14 @@
 authorization do
   role :guest do
-    has_permission_on :programs, :to => :read
-    has_permission_on :broadcasts, :to => :read
+    #has_permission_on :programs, :to => :read
+    has_permission_on :broadcasts, :to => :read 
+    
+    # Singleton resource that lists all audio assets
+    has_permission_on :audio_assets, :to => :read
+    
+    has_permission_on :singles, :to => :read
+    has_permission_on :playlists, :to => :read
+    has_permission_on :spots, :to => :read
   end
   
   role :registered do
@@ -21,6 +28,24 @@ authorization do
     end
     
     has_permission_on :asset_services, :to => :browse
+    
+    has_permission_on :singles, :to => :create
+    
+    has_permission_on :singles, :to => :update do
+      if_attribute :authors => contains {user}
+    end
+    
+    has_permission_on :playlists, :to => :create
+    
+    has_permission_on :playlists, :to => :update do
+      if_attribute :authors => contains {user}
+    end
+    
+    has_permission_on :spots, :to => :create
+    
+    has_permission_on :spots, :to => :update do
+      if_attribute :authors => contains {user}
+    end
   end
   
   role :editor do
@@ -78,8 +103,8 @@ privileges do
   
   # Radia Source specific privileges
   
-  # Privilege for 'dashboard' controllers. Applied to objects that may be 'overseen'
+  # For 'Dashboard' controllers. Applied to objects that may be 'overseen'
   privilege :oversee, :includes => [:index, :show]
-  # Privilege for Asset Services, allowing access to the 'browse' AJAX action and reading actions
+  # For Asset Services, allowing access to the 'browse' AJAX action and reading privileges
   privilege :browse, :includes => [:browse, :read]
 end

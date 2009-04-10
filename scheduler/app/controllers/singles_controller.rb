@@ -1,5 +1,12 @@
 class SinglesController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :unavailable]
+  before_filter :load_single, :only => [:show, :edit, :update, :destroy]
+  before_filter :new_single, :only => :new
+  before_filter :new_single_from_params, :only => :create
+  
+  filter_access_to :all, :attribute_check => true
+  filter_access_to :index, :attribute_check => false
+  
+  #before_filter :login_required, :except => [:index, :show, :unavailable]
   
   # GET /audio/singles
   # GET /audio/singles.:format
@@ -14,7 +21,6 @@ class SinglesController < ApplicationController
   # GET /audio/singles/:id
   # GET /audio/singles/:id.:format
   def show
-    @single = Single.find(params[:id])
     respond_to do |format|
       format.html # show.html.erb
       format.xml { render :xml => @single.to_xml }
@@ -23,13 +29,14 @@ class SinglesController < ApplicationController
   
   # GET /audio/singles/new
   def new
-    @single = Single.new
+    respond_to do |format|
+      format.html # index.html.erb
+    end
   end
   
   # POST /audio/singles
   # POST /audio/singles.:format
   def create
-    @single = Single.new(params[:single])
     respond_to do |format|
       if @single.save
         flash[:notice] = 'Single registered successfully. It will be downloaded soon.'
@@ -45,7 +52,6 @@ class SinglesController < ApplicationController
   
   # GET /audio/singles/:id/edit/
   def edit
-    @single = Single.find(params[:id])
     respond_to do |format|
       format.html # edit.html.erb
       format.xml { render :xml => @single.to_xml }
@@ -55,7 +61,6 @@ class SinglesController < ApplicationController
   # PUT /audio/singles/:id
   # PUT /audio/singles/:id.:format
   def update
-    @single = Single.find(params[:id])
     respond_to do |format|
       if @single.update_attributes(params[:single])
         flash[:notice] = 'Single updated successfully'
@@ -82,16 +87,28 @@ class SinglesController < ApplicationController
   end
   
   # GET /audio/singles/unavailable.:format
-  def unavailable
-    @singles = Single.find_all_unavailable
-    respond_to do |format|
-      format.xml { render :xml => @singles.to_xml }
-    end
-  end
+  #def unavailable
+  #  @singles = Single.find_all_unavailable
+  #  respond_to do |format|
+  #    format.xml { render :xml => @singles.to_xml }
+  #  end
+  #end
   
   protected
   
   def active_nav
     @active = 'audio_assets'
+  end
+  
+  def load_single
+    @single = Single.find(params[:id])
+  end
+  
+  def new_single
+    @single = Single.new
+  end
+  
+  def new_single_from_params
+    @single = Single.new(params[:single])
   end
 end

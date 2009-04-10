@@ -68,6 +68,10 @@ class Structure < ActiveRecord::Base
     end
   end
   
+  def authors
+    segments.collect { |s| s.audio_asset.authors }.uniq || []
+  end
+  
   def status
     status_array = segments.collect { |s| s.delivered? }.select { |s| s }
     if status_array.size == 0

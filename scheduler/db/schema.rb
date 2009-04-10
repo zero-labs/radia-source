@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090329174923) do
+ActiveRecord::Schema.define(:version => 20090404204806) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20090329174923) do
     t.integer  "live_source_id"
     t.string   "retrieval_uri"
     t.datetime "delivered_at"
+    t.integer  "creator_id"
   end
 
   create_table "authorships", :force => true do |t|

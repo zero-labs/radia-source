@@ -7,8 +7,11 @@ class SessionsController < ApplicationController
   
   before_filter :check_logged_in, :only => [:new, :create]
   
-  # render new.rhtml
+ 
   def new
+    respond_to do |format|
+      format.html  # new.html.erb
+    end
   end
 
   def create
@@ -67,6 +70,7 @@ class SessionsController < ApplicationController
   end
 
   private
+  
   def successful_login
     flash[:notice] = "Logged in successfully"
     redirect_back_or_default(root_path)
