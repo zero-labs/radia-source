@@ -24,3 +24,8 @@ authored_live_single:
     type: Single
     live_source: studio
     authored: true
+
+created_single:
+    type: Single
+    authored: true
+    creator: quentin

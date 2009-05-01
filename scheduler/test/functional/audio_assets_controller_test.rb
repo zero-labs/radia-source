@@ -1,8 +1,21 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class AudioAssetsControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  
+  ### Authorization Tests ###
+  
+  def test_guest_should_read_audio_assets
+    get :show
+    assert_response :success
+  end
+  
+  def test_registered_should_read_audio_assets
+    get :show
+    assert_response :success
+  end
+  
+  def test_authors_should_read_and_update_audio_assets
+    get :show
+    assert_response :success
   end
 end

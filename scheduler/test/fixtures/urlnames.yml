@@ -1,20 +1,34 @@
-urlname_1:
+urlname_program_1:
     nameable: program_1
     nameable_type: Program
     name: programacao-variavel
     
-urlname_2:
+urlname_program_2:
     nameable: program_2
     nameable_type: Program
     name: some-other-program
     
-urlname_3:
+urlname_quentin:
     nameable: quentin
     nameable_type: User
     name: quentin
 
-urlname_4:
+urlname_aaron:
     nameable: aaron
     nameable_type: User
     name: aaron
 
+urlname_pepe:
+    nameable: pepe
+    nameable_type: User
+    name: pepe
+
+urlname_editor_1:
+    nameable: editor_1
+    nameable_type: User
+    name: editor-1
+    
+urlname_admin_1:
+    nameable: admin_1
+    nameable_type: User
+    name: admin-1

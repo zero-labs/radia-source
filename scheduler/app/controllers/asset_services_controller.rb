@@ -1,4 +1,10 @@
 class AssetServicesController < ApplicationController
+  before_filter :load_asset_service, :only => [:show, :edit, :update, :destroy]
+  before_filter :new_asset_service, :only => :new
+  before_filter :new_asset_service_from_params, :only => :create
+  
+  filter_access_to :all, :attribute_check => true
+  filter_access_to :index, :attribute_check => false
   
   # GET /settings/asset_services
   # GET /settings/asset_services.:format
@@ -12,13 +18,14 @@ class AssetServicesController < ApplicationController
   
   # GET /settings/asset_services/new
   def new
-    @asset_service = AssetService.new
+    respond_to do |format|
+      format.html # new.html.erb
+    end
   end
   
   # POST /settings/asset_services
   # POST /settings/asset_services.:format
   def create
-    @asset_service = AssetService.new(params[:asset_service])
     respond_to do |format|
       if @asset_service.save
         flash[:notice] = "Asset service created successfully"
@@ -35,7 +42,6 @@ class AssetServicesController < ApplicationController
   # GET /settings/asset_services/:id
   # GET /settings/asset_services/:id.:format
   def show
-    @asset_service = AssetService.find(params[:id])
     respond_to do |format|
       format.html # show.html.erb
       format.xml { render :xml => @asset_service.to_xml }
@@ -44,13 +50,14 @@ class AssetServicesController < ApplicationController
   
   # GET /settings/asset_services/:id
   def edit
-    @asset_service = AssetService.find(params[:id])
+    respond_to do |format|
+      format.html # edit.html.erb
+    end
   end
   
   # PUT /settings/asset_services/:id
   # PUT /settings/asset_services/:id.:format
   def update
-    @asset_service = AssetService.find(params[:id])
     respond_to do |format|
       if @asset_service.update_attributes(params[:asset_service])
         flash[:notice] = "Asset service updated successfully"
@@ -67,17 +74,18 @@ class AssetServicesController < ApplicationController
   # DELETE /settings/asset_services/:id
   # DELETE /settings/asset_services/:id.:format
   def destroy
-    @asset_service = AssetService.find(params[:id])
     @asset_service.destroy
     respond_to do |format|
       flash[:notice] = "Asset service destroyed"
-      format.html { redirect_to settings_path }
+      format.html { redirect_to settings_asset_services_path }
       format.xml { head :ok }
     end
   end
   
-  # POST /settings/asset_services/:id/browser
-  def browser
+  ### AJAX actions ####
+  
+  # POST /settings/asset_services/:id/browse
+  def browse
     @asset_service = AssetService.find(params[:id])
     begin
       files = @asset_service.list(params[:password])
@@ -91,5 +99,17 @@ class AssetServicesController < ApplicationController
   
   def active_nav
     @active = 'settings'
+  end
+  
+  def load_asset_service
+    @asset_service = AssetService.find(params[:id])
+  end
+  
+  def new_asset_service
+    @asset_service = AssetService.new
+  end
+  
+  def new_asset_service_from_params
+    @asset_service = AssetService.new(params[:asset_service])
   end
 end

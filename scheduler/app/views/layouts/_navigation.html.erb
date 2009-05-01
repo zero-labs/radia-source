@@ -1,19 +1,29 @@
 <ul>
-	<%=	navigation_item(:dashboard, dashboard_path, false) if logged_in? and 
-															  (current_user.is_admin? or current_user.is_editor?) %>
+	<% if logged_in? %>
+		<% permitted_to? :oversee, :program_schedule do %>
+			<%=	navigation_item(:dashboard, dashboard_path, false) %>
+		<% end %>
 		
-	<%= navigation_item(:author_dashboard, author_path(current_user), false) if logged_in? and current_user.is_author? %>
+		<% permitted_to? :oversee, :programs do %>
+			<%= navigation_item(:author_dashboard, author_path(current_user), false) %>
+		<% end %>
 		
-	<%= navigation_item(:schedule) if logged_in? %>
+		<%= navigation_item(:schedule) %>
 	
-	<%= navigation_item(:programs) if logged_in? %>
-	
-	<%= navigation_item(:audio_assets, audio_path) if logged_in? %>
-	
-	<%= navigation_item(:settings, settings_path, false) if logged_in? and
-															(current_user.is_admin? or current_user.is_editor?) %>
+		<%= navigation_item(:programs) %>
+		
+		<% permitted_to? :read, :audio_assets do %>
+			<%= navigation_item(:audio_assets, audio_path) %>
+		<% end %>
+		
+		<% permitted_to? :manage, :schedule do %>
+			<%= navigation_item(:settings, settings_path, false) %>
+		<% end %>
 
-	<%= navigation_item(:my_account, user_path(current_user), true) if logged_in? %>
-	
-	<%= navigation_item(:users, users_path, true) if logged_in? and current_user.is_admin? %>
+		<%= navigation_item(:my_account, user_path(current_user), true) %>
+		
+		<% permitted_to? :read, :users do %> 
+			<%= navigation_item(:users, users_path, true) %>
+		<% end %>
+	<% end %>
 </ul>

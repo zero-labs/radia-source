@@ -4,13 +4,28 @@
 class ApplicationController < ActionController::Base  
   include AuthenticatedSystem
   
-  before_filter :active_nav
+  before_filter :set_current_user, :active_nav
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => '7ff6ddfc1e3482e81bb3ce53070c5404'
   
   protected 
+  
+  # Globally set the current user for model security. This is thread-safe
+  def set_current_user
+    Authorization.current_user = current_user
+  end
+  
+  # Method called when access is denied for a user
+  def permission_denied
+    flash[:error] = 'Sorry, you are not allowed to the requested page.'
+    respond_to do |format|
+      format.html { logged_in? ? redirect_back_or_default(root_path) : redirect_to(login_path) } 
+      format.xml  { head :unauthorized }
+      format.js   { head :unauthorized }
+    end
+  end
   
   def schedule
     ProgramSchedule.instance

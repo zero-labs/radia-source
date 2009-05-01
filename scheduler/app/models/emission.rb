@@ -30,6 +30,7 @@ class Emission < Broadcast
     structure.audio_assets
   end
   
+  # TODO change this to allow authorships on individual broadcasts
   def authors
     program.authors
   end

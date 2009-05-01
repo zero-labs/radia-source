@@ -1,8 +1,8 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
-  acts_as_authorizable
-  acts_as_authorized_user
+  has_many :roles
+  
   acts_as_urlnameable :login, :overwrite => true
   acts_as_messageable
   
@@ -151,6 +151,12 @@ class User < ActiveRecord::Base
     [{ :id => 'inbox', :name => 'Inbox' }, 
      { :id => 'sentbox', :name => 'Sentbox' }, 
      { :id => 'trash', :name => 'Trash' }]
+  end
+  
+  # Requirement for the 'Declarative Authorization' plugin
+  # Returns an array of symbols with roles associated with the user
+  def role_symbols
+     (roles || []).map {|r| r.name.to_sym} + [self.is_author? ? :author : []].flatten
   end
   
   def to_xml(options = {})

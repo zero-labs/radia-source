@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090315205011) do
+ActiveRecord::Schema.define(:version => 20090404204806) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20090315205011) do
     t.integer  "live_source_id"
     t.string   "retrieval_uri"
     t.datetime "delivered_at"
+    t.integer  "creator_id"
   end
 
   create_table "authorships", :force => true do |t|
@@ -143,11 +144,10 @@ ActiveRecord::Schema.define(:version => 20090315205011) do
   end
 
   create_table "roles", :force => true do |t|
-    t.string   "name",              :limit => 40
-    t.string   "authorizable_type", :limit => 40
-    t.integer  "authorizable_id"
+    t.string   "name",       :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id",                  :null => false
   end
 
   create_table "roles_users", :id => false, :force => true do |t|

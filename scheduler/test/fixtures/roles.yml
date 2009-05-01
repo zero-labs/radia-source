@@ -1,4 +1,7 @@
-first:
-  id: 1
-another:
-  id: 2
+editor_1_role:
+    name: editor
+    user: editor_1
+    
+admin_1_role:
+    name: admin
+    user: admin_1
