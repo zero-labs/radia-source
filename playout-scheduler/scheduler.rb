@@ -16,6 +16,36 @@ module PlayoutScheduler
         end
     end
 
+    class Gap
+        def self.new_gap_broadcast dtstart, dtend, *args
+            Broadcast.new("gap", dtstart, dtend, [Segment.new(:Playlist, "tna.m3u", dtend-dtstart)])
+        end
+
+        def self.new_gap_structure dtstart, dtend,*args
+            [Segment.new(:Playlist, "tna.m3u", dtend-dtstart)]
+        end
+    end
+
+    class Segment
+        def initialize type, uri, length
+            @type = type
+            if [:Single, :Playlist].include?(type)
+                #@asset = eval(type + ".new(uri)")
+                
+                # Alternative to ugly eval:
+                @asset =PlayoutScheduler.const_get(type).new(uri)
+            else
+                @asset = nil
+            end
+            @length= length
+        end
+
+        def self.load_from_scheduler seg
+            type = seg.attributes["type"].to_sym
+            PlayoutScheduler.const_get(type).new(uri)
+        end
+    end
+
     class Broadcast
         attr_reader :name, :type, :dtstart, :dtend, :structure
         attr_accessor :timer
@@ -31,23 +61,20 @@ module PlayoutScheduler
             end
         end
 
+        def self.load_from_scheduler bc
+                if !bc.respond_to?(:structure) or bc.structure.nil?
+                    struct = Gap.new_gap_structure(bc.dtstart, bc.dtend)
+                    Broadcast.new("gap", bc.dtstart, bc.dtend, struct)
+                else
+                    struct = broadcast[:structure].map do |segment|
+                        Segment.load_from_scheduler(segment)
+                    end
+                end
+                Broadcast.new(bc.description, bc.dtstart, bc.dtend, struct)
+        end
+
         def to_s
             [@name,@dtstart,@dtend].join(", ")
-        end
-    end
-
-    class Segment
-        def initialize type, uri, length
-            @type = type
-            if ["Single", "Playlist"].include?(type)
-                #@asset = eval(type + ".new(uri)")
-                
-                # Alternative to ugly eval:
-                @asset =PlayoutScheduler.const_get(type).new(uri)
-            else
-                @asset = nil
-            end
-            @length= length
         end
     end
 
@@ -59,6 +86,10 @@ module PlayoutScheduler
                 @broadcasts = load_yaml init[:yaml]
                 @next_broadcast = get_next
                 current_broadcast()
+            elsif init.key? :scheduler_uri
+                @broadcasts = load_from_scheduler 
+                @next_broadcast = get_next
+                current_broadcast()
             end
         end
 
@@ -68,7 +99,7 @@ module PlayoutScheduler
             broadcasts = []
             YAML::load( obj ).each do |broadcast|
                 struct = broadcast["structure"].select do |segment|
-                    Segment.new segment["type"], segment["uri"], segment["length"]
+                    Segment.new segment["type"].to_sym, segment["uri"], segment["length"]
                 end
                 broadcasts << Broadcast.new(broadcast["name"], broadcast["dtstart"], broadcast["dtend"], struct)
             end
@@ -76,6 +107,14 @@ module PlayoutScheduler
             broadcasts
         end
 
+        def load_from_scheduler
+            require 'playout_middleware'
+            PlayoutMiddleware::fetch.each do |broadcast|
+                broadcasts << Broadcast.load_from_scheduler(broadcast)
+            end
+            p broadcasts
+            broadcasts
+        end
         def get_next bc=nil
             now = bc.nil? ? Time.now : bc.dtend
             next_broadcast = nil
