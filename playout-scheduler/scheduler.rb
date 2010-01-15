@@ -8,6 +8,11 @@ module PlayoutScheduler
         def initialize uri
             p uri
         end
+        
+        def self.load_from_scheduler asset
+            p "I'm a single"
+        end
+
     end
 
     class Playlist
@@ -18,11 +23,14 @@ module PlayoutScheduler
 
     class Gap
         def self.new_gap_broadcast dtstart, dtend, *args
-            Broadcast.new("gap", dtstart, dtend, [Segment.new(:Playlist, "tna.m3u", dtend-dtstart)])
+            if dtstart.eql?(dtend)
+                nil
+            end
+            Broadcast.new("gap", dtstart, dtend, [Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)])
         end
 
         def self.new_gap_structure dtstart, dtend,*args
-            [Segment.new(:Playlist, "tna.m3u", dtend-dtstart)]
+            [Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)]
         end
     end
 
@@ -41,8 +49,12 @@ module PlayoutScheduler
         end
 
         def self.load_from_scheduler seg
-            type = seg.attributes["type"].to_sym
-            PlayoutScheduler.const_get(type).new(uri)
+            if seg.respond_to? "single" then 
+                type,asset = :Single, seg.send('single')
+            else
+                type,asset = :Playlist, seg.send('playlist')
+            end
+            PlayoutScheduler.const_get(type).send(:load_from_scheduler, asset)
         end
     end
 
@@ -62,11 +74,17 @@ module PlayoutScheduler
         end
 
         def self.load_from_scheduler bc
-                if !bc.respond_to?(:structure) or bc.structure.nil?
+                if (!bc.respond_to?(:structure) or bc.structure.nil?) and
+                    (!bc.respond_to?(:bloc) or bc.bloc.nil?)
                     struct = Gap.new_gap_structure(bc.dtstart, bc.dtend)
                     Broadcast.new("gap", bc.dtstart, bc.dtend, struct)
+                elsif bc.respond_to?(:bloc)
+                    p bc
+                    struct = bc.bloc.segments.map do |segment|
+                        Segment.load_from_scheduler(segment)
+                    end
                 else
-                    struct = broadcast[:structure].map do |segment|
+                    struct = bc.structure.segments.map do |segment|
                         Segment.load_from_scheduler(segment)
                     end
                 end
