@@ -8,6 +8,7 @@ now = Time.now
 min = 60
 yaml= <<eoyml
   - name: "buraco"
+    type: emission
     dtstart: #{(now+30).strftime("%Y-%m-%d %H:%M:%S")} +00:00
     dtend:   #{(now+1*min).strftime("%Y-%m-%d %H:%M:%S")} +00:00 
     structure:
@@ -16,6 +17,7 @@ yaml= <<eoyml
       uri: "/singles/buraco_testfile.mp3"
       length: ~
   - name: "3min"
+    type: gap
     dtstart: #{(now+1*min).strftime("%Y-%m-%d %H:%M:%S")} +00:00
     dtend:   #{(now+2*min).strftime("%Y-%m-%d %H:%M:%S")} +00:00 
     structure:
