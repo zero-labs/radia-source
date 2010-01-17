@@ -13,6 +13,10 @@ module PlayoutMiddleware
 
     class Broadcast < ActiveResource::Base
         self.site = $playout_config['scheduler_uri'] << "/schedule"
+        
+        def self.is_valid_broadcast bc
+            return true
+        end
     end
 
     class Bloc < ActiveResource::Base
