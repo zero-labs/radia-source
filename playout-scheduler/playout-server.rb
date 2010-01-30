@@ -12,7 +12,7 @@ require 'scheduler'
 module RSServer
 	def post_init 
 		puts "someone connected"
-    p $a.broadcasts
+    p $server.broadcasts
 	end
 
 	def receive_data data
@@ -28,7 +28,7 @@ module RSServer
 end
 
 def run(config)
-    $a = PlayoutScheduler::PlayoutServer.new(config)
+    $server = PlayoutScheduler::PlayoutServer.new(config)
 	EventMachine::start_unix_domain_server SocketFile,  RSServer
 	Signal.trap("TERM") do
 		require 'fileutils'
@@ -39,7 +39,7 @@ end
 
 if $0.eql?( __FILE__ )
     p __FILE__
-    EventMachine::run { run }
+    EventMachine::run { run $playout_config }
 end
 
 #EOF

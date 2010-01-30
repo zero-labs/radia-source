@@ -23,6 +23,10 @@ module PlayoutMiddleware
         self.site = ''
     end
 
+    class Structure < ActiveResource::Base
+        self.site = ''
+    end
+
     class Segment < ActiveResource::Base
         self.site = ''
     end

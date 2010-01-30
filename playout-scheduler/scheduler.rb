@@ -27,7 +27,8 @@ module PlayoutScheduler
             if dtstart.eql?(dtend)
                 nil
             end
-            Broadcast.new("gap", :gap, dtstart, dtend, [Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)])
+            Broadcast.new("gap", :gap, dtstart, dtend, [
+                          Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)])
         end
 
         def self.new_gap_structure dtstart, dtend,*args
@@ -124,6 +125,7 @@ module PlayoutScheduler
         attr_reader :broadcasts
         def initialize init, broadcasts = []
             @broadcasts = broadcasts
+            @update_scheduled = true
             @global_lock = Mutex.new
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
@@ -133,6 +135,7 @@ module PlayoutScheduler
                 @broadcasts = load_from_scheduler 
                 @next_broadcast = get_next
                 rotate_broadcast()
+                @update_scheduled = false
             end
         end
 
@@ -144,7 +147,8 @@ module PlayoutScheduler
                 struct = broadcast["structure"].select do |segment|
                     Segment.new segment["type"].to_sym, segment["uri"], segment["length"]
                 end
-                broadcasts << Broadcast.new(broadcast["name"], broadcast["type"], broadcast["dtstart"], broadcast["dtend"], struct)
+                broadcasts << Broadcast.new(broadcast["name"], broadcast["type"], 
+                                            broadcast["dtstart"], broadcast["dtend"], struct)
             end
             broadcasts
         end
@@ -172,6 +176,11 @@ module PlayoutScheduler
                 end
                 @current_broadcast.timer= EventMachine::Timer.new(
                     @current_broadcast.dtend-Time.now) {rotate_broadcast()}
+                unless @update_scheduled then
+                    EventMachine::defer(update)
+                    @update_scheduled = true
+                end
+
             end
         end
 
@@ -219,6 +228,13 @@ module PlayoutScheduler
             end
             next_broadcast
         end
+
+        def update
+            @global_lock.synchronize do
+                @update_scheduled = false
+                p "UPDATE"
+            end
+        end          
     end
 end
 
