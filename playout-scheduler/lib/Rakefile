@@ -1,0 +1,31 @@
+namespace :radia do
+    Debug = 1
+    desc "Construct a yml file from a calendar"
+    task :ics2names, :arg1 do |t, args|
+        require 'yaml'
+        require 'vpim'
+        
+        d = args[:arg1]
+        if not File.directory? d then
+            p "#{d} is not a directory"
+            exit 1
+        end
+
+        files = Dir[d+"/*.ics"]
+        p "Directory:#{args[:arg1]},files: #{files}" if Debug
+        
+        program_names = []
+        files.each do |f|
+                       Vpim::Icalendar.decode(File.open(f)).each do |cal|
+                                cal.each do |ev|
+                                    program_names << ev.summary if not program_names.include? ev.summary
+                                end
+                        end
+        end
+
+        f = File.open(d+"/programs.yml",'w')
+        f.write(YAML::dump(program_names))
+        f.close
+
+    end
+end
