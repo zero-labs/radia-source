@@ -1,40 +1,10 @@
-
 module PlayoutScheduler
    
     require 'rubygems'
     require 'eventmachine'
     require 'thread'
 
-    class Single
-        def initialize uid
-            @uid = uid
-        end
-        
-        def self.load_from_scheduler asset
-            @uid = asset.id
-        end
 
-    end
-
-    class Playlist
-        def initialize uri
-            p uri
-        end
-    end
-
-    class Gap
-        def self.new_gap_broadcast dtstart, dtend, *args
-            if dtstart.eql?(dtend)
-                nil
-            end
-            Broadcast.new("gap", :gap, dtstart, dtend, [
-                          Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)])
-        end
-
-        def self.new_gap_structure dtstart, dtend,*args
-            [Segment.new(:Playlist, "/playlists/tna.m3u", dtend-dtstart)]
-        end
-    end
 
     class Segment
         def initialize type, uri, length
@@ -126,7 +96,7 @@ module PlayoutScheduler
         def initialize init, broadcasts = []
             @broadcasts = broadcasts
             @update_scheduled = true
-            @global_lock = Mutex.new
+            @global_lock = Monitor.new
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
                 @next_broadcast = get_next
@@ -156,7 +126,7 @@ module PlayoutScheduler
         def load_from_scheduler
             require 'playout_middleware'
             PlayoutMiddleware::fetch.each do |broadcast|
-                p broadcast
+                #p broadcast
                 broadcasts << Broadcast.load_from_scheduler(broadcast)
             end
             broadcasts
@@ -210,7 +180,7 @@ module PlayoutScheduler
                     else
                         next_broadcast = Gap.new_gap_broadcast(now, @broadcasts[0].dtstart)
                     end
-                    p "Next track: gap" if DEBUG
+                    p "#{Time.now} -- Next track: gap" if DEBUG
                     break
 
                 # If starded in the past either:
@@ -219,7 +189,7 @@ module PlayoutScheduler
                 else
                     if @broadcasts[0].dtend > now
                         next_broadcast = @broadcasts.shift()
-                        p "Next track: #{next_broadcast}" if DEBUG
+                        p "#{Time.now} -- Next track: #{next_broadcast}" if DEBUG
                         break
                     else
                         @broadcasts.shift()
@@ -232,7 +202,7 @@ module PlayoutScheduler
         def update
             @global_lock.synchronize do
                 @update_scheduled = false
-                p "UPDATE"
+                p "#{Time.now} -- UPDATE"
             end
         end          
     end

@@ -2,12 +2,8 @@
 #
 
 
-require 'rubygems'
+
 require 'eventmachine'
-
-require 'config'
-require 'scheduler'
-
 
 module RSServer
 	def post_init 
@@ -27,19 +23,21 @@ module RSServer
 
 end
 
-def run(config)
-    $server = PlayoutScheduler::PlayoutServer.new(config)
-	EventMachine::start_unix_domain_server SocketFile,  RSServer
-	Signal.trap("TERM") do
-		require 'fileutils'
-		EventMachine::stop_event_loop
-		FileUtils::rm SocketFile
-	end
+module PlayoutScheduler
+    def self.run(config)
+        $server = PlayoutServer.new(config)
+        EventMachine::start_unix_domain_server SocketFile,  RSServer
+        Signal.trap("TERM") do
+            require 'fileutils'
+            EventMachine::stop_event_loop
+            FileUtils::rm SocketFile
+        end
+    end
 end
 
 if $0.eql?( __FILE__ )
     p __FILE__
-    EventMachine::run { run $playout_config }
+    EventMachine::run { PlayoutScheduler::run $playout_config }
 end
 
 #EOF
