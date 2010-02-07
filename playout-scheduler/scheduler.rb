@@ -150,7 +150,6 @@ module PlayoutScheduler
                     EventMachine::defer(update)
                     @update_scheduled = true
                 end
-
             end
         end
 
@@ -202,6 +201,7 @@ module PlayoutScheduler
         def update
             @global_lock.synchronize do
                 @update_scheduled = false
+                @broadcasts += load_from_scheduler
                 p "#{Time.now} -- UPDATE"
             end
         end          

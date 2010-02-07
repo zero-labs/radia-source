@@ -7,12 +7,20 @@ module PlayoutMiddleware
         Schedule::find(:one, :from => '/schedule.xml').broadcasts
     end
 
+    def self.fech_single id
+        begin
+            Single::find(:one, :from => "/audio/singles/#{id}.xml")
+        rescue
+            nil
+        end
+    end
+
     class Schedule < ActiveResource::Base
         self.site = $playout_config['scheduler_uri'] << "/"
     end
 
     class Broadcast < ActiveResource::Base
-        self.site = $playout_config['scheduler_uri'] << "/schedule"
+        self.site = $playout_config['scheduler_uri'] << "/schedule/"
         
         def self.is_valid_broadcast bc
             return true
