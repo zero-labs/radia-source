@@ -107,7 +107,6 @@ module PlayoutScheduler
                 @broadcasts = load_from_scheduler 
                 @next_broadcast = get_next_broadcast
                 rotate_broadcast()
-                @update_scheduled = false
             end
         end
 
@@ -145,7 +144,7 @@ module PlayoutScheduler
             @global_lock.synchronize do 
                 now = Time.now
                 @current_broadcast = @next_broadcast
-                debug_log "Current broadcast: #{@current_broadcast}"
+                debug_log "Current broadcast: #{@current_broadcast}|#{@broadcasts.length} queued"
                 @next_broadcast = get_next_broadcast @current_broadcast
                 if @current_broadcast.nil? then
                     return
@@ -212,8 +211,8 @@ module PlayoutScheduler
         def update
             @global_lock.synchronize do
                 @update_scheduled = false
-                @broadcasts += load_from_scheduler
-                debug_log "update" 
+                @broadcasts += load_from_scheduler 
+                debug_log "update -> length left:#{@broadcasts.length}; last:#{@broadcasts[-1].dtstart}" 
             end
         end          
 
