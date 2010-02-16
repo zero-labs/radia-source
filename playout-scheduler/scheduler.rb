@@ -2,9 +2,11 @@ module PlayoutScheduler
    
     require 'rubygems'
     require 'eventmachine'
-    require 'thread'
+    require 'monitor'
 
-
+    def self.debug_log(s)
+        puts "#{Time.now} -- #{s}" if DEBUG
+    end
 
     class Segment
         def initialize type, uri, length
@@ -99,11 +101,11 @@ module PlayoutScheduler
             @global_lock = Monitor.new
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
-                @next_broadcast = get_next
+                @next_broadcast = get_next_broadcast
                 rotate_broadcast()
             elsif init.key? :scheduler_uri
                 @broadcasts = load_from_scheduler 
-                @next_broadcast = get_next
+                @next_broadcast = get_next_broadcast
                 rotate_broadcast()
                 @update_scheduled = false
             end
@@ -136,16 +138,25 @@ module PlayoutScheduler
         
         # Updates the current and following broadcasts
         # consuming 1 unit from the broadcast list top
+        #
+        # It also checks the list must be updated
+        # TODO: move this check to a different thread (an update service thread)
         def rotate_broadcast 
             @global_lock.synchronize do 
+                now = Time.now
                 @current_broadcast = @next_broadcast
-                p "Current broadcast: #{@current_broadcast}" if DEBUG
-                @next_broadcast = get_next @current_broadcast
+                debug_log "Current broadcast: #{@current_broadcast}"
+                @next_broadcast = get_next_broadcast @current_broadcast
                 if @current_broadcast.nil? then
                     return
                 end
-                @current_broadcast.timer= EventMachine::Timer.new(
-                    @current_broadcast.dtend-Time.now) {rotate_broadcast()}
+                @current_broadcast.timer = EventMachine::Timer.new(
+                    @current_broadcast.dtend- now ) {rotate_broadcast()}
+                
+                # TODO: move the following conditions to an update service 
+                if @broadcasts.length < 10 or @broadcasts[-1].dtstart-now < 3600 then
+                    @update_scheduled = 1
+                end
                 unless @update_scheduled then
                     EventMachine::defer(update)
                     @update_scheduled = true
@@ -161,7 +172,7 @@ module PlayoutScheduler
         # done because this method is called inside rotate_broadcast that
         # already adquires the lock
         #
-        def get_next bc=nil
+        def get_next_broadcast bc=nil
             now = bc.nil? ? Time.now : bc.dtend
             next_broadcast = nil
             while next_broadcast.nil?
@@ -179,7 +190,7 @@ module PlayoutScheduler
                     else
                         next_broadcast = Gap.new_gap_broadcast(now, @broadcasts[0].dtstart)
                     end
-                    p "#{Time.now} -- Next track: gap" if DEBUG
+                    debug_log "Next track: gap"
                     break
 
                 # If starded in the past either:
@@ -188,7 +199,7 @@ module PlayoutScheduler
                 else
                     if @broadcasts[0].dtend > now
                         next_broadcast = @broadcasts.shift()
-                        p "#{Time.now} -- Next track: #{next_broadcast}" if DEBUG
+                        debug_log "Next track: #{next_broadcast}" 
                         break
                     else
                         @broadcasts.shift()
@@ -202,10 +213,15 @@ module PlayoutScheduler
             @global_lock.synchronize do
                 @update_scheduled = false
                 @broadcasts += load_from_scheduler
-                p "#{Time.now} -- UPDATE"
+                debug_log "update" 
             end
         end          
+
+        def debug_log s
+            PlayoutScheduler::debug_log s
+        end
     end
+
 end
 
 
