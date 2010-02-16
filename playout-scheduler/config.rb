@@ -2,7 +2,7 @@ module PlayoutScheduler
     require 'rubygems'
     require 'assets'
     require 'gap'
-    require 'asset-manager'
+    #require 'asset-manager'
     require 'scheduler'
 
     SocketFile = "/tmp/rs-playout.sock"
