@@ -89,7 +89,9 @@ module PlayoutScheduler
         end 
 
         def to_s
-            [@name,@dtstart,@dtend].join(", ")
+             dtstart = "#{@dtstart.year}/#{@dtstart.month}/#{@dtstart.day} #{@dtstart.hour}:#{@dtstart.min}:#{@dtstart.sec}"
+             dtend = "#{@dtend.year}/#{@dtend.month}/#{@dtend.day} #{@dtend.hour}:#{@dtend.min}:#{@dtend.sec}"
+             "#{@name}: #{dtstart}->#{dtend}"
         end
     end
 
@@ -99,15 +101,23 @@ module PlayoutScheduler
             @broadcasts = broadcasts
             @update_scheduled = true
             @global_lock = Monitor.new
+            p @broadcasts.length
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
                 @next_broadcast = get_next_broadcast
                 rotate_broadcast()
             elsif init.key? :scheduler_uri
-                @broadcasts = load_from_scheduler 
-                @next_broadcast = get_next_broadcast
+                # this block is not supost to be a critical section
+                # but the lock is done anyway, just to be sure
+                # TODO: make this class Singleton and check  Singleton
+                # concurrent safetyness
+
+                @global_lock.synchronize do
+                    @next_broadcast = get_next_broadcast
+                end
                 rotate_broadcast()
             end
+            @broadcasts.each { |x| debug_log x }
         end
 
         protected
@@ -126,11 +136,12 @@ module PlayoutScheduler
 
         def load_from_scheduler
             require 'playout_middleware'
+            bcasts = []
             PlayoutMiddleware::fetch.each do |broadcast|
                 #p broadcast
-                broadcasts << Broadcast.load_from_scheduler(broadcast)
+                bcasts << Broadcast.load_from_scheduler(broadcast)
             end
-            broadcasts
+            bcasts
         end
 
 
@@ -154,11 +165,11 @@ module PlayoutScheduler
                 
                 # TODO: move the following conditions to an update service 
                 if @broadcasts.length < 10 or @broadcasts[-1].dtstart-now < 3600 then
-                    @update_scheduled = 1
-                end
-                unless @update_scheduled then
-                    EventMachine::defer(update)
                     @update_scheduled = true
+                end
+                if @update_scheduled then
+                    debug_log "Update scheduled"
+                    EventMachine::defer(update)
                 end
             end
         end
@@ -177,7 +188,13 @@ module PlayoutScheduler
             while next_broadcast.nil?
                 if @broadcasts.empty? then
                     # TODO: oops: the bc list is empty? Update is to slow to be done here
-                    return nil
+                    # anyway, on init, I think there is no problem
+                    begin
+                        fast_update()
+                    rescue => why
+                            debug_log "BIG UPS! COULD NOT UPDATE:\n  #{why}"
+                        return nil
+                    end
                 end
 
                 # If the following broadcast only starts in the future, a Gap is inserted
@@ -209,12 +226,23 @@ module PlayoutScheduler
         end
 
         def update
+            s =  "On update->\n"
             @global_lock.synchronize do
                 @update_scheduled = false
-                @broadcasts += load_from_scheduler 
-                debug_log "update -> length left:#{@broadcasts.length}; last:#{@broadcasts[-1].dtstart}" 
+                bcasts = load_from_scheduler
+                s += "  update -> broadcast_queue len:#{@broadcasts.length}; update len:#{bcasts.length};  "
+                @broadcasts +=  bcasts
+                s  += "new queue len: #{@broadcasts.length}; last:#{@broadcasts[-1].dtstart}\n"
             end
-        end          
+            s += "`--< Of update."
+            debug_log s
+        end
+
+        # Fast update should be a fast but synchronous call
+        # For now, just a wrapper around update
+        def fast_update
+                update
+        end
 
         def debug_log s
             PlayoutScheduler::debug_log s
