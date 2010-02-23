@@ -8,6 +8,8 @@ module PlayoutScheduler
         puts "#{Time.now} -- #{s}" if DEBUG
     end
 
+    Day = 24*60*60
+
     class Segment
         def initialize type, uri, length
             @type = type
@@ -89,19 +91,21 @@ module PlayoutScheduler
         end 
 
         def to_s
-             dtstart = "#{@dtstart.year}/#{@dtstart.month}/#{@dtstart.day} #{@dtstart.hour}:#{@dtstart.min}:#{@dtstart.sec}"
-             dtend = "#{@dtend.year}/#{@dtend.month}/#{@dtend.day} #{@dtend.hour}:#{@dtend.min}:#{@dtend.sec}"
-             "#{@name}: #{dtstart}->#{dtend}"
+             #dtstart = "#{@dtstart.year}/#{@dtstart.month}/#{@dtstart.day} #{@dtstart.hour}:#{@dtstart.min}:#{@dtstart.sec}"
+             #dtend = "#{@dtend.year}/#{@dtend.month}/#{@dtend.day} #{@dtend.hour}:#{@dtend.min}:#{@dtend.sec}"
+             "%s: %s | %s" % [@name.ljust(15)[0..14], @dtstart, @dtend]
+             #sprintf("%15s: %s | %s\n", @name, @dtstart, @dtend)
         end
     end
 
     class PlayoutServer
         attr_reader :broadcasts
+        FastUpdateItems = 2
+        UpdateServicePeriod = 30 
         def initialize init, broadcasts = []
             @broadcasts = broadcasts
-            @update_scheduled = true
             @global_lock = Monitor.new
-            p @broadcasts.length
+            @update_service_timer = nil
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
                 @next_broadcast = get_next_broadcast
@@ -111,13 +115,13 @@ module PlayoutScheduler
                 # but the lock is done anyway, just to be sure
                 # TODO: make this class Singleton and check  Singleton
                 # concurrent safetyness
-
-                @global_lock.synchronize do
-                    @next_broadcast = get_next_broadcast
-                end
+                @global_lock.synchronize { @next_broadcast = get_next_broadcast() }
                 rotate_broadcast()
+
+                # Start the update service
+                @update_service_timer = EventMachine::PeriodicTimer.new(UpdateServicePeriod){ update_service }
             end
-            @broadcasts.each { |x| debug_log x }
+            dump_brooadcast_queue
         end
 
         protected
@@ -134,43 +138,44 @@ module PlayoutScheduler
             broadcasts
         end
 
-        def load_from_scheduler
+        def self.fetch_scheduler(n=0)
             require 'playout_middleware'
-            bcasts = []
-            PlayoutMiddleware::fetch.each do |broadcast|
-                #p broadcast
-                bcasts << Broadcast.load_from_scheduler(broadcast)
-            end
-            bcasts
+            bcasts = PlayoutMiddleware::fetch
+            return bcasts if n==0
+            nn = (n>bcasts.length)? -1 : n - 1
+            return bcasts[0..nn]
+        end
+
+        def self.parse_schedule(sched)
+            return sched.map { |bc| Broadcast.load_from_scheduler(bc) }
+        end
+
+        def self.load_from_scheduler(n=0)
+            return parse_schedule(fetch_scheduler(n))
         end
 
 
-        
         # Updates the current and following broadcasts
         # consuming 1 unit from the broadcast list top
         #
         # It also checks the list must be updated
-        # TODO: move this check to a different thread (an update service thread)
+
         def rotate_broadcast 
             @global_lock.synchronize do 
                 now = Time.now
                 @current_broadcast = @next_broadcast
-                debug_log "Current broadcast: #{@current_broadcast}|#{@broadcasts.length} queued"
-                @next_broadcast = get_next_broadcast @current_broadcast
-                if @current_broadcast.nil? then
-                    return
+                @next_broadcast = get_next_broadcast(@current_broadcast)
+
+                unless @current_broadcast.nil? then
+                    @current_broadcast.timer = 
+                        EventMachine::Timer.new(@current_broadcast.dtend-now) { rotate_broadcast() }
                 end
-                @current_broadcast.timer = EventMachine::Timer.new(
-                    @current_broadcast.dtend- now ) {rotate_broadcast()}
                 
-                # TODO: move the following conditions to an update service 
-                if @broadcasts.length < 10 or @broadcasts[-1].dtstart-now < 3600 then
-                    @update_scheduled = true
-                end
-                if @update_scheduled then
-                    debug_log "Update scheduled"
-                    EventMachine::defer(update)
-                end
+                # Is this update worth???
+                #if @broadcasts.length =< FastUpdateItems then
+                #    EventMachine::defer{fast_update()}
+                #end
+                debug_log "%s: %s|%2i queued" % ["Now bc.".ljust(10), @current_broadcast, @broadcasts.length]
             end
         end
 
@@ -192,9 +197,10 @@ module PlayoutScheduler
                     begin
                         fast_update()
                     rescue => why
-                            debug_log "BIG UPS! COULD NOT UPDATE:\n  #{why}"
-                        return nil
+                        debug_log "BIG UPS! COULD NOT UPDATE:\n  #{why}"
+                        next_broadcast = Gap.new_gap_broadcast(now, now+Day)
                     end
+                    next
                 end
 
                 # If the following broadcast only starts in the future, a Gap is inserted
@@ -206,7 +212,7 @@ module PlayoutScheduler
                     else
                         next_broadcast = Gap.new_gap_broadcast(now, @broadcasts[0].dtstart)
                     end
-                    debug_log "Next track: gap"
+                    debug_log "%s gap" % "Next track".ljust(10)
                     break
 
                 # If starded in the past either:
@@ -215,7 +221,7 @@ module PlayoutScheduler
                 else
                     if @broadcasts[0].dtend > now
                         next_broadcast = @broadcasts.shift()
-                        debug_log "Next track: #{next_broadcast}" 
+                        debug_log "%s: %s"  % ["Next track".ljust(10),next_broadcast]
                         break
                     else
                         @broadcasts.shift()
@@ -225,23 +231,34 @@ module PlayoutScheduler
             next_broadcast
         end
 
-        def update
-            s =  "On update->\n"
+        def update_service
+            bcasts = PlayoutServer.load_from_scheduler()
+            old_length = @broadcasts.length
             @global_lock.synchronize do
-                @update_scheduled = false
-                bcasts = load_from_scheduler
-                s += "  update -> broadcast_queue len:#{@broadcasts.length}; update len:#{bcasts.length};  "
+                last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend
+                bcasts = bcasts.select { |x| x.dtstart > last_time }
                 @broadcasts +=  bcasts
-                s  += "new queue len: #{@broadcasts.length}; last:#{@broadcasts[-1].dtstart}\n"
             end
-            s += "`--< Of update."
-            debug_log s
+            debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s") % 
+            ["update ser.".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s] 
         end
 
         # Fast update should be a fast but synchronous call
-        # For now, just a wrapper around update
-        def fast_update
-                update
+        def fast_update(n=FastUpdateItems)
+            old_length = @broadcasts.length
+            last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend    
+            bcasts = PlayoutServer.load_from_scheduler(n)
+            bcasts = bcasts.select { |x| x.dtstart >= last_time }
+            @broadcasts +=  bcasts
+            debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s" % 
+            ["fast update".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s])
+        end
+
+
+        def dump_brooadcast_queue
+            debug_log("Dumping broadcast queue ¬")
+            @broadcasts.each { |x| debug_log "%s  %s" % [' '.ljust(10), x] }
+            debug_log("`End of bc dump")
         end
 
         def debug_log s

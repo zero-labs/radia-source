@@ -11,8 +11,8 @@ module  PlayoutScheduler
     end
 
     class Playlist
-        def initialize uri
-            p uri
+        def initialize uid
+            @uid = uid
         end
     end
 end
