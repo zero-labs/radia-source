@@ -106,6 +106,8 @@ module PlayoutScheduler
             @broadcasts = broadcasts
             @global_lock = Monitor.new
             @update_service_timer = nil
+            debug_log("Server PID: #{Process::pid}")
+
             if init.key? :yaml then
                 @broadcasts = load_yaml init[:yaml]
                 @next_broadcast = get_next_broadcast
@@ -231,13 +233,28 @@ module PlayoutScheduler
             next_broadcast
         end
 
+        
         def update_service
             bcasts = PlayoutServer.load_from_scheduler()
+            # Simulate loads long runs (debuging)
+            #begin
+            #        @first_time_dv.eql? true
+            #rescue
+            #        sleep 60 
+            #ensure
+            #        @first_time_dv=false
+            #end
+            #
+            # Simulate load long runs (hardcore)
+                
+            sleep(rand(120))
+
             old_length = @broadcasts.length
-            @global_lock.synchronize do
+            if @global_lock.mon_try_enter() then
                 last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend
                 bcasts = bcasts.select { |x| x.dtstart > last_time }
                 @broadcasts +=  bcasts
+                @global_lock.mon_exit()
             end
             debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s") % 
             ["update ser.".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s] 
