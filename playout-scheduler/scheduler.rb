@@ -100,12 +100,13 @@ module PlayoutScheduler
 
     class PlayoutServer
         attr_reader :broadcasts
-        FastUpdateItems = 2
-        UpdateServicePeriod = 30 
+        FastUpdateItems = 1
+        UpdateServicePeriod = 30
         def initialize init, broadcasts = []
             @broadcasts = broadcasts
             @global_lock = Monitor.new
             @update_service_timer = nil
+            @update_service_lock = Monitor.new
             debug_log("Server PID: #{Process::pid}")
 
             if init.key? :yaml then
@@ -204,7 +205,6 @@ module PlayoutScheduler
                     end
                     next
                 end
-
                 # If the following broadcast only starts in the future, a Gap is inserted
                 # or (if the following broadcast is already a Gap, it's merged)
                 if @broadcasts[0].dtstart > now then
@@ -235,6 +235,7 @@ module PlayoutScheduler
 
         
         def update_service
+            return unless @update_service_lock.try_mon_enter()
             bcasts = PlayoutServer.load_from_scheduler()
             # Simulate loads long runs (debuging)
             #begin
@@ -246,7 +247,7 @@ module PlayoutScheduler
             #end
             #
             # Simulate load long runs (hardcore)
-                
+
             sleep(rand(120))
 
             old_length = @broadcasts.length
@@ -258,16 +259,19 @@ module PlayoutScheduler
             end
             debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s") % 
             ["update ser.".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s] 
+            @update_service_lock.mon_exit()
         end
 
         # Fast update should be a fast but synchronous call
-        def fast_update(n=FastUpdateItems)
+        def fast_update(n=FastUpdateItems+1)
             old_length = @broadcasts.length
             last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend    
+
             bcasts = PlayoutServer.load_from_scheduler(n)
-            bcasts = bcasts.select { |x| x.dtstart >= last_time }
+            
+            #bcasts = bcasts.select { |x| x.dtstart >= last_time }
             @broadcasts +=  bcasts
-            debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s" % 
+            debug_log ("%s: old:%2i; added:%2i; new:%2i; last @ %s" % 
             ["fast update".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s])
         end
 
