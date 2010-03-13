@@ -19,7 +19,7 @@
 		Drag to the left the singles you want to add to the playlist
 	</p>
 	<ul>
-		<% available_singles.each do |s| %>
+		<% @available_singles.each do |s| %>
 		<li id="<%= "single_#{s.id}" %>"><%= s.title %></li>
 		<%= draggable_element("single_#{s.id}", :revert => true) %>
 		<% end %>
