@@ -5,7 +5,7 @@ module PlayoutScheduler
     require 'monitor'
 
     def self.debug_log(s)
-        puts "#{Time.now} -- #{s}" if DEBUG
+        puts "#{Time.now}(#{Thread.current}) -- #{s}" if DEBUG
     end
 
     Day = 24*60*60
@@ -101,12 +101,10 @@ module PlayoutScheduler
     class PlayoutServer
         attr_reader :broadcasts
         FastUpdateItems = 1
-        UpdateServicePeriod = 30
         def initialize init, broadcasts = []
             @broadcasts = broadcasts
             @global_lock = Monitor.new
-            @update_service_timer = nil
-            @update_service_lock = Monitor.new
+            @update_service = PlayoutScheduler::UpdateService.new(self)
             debug_log("Server PID: #{Process::pid}")
 
             if init.key? :yaml then
@@ -122,9 +120,20 @@ module PlayoutScheduler
                 rotate_broadcast()
 
                 # Start the update service
-                @update_service_timer = EventMachine::PeriodicTimer.new(UpdateServicePeriod){ update_service }
+                @update_service.start(lambda {|x| update_method(x)})
             end
             dump_brooadcast_queue
+        end
+
+        def update(bcasts)
+            old_length = @broadcasts.length
+            @global_lock.synchronize do
+                last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend
+                bcasts = bcasts.select { |x| x.dtstart > last_time }
+                @broadcasts +=  bcasts
+            end
+            #debug_log("%s: old:%2i; added:%2i; new:%2i; time to last: %s" % 
+            ##["update ser.".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s])
         end
 
         protected
@@ -233,34 +242,9 @@ module PlayoutScheduler
             next_broadcast
         end
 
-        
-        def update_service
-            return unless @update_service_lock.try_mon_enter()
-            bcasts = PlayoutServer.load_from_scheduler()
-            # Simulate loads long runs (debuging)
-            #begin
-            #        @first_time_dv.eql? true
-            #rescue
-            #        sleep 60 
-            #ensure
-            #        @first_time_dv=false
-            #end
-            #
-            # Simulate load long runs (hardcore)
+ 
 
-            sleep(rand(120))
-
-            old_length = @broadcasts.length
-            if @global_lock.mon_try_enter() then
-                last_time = @broadcasts.empty? ? Time.now : @broadcasts[-1].dtend
-                bcasts = bcasts.select { |x| x.dtstart > last_time }
-                @broadcasts +=  bcasts
-                @global_lock.mon_exit()
-            end
-            debug_log ("%s: old:%2i; added:%2i; new:%2i; time to last: %s") % 
-            ["update ser.".ljust(10)[0...10], old_length, bcasts.length, @broadcasts.length, @broadcasts[-1].dtstart.to_s] 
-            @update_service_lock.mon_exit()
-        end
+        #
 
         # Fast update should be a fast but synchronous call
         def fast_update(n=FastUpdateItems+1)
