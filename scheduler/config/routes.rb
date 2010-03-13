@@ -69,10 +69,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'sessions/use_normal', :controller => 'sessions', :action => 'use_normal', :conditions => { :method => :post }
   
   # Date selection for minicalendar
-  map.with_options :controller => 'broadcasts' do |emission|
-    emission.global_date_selection 'schedule/broadcasts/date_selection', 
+  map.with_options :controller => 'broadcasts' do |original|
+    original.global_date_selection 'schedule/broadcasts/date_selection', 
                                     :action => 'date_selection', :conditions => { :method => :post }
-    emission.program_date_selection 'schedule/broadcasts/:program_id/date_selection', 
+    original.program_date_selection 'schedule/broadcasts/:program_id/date_selection', 
                                     :action => 'date_selection', :conditions => { :method => :post }
   end
   

@@ -1,11 +1,11 @@
 class Repetition < Broadcast
-  belongs_to :emission
+  belongs_to :original
   
   # This association is used as a short-hand 
-  # to avoid going through Emissions to get the Program
+  # to avoid going through Originals to get the Program
   belongs_to :program 
   
-  validates_presence_of :emission
+  validates_presence_of :original
   
   before_save :update_program
   
@@ -33,8 +33,8 @@ class Repetition < Broadcast
     end
   end
   
-  # Checks if the method is one of those that delegate to the Emission 
-  # and forwards it to this Repetition's Emission
+  # Checks if the method is one of those that delegate to the Original 
+  # and forwards it to this Repetition's Original
   # Methods are:
   # * structure
   # * description
@@ -45,7 +45,7 @@ class Repetition < Broadcast
   def method_missing(method, *args)
     to_delegate = /structure|description|audio_assets|status|pretty_print_status|deliver_single|authors|name/
     if method.to_s.match(to_delegate)
-      emission.send(method, *args)
+      original.send(method, *args)
     else
       super
     end
@@ -54,6 +54,6 @@ class Repetition < Broadcast
   protected
   
   def update_program
-    self.program = self.emission.program
+    self.program = self.original.program
   end
 end

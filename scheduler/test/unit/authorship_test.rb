@@ -63,26 +63,26 @@ class AuthorshipTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_return_all_emissions
+  def test_should_return_all_originals
     a = authorships(:always)
     p = programs(:program_1)
-    assert_equal p.emissions.count, a.emissions.count
+    assert_equal p.originals.count, a.originals.count
   end
   
-  def test_should_only_return_emissions_on_certain_days
+  def test_should_only_return_originals_on_certain_days
     a = authorships(:mon_tue)
     p = programs(:program_1)
     count = 0
-    p.emissions.each {|e| count += 1 if ((e.dtstart.wday == 1) or (e.dtstart.wday == 2)) }
-    assert_equal count, a.emissions.size
+    p.originals.each {|e| count += 1 if ((e.dtstart.wday == 1) or (e.dtstart.wday == 2)) }
+    assert_equal count, a.originals.size
   end
   
-  def test_should_return_correct_number_of_emissions
+  def test_should_return_correct_number_of_originals
     a = authorships(:mon_tue)
-    assert_equal 0, a.emissions(0).size
-    assert_equal 1, a.emissions(1).size
-    assert_equal 2, a.emissions(2).size
-    assert_equal 3, a.emissions.size # all emissions
+    assert_equal 0, a.originals(0).size
+    assert_equal 1, a.originals(1).size
+    assert_equal 2, a.originals(2).size
+    assert_equal 3, a.originals.size # all originals
   end
 
   

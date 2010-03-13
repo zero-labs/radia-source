@@ -3,15 +3,15 @@ class ProgramSchedule < ActiveRecord::Base
   extend RadiaSource::TimeUtils
 
   has_many :broadcasts, :order => 'dtstart ASC'
-  has_many :emissions, :order => 'dtstart ASC'
+  has_many :originals, :order => 'dtstart ASC'
   has_many :repetitions, :order => 'dtstart ASC'
-  has_many :programs, :through => :emissions
+  has_many :programs, :through => :originals
     
   # Expects a Hash with the following key-value pairs:
   # * :calendar => iCalendar file
   # * :start => { :year => <start year>, :month => <start month>, :day => <start day>, :hour => <start hour>, :day => <start day> } 
   # * :end => { :year => <end year>, :month => <end month>, :day => <end day>, :hour => <end hour>, :day => <end day> } 
-  # * :emissions => "1" or "0"
+  # * :originals => "1" or "0"
   # * :type => StructureTemplate id (or 0 for repetitions)
   # 
   # Returns an Array with 3 elements (also Arrays): 
@@ -28,25 +28,25 @@ class ProgramSchedule < ActiveRecord::Base
     parse_calendar(params[:calendar], type, dtstart, dtend)
   end
   
-  # Expects a Hash of Hashes containing the attributes to create new emissions
+  # Expects a Hash of Hashes containing the attributes to create new originals
   # Each entry is of the following form:
   # {<sequence_number> => { :program => <program_id>, :start => <date str>, :end => <date str>, :type => <type_id> }
   # 
-  # Returns an Array with all the emissions that were not created
-  def update_emissions(to_create, to_destroy)
+  # Returns an Array with all the originals that were not created
+  def update_originals(to_create, to_destroy)
     to_destroy.each_key { |b| Broadcast.find(b).destroy } unless to_destroy.nil? or to_destroy.empty?
     problems = to_create.select { |id, broadcast| !create_broadcast(broadcast) } unless to_create.nil?
     return true if to_destroy.nil? and to_create.nil?
     problems
   end
   
-  # Receives a String and finds emissions of that type.
-  # Returns an Array with the requested emissions.
-  def emissions_by_type(type)
+  # Receives a String and finds originals of that type.
+  # Returns an Array with the requested originals.
+  def originals_by_type(type)
     structure_template = StructureTemplate.find_by_name(type)
     return [] if structure_template.nil?
     
-    self.emissions.find(:all, :conditions => ["structure_template_id = ?", structure_template.id])
+    self.originals.find(:all, :conditions => ["structure_template_id = ?", structure_template.id])
   end
   
   def broadcasts_and_gaps(dtstart, dtend)
@@ -99,7 +99,7 @@ class ProgramSchedule < ActiveRecord::Base
 
           check = check_event(type, program, occurrence, occurrence + event.duration)
           next if check.nil? # there's nothing to create, destroy or conflict! :)
-          e = emission_hash(type, program, occurrence, occurrence + event.duration)
+          e = original_hash(type, program, occurrence, occurrence + event.duration)
           to_create << e unless e.nil?
           to_destroy += check[0]
           conflicting += check[1]
@@ -129,12 +129,12 @@ class ProgramSchedule < ActiveRecord::Base
     [to_destroy, conflicting]
   end
   
-  def emission_hash(type, program, dtstart, dtend)
+  def original_hash(type, program, dtstart, dtend)
     hsh = { :type => type, :program => program, :dtstart => dtstart.to_s, :dtend => dtend.to_s }
     if type == 0 # repetition
-      if e = program.find_first_emission_before_date(dtstart)
-        hsh.merge!(:emission => e)
-      else # there may not be emissions to be found
+      if e = program.find_first_original_before_date(dtstart)
+        hsh.merge!(:original => e)
+      else # there may not be originals to be found
         return nil
       end
     end
@@ -143,24 +143,24 @@ class ProgramSchedule < ActiveRecord::Base
   
   def create_broadcast(broadcast)    
     if broadcast[:type].to_i != 0
-      create_emission(broadcast)
+      create_original(broadcast)
     else
       create_repetition(broadcast)
     end
   end
   
-  def create_emission(emission)
-    e = Emission.new(:program_schedule => self,
-                    :program => Program.find(emission[:program]),
-                    :structure_template => StructureTemplate.find(emission[:type]),
-                    :dtstart => DateTime.parse(emission[:dtstart]),
-                    :dtend => DateTime.parse(emission[:dtend]))
+  def create_original(original)
+    e = Original.new(:program_schedule => self,
+                    :program => Program.find(original[:program]),
+                    :structure_template => StructureTemplate.find(original[:type]),
+                    :dtstart => DateTime.parse(original[:dtstart]),
+                    :dtend => DateTime.parse(original[:dtend]))
     e.save
   end
   
   def create_repetition(repetition)
     r = Repetition.new(:program_schedule => self,
-                       :emission => Emission.find(repetition[:emission]),
+                       :original => Original.find(repetition[:original]),
                        :dtstart => DateTime.parse(repetition[:dtstart]),
                        :dtend => DateTime.parse(repetition[:dtend]))
     r.save

@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(:version => 20090404204806) do
     t.integer  "program_id"
     t.integer  "program_schedule_id"
     t.text     "description"
-    t.integer  "emission_id"
+    t.integer  "original_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

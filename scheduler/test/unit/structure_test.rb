@@ -9,7 +9,7 @@ class StructureTest < ActiveSupport::TestCase
   end
   
   def test_should_add_segment
-    b = structures(:emission_structure)
+    b = structures(:original_structure)
     p1 = audio_assets(:playlist_1)
     assert_difference 'b.segments.count' do
       b.add_segment(Segment.new(:audio_asset => p1))
@@ -18,7 +18,7 @@ class StructureTest < ActiveSupport::TestCase
   end
   
   def test_should_only_allow_one_element_to_have_broadcast_length
-    b = structures(:emission_structure)
+    b = structures(:original_structure)
     p1 = audio_assets(:playlist_1)
     s1 = audio_assets(:unauthored_single_unavailable)
     

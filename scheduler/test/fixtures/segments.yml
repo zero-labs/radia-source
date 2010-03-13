@@ -4,7 +4,7 @@ seg1_live_structure:
     fill: true
     audio_asset: authored_live_single
     
-emission_structure:
+original_structure:
     position: 1
     structure: live2
     fill: true

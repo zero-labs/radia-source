@@ -39,7 +39,7 @@ class ProgramScheduleController < ApplicationController
   # PUT /schedule
   def update
     @schedule = schedule
-    if @schedule.update_emissions(params[:to_create], params[:to_destroy])
+    if @schedule.update_originals(params[:to_create], params[:to_destroy])
       redirect_to :action => 'show'
     else
       redirect_to :action => 'edit'

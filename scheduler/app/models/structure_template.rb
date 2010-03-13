@@ -1,6 +1,6 @@
 class StructureTemplate < ActiveRecord::Base  
-  has_many :emissions, :dependent => :destroy
-  has_many :programs, :through => :emissions, :uniq => true
+  has_many :originals, :dependent => :destroy
+  has_many :programs, :through => :originals, :uniq => true
   has_one :structure, :as => :playable, :dependent => :destroy
   
   validates_presence_of :name, :color

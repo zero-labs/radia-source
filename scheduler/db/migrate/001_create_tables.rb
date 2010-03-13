@@ -27,13 +27,13 @@ class CreateTables < ActiveRecord::Migration
       t.timestamps
     end
     
-    create_table :emission_types, :force => true do |t|
+    create_table :original_types, :force => true do |t|
       t.string :name, :color, :calendar_url
       t.timestamps
     end
     
-    create_table :emissions, :force => true do |t|
-      t.belongs_to :emission_type, :program, :program_schedule
+    create_table :originals, :force => true do |t|
+      t.belongs_to :original_type, :program, :program_schedule
       t.datetime :start, :end
       t.boolean  :active, :default => true
       t.boolean  :flag, :default => false
@@ -103,7 +103,7 @@ class CreateTables < ActiveRecord::Migration
     end
     
     create_table :repetitions do |t|
-      t.belongs_to :emission
+      t.belongs_to :original
       t.datetime :start, :end
       t.timestamps
     end
@@ -133,8 +133,8 @@ class CreateTables < ActiveRecord::Migration
     drop_table :activity_configurations
     drop_table :authorships
     drop_table :blocs
-    drop_table :emission_types
-    drop_table :emissions
+    drop_table :original_types
+    drop_table :originals
     drop_table :open_id_authentication_associations
     drop_table :open_id_authentication_nonces
     drop_table :process_configurations
