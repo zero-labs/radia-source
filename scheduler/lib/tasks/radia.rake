@@ -41,15 +41,6 @@ namespace :radia do
       end
     end
     
-    desc "Creates admin user"
-    task :create_admin => :environment do
-      # Create admin
-      u = User.find_or_create_by_name(:name => 'Daniel Zacarias', :email => 'daniel.zacarias@gmail.com', 
-                                      :login => 'zaki', :password => '1234', :password_confirmation => '1234')
-      u.activate
-      u.give_role 'admin'
-    end
-    
     desc "Creates asset service"
     task :asset_service => :environment do
       if (s = AssetService.find_by_name('Upload de novos programas')).nil?
