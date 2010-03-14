@@ -17,13 +17,13 @@
 <% form_tag schedule_path, { :method => :put } do |f| -%>
 	<div id="to_be_created" style="display: none;">
 		<% @result[:to_create].each_with_index do |e, i| %>
-			<%= create_original(e, i) %>
+			<%= create_broadcast(e, i) %>
 		<% end %>
 	</div>
 	
 	<div id="to_be_destroyed" style="display: none;">
 		<% @result[:to_destroy].each do |e| %>
-			<%= destroy_original(e) %>
+			<%= destroy_broadcast(e) %>
 		<% end %>
 	</div>
 	

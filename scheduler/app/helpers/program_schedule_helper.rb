@@ -5,11 +5,11 @@ module ProgramScheduleHelper
   end
   
   def create_original(original, index)
-    render(:partial => 'create_original', :locals => { :original => original, :index => index })
+    render(:partial => 'create_broadcast', :locals => { :original => original, :index => index })
   end
   
   def destroy_original(original)
-    render(:partial => 'destroy_original', :locals => { :original => original } )
+    render(:partial => 'destroy_broadcast', :locals => { :original => original } )
   end
   
   def ignored_programs(result_array)

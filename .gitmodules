@@ -1,0 +1,3 @@
+[submodule "scheduler/vendor/plugins/delayed_job"]
+	path = scheduler/vendor/plugins/delayed_job
+	url = git://github.com/tobi/delayed_job.git

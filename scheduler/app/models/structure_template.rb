@@ -10,6 +10,10 @@ class StructureTemplate < ActiveRecord::Base
   
   before_validation :add_structure_if_missing  
   
+  def self.update_calendars
+    
+  end
+  
   # To act as playable
   def length
     nil
