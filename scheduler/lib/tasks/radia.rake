@@ -33,7 +33,7 @@ namespace :radia do
       b = Structure.create
       
       source = LiveSource.find_by_name('Studio')
-      asset = Single.new(:live_source => source)
+      asset = Single.new(:live_source => source, :authored => true)
       asset.save
       
       segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
