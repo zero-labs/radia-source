@@ -9,7 +9,7 @@ dir = File.dirname(File.expand_path(__FILE__))
 
 require File.join(dir, '../config')
 require File.join(dir, '../playout_middleware')
-require File.join(dir, '../scheduler.rb')
+#require File.join(dir, '../scheduler.rb')
 
 class TestMiddleware < Test::Unit::TestCase
 

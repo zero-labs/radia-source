@@ -1,11 +1,22 @@
 module  PlayoutScheduler
+
     class Single
-        def initialize uid
-            @uid = uid
-        end
+        include DataMapper::Resource
+
+        property :id, Integer, :key => true
+        property :retrieval_uri, String
+        property :length, Float
+
+
         
         def self.load_from_scheduler asset
-            @uid = asset.id
+                p 123234214
+            begin
+                a = Single.get!(asset.id)
+            rescue DataMapper::ObjectNotFoundError
+                a = Single.new(:id => asset.id)
+            end
+            return a
         end
 
     end
