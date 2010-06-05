@@ -1,3 +1,0 @@
-[submodule "scheduler/vendor/plugins/delayed_job"]
-	path = scheduler/vendor/plugins/delayed_job
-	url = git://github.com/collectiveidea/delayed_job.git
