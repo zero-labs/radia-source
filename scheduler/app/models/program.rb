@@ -51,7 +51,7 @@ class Program < ActiveRecord::Base
   end
   
   def parent
-    ProgramSchedule.instance
+    ProgramSchedule.active_instance
   end
   
   def to_xml(options = {})

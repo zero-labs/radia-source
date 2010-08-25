@@ -32,7 +32,7 @@ class RepetitionTest < ActiveSupport::TestCase
     dtstart = DateTime.new(2008, 5, 5, 9, 0)
     dtend = DateTime.new(2008, 5, 5, 10, 0)
     defaults = { :original => broadcasts(:live1), :dtstart => dtstart, :dtend => dtend, 
-                 :program_schedule => ProgramSchedule.instance }
+                 :program_schedule => ProgramSchedule.active_instance }
     record = Repetition.new(defaults.merge(opts))
     record.save
     record

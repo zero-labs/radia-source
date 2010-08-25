@@ -28,12 +28,21 @@ class ProgramScheduleController < ApplicationController
   # POST /schedule/load
   def load_schedule
     @schedule = schedule
-    if !(@result = @schedule.load_calendar(params[:new_schedule])).nil?
-      render :action => 'load'
-    else
-      flash[:error] = "There were problems with the given parameters"
-      redirect_to :action => 'edit'
+    
+    templates = StructureTemplate.find(:all)
+    templates.each do |t|
+      logger.error { puts t } 
     end
+    Delayed::Job.enqueue(Jobs::ScheduleDownloadAndMergeJob.new(templates))
+    flash[:notice] = "A job to perform this task has been scheduled"
+    render :action => 'edit'
+    
+    #if !(@result = @schedule.load_calendar(params[:new_schedule])).nil?
+    #  render :action => 'load'
+    #else
+    #  flash[:error] = "There were problems with the given parameters"
+    #  redirect_to :action => 'edit'
+    #end
   end
 
   # PUT /schedule

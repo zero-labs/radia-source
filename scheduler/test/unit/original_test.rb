@@ -33,7 +33,7 @@ class OriginalTest < ActiveSupport::TestCase
   def create_emission(options = {})
     defaults = {:dtstart => DateTime.new(2008, 01, 01, 12, 00), :dtend => DateTime.new(2008, 01, 01, 13, 00), 
                 :program => programs(:program_1), :structure_template => structure_templates(:live), 
-                :program_schedule => ProgramSchedule.instance}
+                :program_schedule => ProgramSchedule.active_instance}
     record = Original.new(defaults.merge(options))
     record.save
     record

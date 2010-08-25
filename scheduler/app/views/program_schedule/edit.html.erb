@@ -14,18 +14,7 @@
 
 <% form_tag schedule_load_calendar_path, { :multipart => true, :method => :post } do -%>
 <div class="prepend-3 span-11 append-3">
-	<fieldset>
-		<legend>Broadcast type</legend>
-		<%= radio_button_tag 'new_schedule[repeat]', 0, true %> 
-		<label for="new_schedule_repeat_0">First-Time</label>
-		<%= select_tag 'new_schedule[type]', structure_templates %> or
-		<%= radio_button_tag 'new_schedule[repeat]', 1, false %> 
-		<label for="new_schedule_repeat_1">Repetitions</label>		
-	</fieldset>
-	<p>
-		<label for="new_schedule[calendar]">iCalendar file: </label>
-		<%= file_field_tag 'new_schedule[calendar]' %>
-	</p>
+
 	<p>
 		<label for="date_end">End date:</label><br />
 		<%= select_datetime 3.months.from_now, {:prefix => "new_schedule[end]", :time_separator => ' : '} %>

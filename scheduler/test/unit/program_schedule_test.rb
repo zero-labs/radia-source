@@ -56,7 +56,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
   end
   
   def schedule
-    ProgramSchedule.instance
+    ProgramSchedule.active_instance
   end
   
 end

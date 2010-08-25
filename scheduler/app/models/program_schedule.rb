@@ -1,12 +1,20 @@
 class ProgramSchedule < ActiveRecord::Base
-  include ActiveRecord::Singleton # Forces single record for this model
+  #include ActiveRecord::Singleton # Forces single record for this model
   extend RadiaSource::TimeUtils
 
   has_many :broadcasts, :order => 'dtstart ASC'
   has_many :originals, :order => 'dtstart ASC'
   has_many :repetitions, :order => 'dtstart ASC'
   has_many :programs, :through => :originals
-    
+  
+  def self.active_instance
+    s = ProgramSchedule.find(:first, :conditions => { :active => true })
+    if s.nil?
+      s = ProgramSchedule.create(:active => true)
+    end
+    return s
+  end
+  
   # Expects a Hash with the following key-value pairs:
   # * :calendar => iCalendar file
   # * :start => { :year => <start year>, :month => <start month>, :day => <start day>, :hour => <start hour>, :day => <start day> } 
