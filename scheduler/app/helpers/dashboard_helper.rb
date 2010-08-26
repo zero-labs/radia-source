@@ -1,7 +1,7 @@
 module DashboardHelper
   
   def current_broadcast
-    b = ProgramSchedule.instance.now_playing
+    b = ProgramSchedule.active_instance.now_playing
     if b.gap?
       b.name
     else
@@ -14,11 +14,11 @@ module DashboardHelper
   end
   
   def upcoming_broadcasts
-    ProgramSchedule.instance.broadcasts_and_gaps(Time.now, 5.hours.from_now)
+    ProgramSchedule.active_instance.broadcasts_and_gaps(Time.now, 5.hours.from_now)
   end
   
   def status_icon
-    color = case ProgramSchedule.instance.now_playing.status
+    color = case ProgramSchedule.active_instance.now_playing.status
     when :pending
       'red'
     when :delivered

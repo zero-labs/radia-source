@@ -49,7 +49,7 @@ class Broadcast < ActiveRecord::Base
     (self.dtstart == dtstart) && (self.dtend == dtend)
   end
   
-  # Creates an array for params (to use the emission's date)
+  # Creates an array for params (to use the original's date)
   def to_param
     param_array
   end

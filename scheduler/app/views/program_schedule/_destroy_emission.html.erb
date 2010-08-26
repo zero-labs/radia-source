@@ -1,6 +1,0 @@
-<% index = emission[:broadcast].id %>
-<%= hidden_field_tag "to_destroy[#{index}][program]", emission[:program].id %>
-<%= hidden_field_tag "to_destroy[#{index}][type]", emission[:type].id %>
-<%= hidden_field_tag "to_destroy[#{index}][dtstart]", emission[:dtstart] %>
-<%= hidden_field_tag "to_destroy[#{index}][dtend]", emission[:dtend] %>
-<li><%= DateTime.parse(emission[:dtstart]).to_formatted_s(:long) + emission[:program].name %></li>

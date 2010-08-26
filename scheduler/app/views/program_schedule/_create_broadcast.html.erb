@@ -1,0 +1,6 @@
+<%= hidden_field_tag "to_create[#{index}][original]", original[:original].id if original[:original] %>
+<%= hidden_field_tag "to_create[#{index}][program]", original[:program].id %>
+<%= hidden_field_tag "to_create[#{index}][type]", original[:type] %>
+<%= hidden_field_tag "to_create[#{index}][dtstart]", original[:dtstart] %>
+<%= hidden_field_tag "to_create[#{index}][dtend]", original[:dtend] %>
+<li><%= DateTime.parse(original[:dtstart]).to_formatted_s(:long) + original[:program].name %></li>

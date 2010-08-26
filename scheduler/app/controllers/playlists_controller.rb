@@ -83,6 +83,7 @@ class PlaylistsController < ApplicationController
   
   def new_playlist
     @playlist = Playlist.new
+    @available_singles = Single.find(:all, :conditions => 'delivered_at is not null')
   end
   
   def new_playlist_from_params

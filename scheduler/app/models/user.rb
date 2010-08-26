@@ -39,6 +39,7 @@ class User < ActiveRecord::Base
     @activated = true
     self.activated_at = Time.now.utc
     self.activation_code = nil
+    self.make_admin_if_first_user
     save(false)
   end
   
@@ -129,12 +130,16 @@ class User < ActiveRecord::Base
   
   # Gives a role to the user
   def give_role(name)
-    self.has_role name
+    r = Role.new(:name => name, :user => self)
+    self.roles << r
+    save(false)
   end
   
   # Takes a role from the user
   def take_role(name)
-    self.has_no_role name
+    r = self.roles.find_by_name(name)
+    r.destroy unless r.nil?
+    save(false)
   end
   
   # Returns true if the user has any authorships
@@ -171,6 +176,12 @@ class User < ActiveRecord::Base
 
   protected
   
+  def make_admin_if_first_user
+    if User.count == 1
+      self.give_role('admin')
+    end
+  end
+  
   # before filter 
   def encrypt_password
     return if password.blank?
@@ -183,7 +194,6 @@ class User < ActiveRecord::Base
   end
 
   def make_activation_code
-
     self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
   end
 

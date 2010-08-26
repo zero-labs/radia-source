@@ -18,7 +18,7 @@ class Gap < Broadcast
   end
 
   def structure
-    asset = ProgramSchedule.instance.content_for_gap(self.length)
+    asset = ProgramSchedule.active_instance.content_for_gap(self.length)
     b = Structure.new
     b.segments << Segment.new(:audio_asset => asset, :length => self.length)
     b

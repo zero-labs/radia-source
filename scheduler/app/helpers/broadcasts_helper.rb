@@ -56,7 +56,7 @@ module BroadcastsHelper
   end
   
   def status_icon(broadcast = nil)
-    b = broadcast.nil? ? ProgramSchedule.instance.now_playing : broadcast
+    b = broadcast.nil? ? ProgramSchedule.active_instance.now_playing : broadcast
     color = case b.status
     when :pending
       'red'

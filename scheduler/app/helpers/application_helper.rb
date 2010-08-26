@@ -103,7 +103,7 @@ module ApplicationHelper
   def day_attributes(date, broadcasts)
     if !broadcasts[date.day - 1].empty?
       [link_to(date.day, schedule_broadcasts_by_day_path(:year => date.year, :month => date.month, :day => date.day)), 
-        { :class => 'emissionDay' }]
+        { :class => 'originalDay' }]
     else
       [date.day.to_s, nil]
     end

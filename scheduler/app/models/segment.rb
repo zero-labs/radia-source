@@ -10,7 +10,7 @@ class Segment < ActiveRecord::Base
   acts_as_list
     
   def name
-    self.audio_asset.asset_name
+    self.audio_asset.asset_name || 'Untitled'
   end  
   
   # For forms

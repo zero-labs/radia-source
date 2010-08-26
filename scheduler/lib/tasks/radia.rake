@@ -15,14 +15,41 @@ namespace :radia do
     end
     
     desc "Creates structure templates"
-    task :structure_templates => :environment do
+    task :structure_templates => [:live_source, :environment] do
+      
+      # Recorded broadcasts with a single audio asset
       b = Structure.create
+      
+      asset = Single.new(:authored => true)
+      asset.save
+      
+      segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
+      segment.save
+      
       recorded = StructureTemplate.new(:name => 'Recorded', :color => '#69C', :structure => b)
       recorded.save
+      
+      # Live broadcasts that span an entire structure
       b = Structure.create
+      
+      source = LiveSource.find_by_name('Studio')
+      asset = Single.new(:live_source => source, :authored => true)
+      asset.save
+      
+      segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
+      segment.save
+      
       live = StructureTemplate.new(:name => 'Live', :color => '#96F', :structure => b)
       live.save
+      
+      # Playlist broadcast
       b = Structure.create
+      
+      asset = Playlist.find_or_create_by_title('Some playlist!')
+      
+      segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
+      segment.save
+      
       playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
       playlist.save
     end
@@ -39,15 +66,6 @@ namespace :radia do
           Authorship.create(:program => Program.find_by_name(p), :user => u, :always => true)
         end
       end
-    end
-    
-    desc "Creates admin user"
-    task :create_admin => :environment do
-      # Create admin
-      u = User.find_or_create_by_name(:name => 'Daniel Zacarias', :email => 'daniel.zacarias@gmail.com', 
-                                      :login => 'zaki', :password => '1234', :password_confirmation => '1234')
-      u.activate
-      u.give_role 'admin'
     end
     
     desc "Creates asset service"
@@ -81,8 +99,8 @@ namespace :radia do
     
     desc "Creates live source"
     task :live_source => :environment do
-      if (s = LiveSource.find_by_title('Studio')).nil?
-        LiveSource.create(:title => 'Studio', :uri => 'http://stream.radiozero.pt/')
+      if (s = LiveSource.find_by_name('Studio')).nil?
+        LiveSource.create(:name => 'Studio', :uri => 'http://stream.radiozero.pt/')
       end
     end
     

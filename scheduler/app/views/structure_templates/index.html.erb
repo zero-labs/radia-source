@@ -21,10 +21,10 @@
 			<span style="display:none;" id="mod_<%= type.id %>" class="df">
 			    <%= link_to('edit', edit_schedule_structure_template_path(type), :class => "utility") %> |
 			    <%= link_to('delete', schedule_structure_template_path(type), :class => "utility", 
-					:method => :delete, :confirm => 'Delete this broadcast type (and associated emissions) forever?') %>
+					:method => :delete, :confirm => 'Delete this broadcast type (and associated originals) forever?') %>
 			</span>
 		</li>
-		<%= type.emissions.size %> emissions in <%= type.programs.size %> programs
+		<%= type.originals.size %> originals in <%= type.programs.size %> programs
 		
 	<% end %>
 </ul>

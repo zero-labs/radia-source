@@ -12,17 +12,17 @@ class Authorship < ActiveRecord::Base
   #before_create :give_role_to_user
   #before_destroy :take_role_from_user
 
-  # Returns the emissions in which the user is an author
-  def emissions(number = -1)
+  # Returns the originals in which the user is an author
+  def originals(number = -1)
     return [] if number == 0
     
     if self.always?
-      return self.program.emissions.find(:all, :limit => number) if number > 0
-      return self.program.emissions if number < 0
+      return self.program.originals.find(:all, :limit => number) if number > 0
+      return self.program.originals if number < 0
     else
       perms = permissions_by_day
       count = 0
-      em = program.emissions.select { |e| perms[e.dtstart.wday] }
+      em = program.originals.select { |e| perms[e.dtstart.wday] }
       return em.slice(0, number) if number > 0
       return em if number < 0
     end

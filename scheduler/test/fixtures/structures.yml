@@ -14,6 +14,6 @@ playlist_structure:
     playable: playlist
     playable_type: StructureTemplate
     
-emission_structure:
+original_structure:
     playable: live2
-    playable_type: Emission
+    playable_type: Original

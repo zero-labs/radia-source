@@ -124,7 +124,7 @@ class BroadcastTest < ActiveSupport::TestCase
   def create_broadcast(options = {})
     defaults = {:dtstart => DateTime.new(2008, 01, 01, 12, 00), 
                 :dtend => DateTime.new(2008, 01, 01, 13, 00),
-                :program_schedule => ProgramSchedule.instance}
+                :program_schedule => ProgramSchedule.active_instance}
     record = Broadcast.new(defaults.merge(options))
     record.save
     record

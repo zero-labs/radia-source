@@ -28,7 +28,6 @@ Rails::Initializer.run do |config|
   # Required gems:
   
   config.gem 'vpim'
-  
   config.gem 'ruby-openid', :lib => 'openid'
 
   # Add additional load paths for your own custom dirs
@@ -62,5 +61,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :structure_observer #, :user_observer
 
   # Make Active Record use UTC-base instead of local time
-  # config.active_record.default_timezone = :utc
+  config.active_record.default_timezone = :utc
 end
+
+CALENDAR_MERGE_DIR = File.join(File.dirname(__FILE__), '../calendars')

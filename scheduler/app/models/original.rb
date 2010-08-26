@@ -1,4 +1,4 @@
-class Emission < Broadcast
+class Original < Broadcast
   belongs_to :program
   belongs_to :structure_template
   

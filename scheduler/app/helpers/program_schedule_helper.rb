@@ -4,12 +4,12 @@ module ProgramScheduleHelper
     options_from_collection_for_select( StructureTemplate.find(:all), :id, :name)
   end
   
-  def create_emission(emission, index)
-    render(:partial => 'create_emission', :locals => { :emission => emission, :index => index })
+  def create_original(original, index)
+    render(:partial => 'create_broadcast', :locals => { :original => original, :index => index })
   end
   
-  def destroy_emission(emission)
-    render(:partial => 'destroy_emission', :locals => { :emission => emission } )
+  def destroy_original(original)
+    render(:partial => 'destroy_broadcast', :locals => { :original => original } )
   end
   
   def ignored_programs(result_array)
