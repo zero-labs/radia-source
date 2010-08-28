@@ -1,0 +1,3 @@
+[submodule "scheduler/vendor/plugins/acts_as_singleton"]
+	path = scheduler/vendor/plugins/acts_as_singleton
+	url = git://github.com/stephencelis/acts_as_singleton.git
