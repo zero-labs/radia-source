@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(:version => 20100605155209) do
     t.string   "name",       :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                  :null => false
+    t.integer  "user_id",                  :default => 1, :null => false
   end
 
   create_table "roles_users", :id => false, :force => true do |t|
