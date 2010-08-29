@@ -8,38 +8,39 @@ module Jobs
 
   class ScheduleDownloadAndMergeJob 
 
-    attr_accessor :structure_templates
+    attr_accessor :structure_templates, :dtstart, :dtend
 
-    def initialize(structure_templates)
-      self.structure_templates = structure_templates
+    def initialize(args)
+      self.structure_templates = args[:structure_templates]
+      self.dtstart = Time.now
+      self.dtend = args[:dtend]
     end
 
-    def load_merged_calendar(filename)
+    def parse_calendars(calendars)
       
     end
 
     def perform
-      merged_calendars = []
 
+      # Generate a filename with the date of the merge
+      fname_prefix = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
+      
+      calendars = {}
       @structure_templates.each do |template|      
-        st = YAML::load(template)
-        calendar_path = st.calendar_url
+        calendar_path = template.calendar_url
         url = URI.parse(calendar_path)
         req = Net::HTTP::Get.new(url.path)
         res = Net::HTTP.start(url.host, url.port) do |http|
           http.request(req)
         end
-        calendars = Vpim::Icalendar.decode(res.body)
-        merged_calendars += calendars
+        calendar = Vpim::Icalendar.decode(res.body)
+        calendars[template.name] = calendar
+        filename = File.join(CALENDAR_MERGE_DIR, "#{fname_prefix}_#{template.name}.ics")
+        File.open(filename, 'w') { |f| f.write(calendar) }
       end
 
-      # Generate a filename with the date of the merge
-      prefix = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
-      filename = File.join(CALENDAR_MERGE_DIR, "#{prefix}-Merged.ics")
-      File.open(filename, 'w') { |f| f.write(merged_calendars) }
+      #parse_calendars(calendars, dtstart, dtend)
       
-      # Load the calendar to the system
-      load_merged_calendar(filename)
     end
   end
 

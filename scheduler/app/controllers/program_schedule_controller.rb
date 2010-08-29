@@ -33,7 +33,12 @@ class ProgramScheduleController < ApplicationController
     templates.each do |t|
       logger.error { puts t } 
     end
-    Delayed::Job.enqueue(Jobs::ScheduleDownloadAndMergeJob.new(templates))
+    #dtstart = (params[:start] ? ProgramSchedule.get_datetime(params[:start]) : Time.now)
+    dtend = ProgramSchedule.get_datetime(params["new_schedule"]["end"])
+
+    #Delayed::Job.enqueue(Jobs::ScheduleDownloadAndMergeJob.new(:structure_templates => templates, :dtend => dtend))
+    Jobs::ScheduleDownloadAndMergeJob.new(:structure_templates => templates, :dtend => dtend).perform
+
     flash[:notice] = "A job to perform this task has been scheduled"
     render :action => 'edit'
     
