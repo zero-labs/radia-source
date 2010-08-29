@@ -6,18 +6,42 @@ namespace :radia do
       (t.blank?) ? '-' : t
     end
   
-    desc "Creates programs from YAML file at config/programs.yml"
-    task :programs => :environment do
-      entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/programs.yml')
-      entries.each do |e|
-        Program.find_or_create_by_name(e)
+    namespace :programs do
+      desc "Creates programs from YAML file at config/programs.yml"
+      task :from_yaml => :environment do
+        entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/programs.yml')
+        entries.each do |e|
+          Program.find_or_create_by_name(e)
+        end
+      end
+
+    desc "Fetches info from the calendars in config/calendars.yml"
+    task :from_url => :environment do
+      require  File.dirname(__FILE__) + '/../../lib/radia_source/ical'
+      calendars = YAML.load_file(File.dirname(__FILE__) + '/../../config/structure_templates.yml')
+
+      calendars.each do |struct|
+        ical = RadiaSource::ICal::get_calendar(struct["url"])
+        program_names = RadiaSource::ICal::get_program_names(ical)
+        program_names.each do |e|
+          Program.find_or_create_by_name(e)
+        end
       end
     end
     
+    end
+
     desc "Creates structure templates"
     task :structure_templates => [:live_source, :environment] do
       
+      require  File.dirname(__FILE__) + '/../../lib/radia_source/ical'
+      calendars = YAML.load_file(File.dirname(__FILE__) + '/../../config/structure_templates.yml')
+
       # Recorded broadcasts with a single audio asset
+
+      info = calendars.select {|x| x["name"] == "Recorded"}[0]
+      exit 1 if info.nil?
+
       b = Structure.create
       
       asset = Single.new(:authored => true)
@@ -26,23 +50,29 @@ namespace :radia do
       segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
       segment.save
       
-      recorded = StructureTemplate.new(:name => 'Recorded', :color => '#69C', :structure => b)
+      recorded = StructureTemplate.new(:name => info['name'], :color => info['color'], :calendar_url => info['url'], :structure => b)
       recorded.save
       
       # Live broadcasts that span an entire structure
+
+      info = calendars.select {|x| x["name"] == "Live"}[0]
+      exit 1 if info.nil?
       b = Structure.create
       
       source = LiveSource.find_by_name('Studio')
-      asset = Single.new(:live_source => source, :authored => true)
+      asset = Single.new(:live_source => source)
       asset.save
       
       segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
       segment.save
       
-      live = StructureTemplate.new(:name => 'Live', :color => '#96F', :structure => b)
+      #live = StructureTemplate.new(:name => 'Live', :color => '#96F', :structure => b)
+      live = StructureTemplate.new(:name => info['name'], :color => info['color'], :calendar_url => info['url'], :structure => b)
       live.save
       
       # Playlist broadcast
+      info = calendars.select {|x| x["name"] == "Playlist"}[0]
+      exit 1 if info.nil?
       b = Structure.create
       
       asset = Playlist.find_or_create_by_title('Some playlist!')
@@ -50,16 +80,20 @@ namespace :radia do
       segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
       segment.save
       
-      playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
+      #playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
+      playlist = StructureTemplate.new(:name => info['name'], :color => info['color'], :calendar_url => info['url'], :structure => b)
       playlist.save
+
+      
     end
   
-    desc "Creates authors from YAML file at config/authors.yml"
-    task :authors => [:programs, :environment] do
-      entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/authors.yml')
+    desc "Creates users from YAML file at config/users.yml"
+    task :users => ["programs:from_yaml", :environment] do
+      entries = YAML.load_file(File.dirname(__FILE__) + '/../../config/users.yml')
       entries.each do |e|
+        login = e.has_key?("login") ? e["login"] : urlnameify(e['name'])
         u = User.find_or_create_by_name(:name => e['name'], :email => e['mail'], 
-                                        :login => urlnameify(e['name']), 
+                                        :login => login, 
                                         :password => '1234', :password_confirmation => '1234')
         u.activate
         e['programs'].each do |p| 
@@ -100,19 +134,15 @@ namespace :radia do
     desc "Creates live source"
     task :live_source => :environment do
       if (s = LiveSource.find_by_name('Studio')).nil?
-        LiveSource.create(:name => 'Studio', :uri => 'http://stream.radiozero.pt/')
+        LiveSource.create(:name => 'Studio', :uri => 'http://stream.radiozero.pt/live.mp3')
       end
     end
+
+      
     
     desc "Calls all other tasks"
-    task :all => [:asset_service, :singles, :structure_templates, :create_admin, :authors, :live_source, :playlist,:environment] do 
+    task :all => [:asset_service, :singles, :structure_templates, :users, :live_source, :playlist,:environment] do 
     end
     
-    namespace :schedule do
-      desc "Create first schedule"
-      task :create => :environment do
-        ProgramSchedule.create
-      end
-    end
   end
 end
