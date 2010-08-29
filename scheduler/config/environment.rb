@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   
   config.gem 'vpim'
   config.gem 'ruby-openid', :lib => 'openid'
-  config.gem 'delayed_job'
+  #config.gem 'delayed_job'
 
 
   # Add additional load paths for your own custom dirs
