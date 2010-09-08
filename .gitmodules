@@ -4,3 +4,6 @@
 [submodule "scheduler/vendor/plugins/delayed_job"]
 	path = scheduler/vendor/plugins/delayed_job
 	url = http://github.com/tobi/delayed_job.git
+[submodule "scheduler/vendor/plugins/active-record-enumerable"]
+	path = scheduler/vendor/plugins/active-record-enumerable
+	url = git://github.com/ddollar/active-record-enumerable.git
