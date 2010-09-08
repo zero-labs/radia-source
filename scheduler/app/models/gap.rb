@@ -4,17 +4,23 @@ class Gap < Broadcast
     true
   end
 
-  def self.find_all(date_start, date_end)
+  def self.find_all(date_start, date_end, active=true)
     return [] if date_start >= date_end
-    query =  "SELECT A.dtend as dtstart, B.dtstart as dtend "
-    query << "FROM broadcasts A, broadcasts B "
-    query << "WHERE A.program_schedule_id = B.program_schedule_id AND "
-    query << "A.dtstart <> B.dtstart AND A.dtend <> B.dtend AND A.dtend < B.dtstart AND "
-    query << "B.dtstart = (SELECT min(c.dtstart) FROM broadcasts c WHERE c.dtstart > a.dtstart) AND "
-    query << "A.dtend >= ? AND B.dtstart <= ?"
-    query << "order by dtstart"
 
-    all_gaps(date_start, date_end, find_by_sql([query, date_start, date_end]))
+    if active
+      query =  "SELECT A.dtend as dtstart, B.dtstart as dtend "
+      query << "FROM broadcasts A, broadcasts B "
+      query << "WHERE A.program_schedule_id = B.program_schedule_id AND "
+      query << "A.program_schedule_id = ? AND "
+      query << "A.dtstart <> B.dtstart AND A.dtend <> B.dtend AND A.dtend < B.dtstart AND "
+      query << "B.dtstart = (SELECT min(c.dtstart) FROM broadcasts c WHERE c.dtstart > a.dtstart) AND "
+      query << "A.dtend >= ? AND B.dtstart <= ?"
+      query << "order by dtstart"
+
+      all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, date_start, date_end]))
+    else
+      []
+    end
   end
 
   def structure

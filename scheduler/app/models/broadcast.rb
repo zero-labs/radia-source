@@ -3,6 +3,11 @@ class Broadcast < ActiveRecord::Base
   
   belongs_to :program_schedule
   
+  #TODO: dependent destroy and similar for the following 2 lines
+  has_and_belongs_to_many :conflicting_new_broadcasts, :class_name => "Conflict", :join_table => "conflicts_new_broadcasts", :foreign_key => "new_broadcast_id"
+  has_one :prime_conflict,   :class_name => "Conflict", :foreign_key => "old_broadcast_id"
+
+  
   validates_presence_of :dtstart, :dtend, :program_schedule
   
   # Ensure that start datetime comes before end datetime
@@ -24,9 +29,16 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Finds all broadcasts within dtstart and dtend
-  def self.find_in_range(startdt, enddt)
-    find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
-                                startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
+  def self.find_in_range(startdt, enddt, active=true)
+    if active
+      find(:all, :conditions => ["program_schedule_id = :ps AND (dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
+           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id}], :order => "dtstart ASC")
+    else
+      find(:all, :conditions => ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
+           {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
+    end
+    #find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
+    #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
   end
   
   # Find all broadcasts on a certain date
@@ -88,6 +100,11 @@ class Broadcast < ActiveRecord::Base
     self.dtstart.min
   end
 
+  # Was the broadcast edited after creation? TODO: dirty bit
+  def dirty?
+    return updated_at > created_at
+  end
+
   protected
 
   # Validation method.
@@ -100,8 +117,8 @@ class Broadcast < ActiveRecord::Base
   # Validation method.
   # Ensures that there aren't overlapping Broadcasts
   def does_not_conflict_with_others
-    b = Broadcast.find_in_range(dtstart, dtend)
-    if (b.size > 1) or (b.size == 1 and b.first != self) 
+    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.program_schedule.active }
+    if (b.size > 1) or (b.size == 1 and b.first != self)
       errors.add_to_base("There are other broadcasts within the given timeframe (#{dtstart} - #{dtend})")
     end
   end
