@@ -16,3 +16,9 @@ create files (config/*.yml):
 rake db:migrate
 rake radia:scheduler:users
 rake radia:scheduler:structure_templates
+
+== TODO
+ - Create the Time Tag class
+
+== Deprecated
+ - vendor/plugin/active_record_singleton
