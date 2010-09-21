@@ -5,7 +5,7 @@ class Broadcast < ActiveRecord::Base
   
   #TODO: dependent destroy and similar for the following 2 lines
   has_and_belongs_to_many :conflicting_new_broadcasts, :class_name => "Conflict", :join_table => "conflicts_new_broadcasts", :foreign_key => "new_broadcast_id"
-  has_one :prime_conflict,   :class_name => "Conflict", :foreign_key => "old_broadcast_id"
+  has_one :conflict,   :class_name => "Conflict", :foreign_key => "active_broadcast_id"
 
   
   validates_presence_of :dtstart, :dtend, :program_schedule
@@ -39,6 +39,15 @@ class Broadcast < ActiveRecord::Base
     end
     #find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
     #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
+  end
+
+  def self.find_greater_than(startdt, active=true)
+    if active
+      find(:all, :conditions => ["(dtstart >= ? AND active = ?)" , startdt, "TRUE"], :order => "dtstart ASC")
+    else
+      find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
+    end
+
   end
   
   # Find all broadcasts on a certain date
@@ -102,6 +111,7 @@ class Broadcast < ActiveRecord::Base
 
   # Was the broadcast edited after creation? TODO: dirty bit
   def dirty?
+    return false if created_at.nil?
     return updated_at > created_at
   end
 
@@ -117,7 +127,8 @@ class Broadcast < ActiveRecord::Base
   # Validation method.
   # Ensures that there aren't overlapping Broadcasts
   def does_not_conflict_with_others
-    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.program_schedule.active }
+    #b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.program_schedule.active }
+    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.active }
     if (b.size > 1) or (b.size == 1 and b.first != self)
       errors.add_to_base("There are other broadcasts within the given timeframe (#{dtstart} - #{dtend})")
     end

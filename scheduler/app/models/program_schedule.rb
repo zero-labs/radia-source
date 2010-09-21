@@ -84,6 +84,12 @@ class ProgramSchedule < ActiveRecord::Base
     end
   end
   
+  def self.find_intersection_in_broadcasts(broadcasts, dtstart, dtend)
+    broadcasts.select do |bc|
+      bc if (bc.dtstart < dtstart and bc.dtend  > dtstart) or
+            (bc.dtstart >=dtstart and bc.dtstart< dtend)
+    end
+  end
   
   protected
   

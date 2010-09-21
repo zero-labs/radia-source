@@ -13,9 +13,6 @@ module Jobs
     def initialize(args)
       @dtstart = Time.now
       @dtend = args[:dtend]
-      @program_schedule_id = args[:id]
-      @action = args.has_key?("action") ? args["action"] : RadiaSource::ProgramSchedule::Migrate.DefaultAction
-      # TODO: if not RadiaSource::ProgramSchedule::Migrate.Actions.include? @action --> ERROR
     end
 
 
@@ -35,12 +32,10 @@ module Jobs
     end
     
 
-    def parse_calendars(calendars, program_schedule, dtstart, dtend, action)
-      to_ignore = []; 
+    def parse_calendars(calendars, dtstop)
 
       #filter out programs
-      #TODO: break if not to_ignore.empty?
-      programs = [];
+      programs = []; to_ignore = [];
       calendars.each do |kind, cals|
         RadiaSource::ICal.get_program_names(cals).each do |pname|
           program = Program.find_by_name(pname)
@@ -52,77 +47,52 @@ module Jobs
         end
       end
 
+      return {:ignored_programs => to_ignore } if not to_ignore.empty?
 
+      broadcasts = []
+      now = Time.now
       calendars.each do |kind, cals|
         cals.each do |cal|
           cal.events.each do |ev|
             program = programs.select {|x| x.name.eql? ev.summary }[0]
 
-            ev.occurrences(dtend) do |occurrence|
-              #ignore all occurrences before dtstart
-              next if occurrence < dtstart
+            ev.occurrences(dtstop) do |dtstart|
+              #ignore all dtstarts before dtstart
+              next if dtstart < now
 
-              o_dtend = occurrence + ev.duration
-              
-              bc = { :program_schedule => program_schedule,
+              dtend = dtstart + ev.duration
+
+              bc = RadiaSource::LightWeight::Original.new({
                 :program => program,
                 :structure_template => StructureTemplate.first(:conditions => {:name => kind}),
-                :dtstart => occurrence, 
-                :dtend => o_dtend }
+                :dtstart => dtstart, 
+                :dtend => dtend })
 
-              conflicts = Conflict.find_in_range(occurrence, o_dtend)
-              conflicts.each do |old_conflict|
-                if old_conflict.has_dirty_broadcast?
-                  old_conflict.action = "manual"
-                end
-
-                old_conflict.new_broadcasts << bc
-                old_conflict.save
-              end
-
-              new_conflict = Conflict.new(:conflicting_old_broadcast => bc, :action => "self")
-              new_conflict.save!
-              bc.save!
+              broadcasts << bc
 
             end
           end
         end
       end
-      return to_ignore
-    end
 
-    def generate_conflicts(dtstart, dtend, action)
-
-      broadcasts = Broadcast.find_in_range(dtstart, dtend)
-      broadcasts.each do |bc|
-        conflict = find_or_create_conflict_by_old_broadcast(bc)
-
-        if bc.dirty? or not bc.conflicting_new_broadcasts.empty?
-          conflict.update_attributes :action => "manual"
-        else
-          conflict.update_attributes :action => action
-        end
-
-      end
-    end
-
-    def delete_void_self_conflicts()
-      conflicts = Conflict.find(:all, :conditions => {:action => "self"})
-
-      conflicts.each { |x| x.destroy if x.new_broadcasts.empty? }
-
+      return {:broadcasts => broadcasts}
     end
 
     def perform
       calendars = load_calendars StructureTemplate.find(:all)
-      
-      generate_conflicts(@dtstart, @dtend, @action)
-      
-      schedule = ProgramSchedule.find(@program_schedule_id)
 
-      ignored_programs = parse_calendars(calendars, schedule, @dtstart, @dtend, @action)
+     program_schedule = RadiaSource::LightWeight::ProgramSchedule.instance
+
+     program_schedule.prepare_update
       
-      delete_void_self_conflicts()
+      #TODO: break if bc_hashes.has_key? "ignored_programs"
+      rt = parse_calendars(calendars, @dtend)
+
+      $dd = rt
+      if rt.has_key?(:broadcasts)
+        rt[:broadcasts].each {|bc| program_schedule.add_broadcast bc }
+        program_schedule.save
+      end
       
     end
   end

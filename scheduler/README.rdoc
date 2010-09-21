@@ -22,3 +22,8 @@ rake radia:scheduler:structure_templates
 
 == Deprecated
  - vendor/plugin/active_record_singleton
+
+
+== Bugs:
+ - Osso de Rodes (in ical) vs Osso De Rodes (in db, after import)
+ - Música de Peso vs Música De Peso
