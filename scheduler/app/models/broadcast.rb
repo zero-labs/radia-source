@@ -29,10 +29,10 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Finds all broadcasts within dtstart and dtend
-  def self.find_in_range(startdt, enddt, active=true)
-    if active
-      find(:all, :conditions => ["program_schedule_id = :ps AND (dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
-           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id}], :order => "dtstart ASC")
+  def self.find_in_range(startdt, enddt, act=true)
+    if act
+      find(:all, :conditions => ["program_schedule_id = :ps AND active = :active AND ((dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1))",
+           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => true }], :order => "dtstart ASC")
     else
       find(:all, :conditions => ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
            {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
@@ -51,10 +51,10 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Find all broadcasts on a certain date
-  def self.find_all_by_date(year, month = nil, day = nil)
+  def self.find_all_by_date(year, month = nil, day = nil, active=true)
     if !year.blank?
       from, to = self.time_delta(year, month, day)
-      find(:all, :conditions => ["dtstart BETWEEN ? AND ?", from, to], :order => "dtstart ASC")
+      find(:all, :conditions => ["dtstart BETWEEN ? AND ? AND active = ?", from, to, active], :order => "dtstart ASC")
     else
       find(:all, :order => "dtstart ASC")
     end
@@ -113,6 +113,15 @@ class Broadcast < ActiveRecord::Base
   def dirty?
     return false if created_at.nil?
     return updated_at > created_at
+  end
+
+  def activate
+    self.reload
+    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.active }
+    if not ((b.size > 1) or (b.size == 1 and b.first != self))
+      self.active = true if (self.conflicting_new_broadcasts.empty? and self.conflict.nil?)
+      save!
+    end
   end
 
   protected

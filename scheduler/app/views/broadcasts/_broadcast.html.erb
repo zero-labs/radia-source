@@ -1,7 +1,7 @@
 <li>
 	<% 
-		tstart = broadcast.dtstart.to_formatted_s(:long)
-		tend = broadcast.dtend.to_formatted_s(:time)
+		tstart = broadcast.dtstart.localtime.to_formatted_s(:long)
+		tend = broadcast.dtend.localtime.to_formatted_s(:time)
 	%>
 	<div class="broadcast_head">
 		<span>

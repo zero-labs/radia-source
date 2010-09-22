@@ -5,7 +5,7 @@ module RadiaSource
       
       # ar means ActiveRecord
       def self.from_ar(bc)
-        n = self.new
+        n = self.new()
         n.po= bc
         return n
       end
@@ -87,19 +87,18 @@ module RadiaSource
         @to_destroy = tmp.reject {|bc| bc.dirty?}
 
         # unless somebody used them
-        tmp = tmp.select { |bc| bc.dirty? }.map do |bc|
-          find_or_create_conflict_by_active_broadcast(bc)
+        tmp = tmp.select { |bc| bc.dirty? }.each do |bc|
+          self.add_conflict( :conflict => find_or_create_conflict_by_active_broadcast(bc) )
         end
-        @conflicts.push( *tmp )
       end
 
       def add_broadcast bc
 
         # Find intersection with a known conflict
-        tmp = @conflicts.select { |conflict| conflict.intersects?(bc) }
+        tmp = @conflicts.select { |c| c.intersects?(bc) }
         
         if tmp.empty?
-            self.add_conflict(:new_broadcasts => [bc])
+          self.add_conflict(:new_broadcasts => [bc])
         else
           tmp.each { |c| c.add_new_broadcast bc }
         end
@@ -135,13 +134,15 @@ module RadiaSource
         @to_destroy.each { |bc| bc.destroy }
         @broadcasts.each { |bc| bc.save }
         @conflicts.each { |c| c.save }
+        
+        @broadcasts.each { |bc| bc.activate }
       end
 
 
       def find_or_create_conflict_by_active_broadcast(bc)
-        tmp = @conflicts.find { |c| active_broadcast == bc }
+        tmp = @conflicts.find { |c| c.active_broadcast.eql?(bc) }
         if tmp.nil?
-          self.add_conflict(:active_broadcast => bc)
+          return Conflict.new(:active_broadcast => bc)
         end
         return tmp
       end
@@ -152,12 +153,16 @@ module RadiaSource
         @broadcasts = Kernel::Broadcast.find_greater_than(t1, false).map do |bc|
           Broadcast.from_ar(bc)
         end
-        #@conflicts = Kernel::Conflict.all.map {|c| Conflict.from_ar(c) }
-        @conflicts = []
+        @conflicts = Kernel::Conflict.all.map {|c| Conflict.from_ar(c) }
+        #@conflicts = []
       end
 
       def add_conflict(params)
-        @conflicts << Conflict.new(params)
+        if params.has_key? :conflict
+          @conflicts << params[:conflict]
+        else
+          @conflicts << Conflict.new(params)
+        end
       end
 
     end
@@ -166,7 +171,7 @@ module RadiaSource
 
       attr_accessor :active_broadcast, :new_broadcasts
 
-      def initialize(args)
+      def initialize(args={})
         super()
         @new_broadcasts = args.has_key?(:new_broadcasts) ? args[:new_broadcasts] : []
         @active_broadcast = args.has_key?(:active_broadcast) ? args[:active_broadcast] : nil
@@ -252,6 +257,13 @@ module RadiaSource
       end
 
       # proxy methods
+
+      def activate
+        if @po.nil?
+          return nil
+        end
+        @po.activate
+      end
 
       def save
         if @po.nil?

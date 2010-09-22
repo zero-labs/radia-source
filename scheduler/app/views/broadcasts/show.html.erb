@@ -9,7 +9,7 @@
 
 <p>
 	<span class="as_label">Time:</span> 
-	<%= @broadcast.dtstart.strftime("%H:%M") + " - " + @broadcast.dtend.strftime("%H:%M") %>
+	<%= @broadcast.dtstart.localtime.strftime("%H:%M") + " - " + @broadcast.dtend.localtime.strftime("%H:%M") %>
 </p>
 <p>
 	<span class="as_label">Synopsis: </span>

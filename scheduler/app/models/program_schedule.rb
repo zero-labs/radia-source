@@ -69,7 +69,7 @@ class ProgramSchedule < ActiveRecord::Base
   
   def now_playing
     t = Time.now
-    broadcasts.find(:first, :conditions => ["dtstart <= ? AND dtend >= ?", t, t], :order => 'dtstart ASC') || Gap.new
+    broadcasts.find(:first, :conditions => ["dtstart <= ? AND dtend >= ? AND active = ?", t, t, true], :order => 'dtstart ASC') || Gap.new
   end
   
   def to_xml(options = {})

@@ -10,7 +10,7 @@ class ProgramScheduleController < ApplicationController
     @schedule = schedule
     respond_to do |format|
       format.html do
-        @broadcasts = schedule.broadcasts_and_gaps(Time.now, 1.day.from_now) 
+        @broadcasts = schedule.broadcasts_and_gaps(Time.now.utc, 1.day.from_now.utc) 
         # renders show.html.erb
       end
       format.xml do 

@@ -65,8 +65,8 @@ module Jobs
               bc = RadiaSource::LightWeight::Original.new({
                 :program => program,
                 :structure_template => StructureTemplate.first(:conditions => {:name => kind}),
-                :dtstart => dtstart, 
-                :dtend => dtend })
+                :dtstart => dtstart.utc,
+                :dtend => dtend.utc })
 
               broadcasts << bc
 
@@ -88,8 +88,8 @@ module Jobs
       #TODO: break if bc_hashes.has_key? "ignored_programs"
       rt = parse_calendars(calendars, @dtend)
 
-      $dd = rt
       if rt.has_key?(:broadcasts)
+      $dd = rt[:broadcasts]
         rt[:broadcasts].each {|bc| program_schedule.add_broadcast bc }
         program_schedule.save
       end

@@ -87,7 +87,7 @@ class Original < Broadcast
     structure_template.structure.segments.each do |e| 
       segment = e.clone
       asset = (e.audio_asset.kind != :playlist ? e.audio_asset.clone : e.audio_asset)
-      asset.save
+      asset.save!
       segment.audio_asset = asset 
       #asset.segments << segment
       self.structure.add_segment(segment)
