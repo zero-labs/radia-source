@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
     t.integer  "original_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active"
+    t.boolean  "active",                :default => false
   end
 
   create_table "conflicts", :force => true do |t|

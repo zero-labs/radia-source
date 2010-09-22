@@ -1,6 +1,6 @@
 class AddActiveFlagToBroadcast < ActiveRecord::Migration
   def self.up
-    add_column :broadcasts, :active, :boolean
+    add_column :broadcasts, :active, :boolean, :default => false
   end
 
   def self.down
