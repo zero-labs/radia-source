@@ -15,20 +15,19 @@ namespace :radia do
         end
       end
 
-    desc "Fetches info from the calendars in config/calendars.yml"
-    task :from_url => :environment do
-      require  File.dirname(__FILE__) + '/../../lib/radia_source/ical'
-      calendars = YAML.load_file(File.dirname(__FILE__) + '/../../config/structure_templates.yml')
+      desc "Fetches info from the calendars in config/structure_templates.yml"
+      task :from_url => :environment do
+        require  File.dirname(__FILE__) + '/../../lib/radia_source/ical'
+        calendars = YAML.load_file(File.dirname(__FILE__) + '/../../config/structure_templates.yml')
 
-      calendars.each do |struct|
-        ical = RadiaSource::ICal::get_calendar(struct["url"])
-        program_names = RadiaSource::ICal::get_program_names(ical)
-        program_names.each do |e|
-          Program.find_or_create_by_name(e)
+        calendars.each do |struct|
+          ical = RadiaSource::ICal::get_calendar(struct["url"])
+          program_names = RadiaSource::ICal::get_program_names(ical)
+          program_names.each do |e|
+            Program.find_or_create_by_name(e)
+          end
         end
       end
-    end
-    
     end
 
     desc "Creates structure templates"
@@ -110,6 +109,17 @@ namespace :radia do
       end
     end
     
+    desc "Sets radiostation name and repetitions calendar uri according to config/settings.yml"
+    task :settings => :environment do
+      settings = YAML.load_file(File.dirname(__FILE__) + '/../../config/settings.yml')
+
+      s = Settings.instance
+      s.station_name = settings["station_name"]
+      s.repetitions_url = settings["repetitions_url"]
+
+      exit(-1) unless s.save
+    end
+
     desc "Creates singles"
     task :singles => :environment do
       singles = YAML.load_file(File.dirname(__FILE__) + '/../../config/singles.yml')
