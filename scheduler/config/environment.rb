@@ -11,6 +11,9 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
+
+
+
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -64,6 +67,8 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   config.active_record.default_timezone = :utc
+
+  require "#{RAILS_ROOT}/lib/radia_source/lightweight/init"
 end
 
 CALENDAR_MERGE_DIR = File.join(File.dirname(__FILE__), '../calendars')
