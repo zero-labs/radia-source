@@ -4,21 +4,30 @@ class Gap < Broadcast
     true
   end
 
-  def self.find_all(date_start, date_end)
+  def self.find_all(date_start, date_end, active=true)
     return [] if date_start >= date_end
+
     query =  "SELECT A.dtend as dtstart, B.dtstart as dtend "
     query << "FROM broadcasts A, broadcasts B "
     query << "WHERE A.program_schedule_id = B.program_schedule_id AND "
+    query << "A.program_schedule_id = ? AND "
+    if active
+      query << "A.active = ? AND B.active = A.active AND "
+    end
     query << "A.dtstart <> B.dtstart AND A.dtend <> B.dtend AND A.dtend < B.dtstart AND "
     query << "B.dtstart = (SELECT min(c.dtstart) FROM broadcasts c WHERE c.dtstart > a.dtstart) AND "
     query << "A.dtend >= ? AND B.dtstart <= ?"
     query << "order by dtstart"
 
-    all_gaps(date_start, date_end, find_by_sql([query, date_start, date_end]))
+    if active
+      all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, true, date_start, date_end]))
+    else
+      all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, date_start, date_end]))
+    end
   end
 
   def structure
-    asset = ProgramSchedule.instance.content_for_gap(self.length)
+    asset = ProgramSchedule.active_instance.content_for_gap(self.length)
     b = Structure.new
     b.segments << Segment.new(:audio_asset => asset, :length => self.length)
     b
@@ -54,6 +63,7 @@ class Gap < Broadcast
   protected
 
   def self.all_gaps(dtstart, dtend, in_between)
+
     gaps = Array.new(in_between)
     if in_between.empty?
       if (broadcasts = Broadcast.find_in_range(dtstart, dtend)).empty?
@@ -69,7 +79,7 @@ class Gap < Broadcast
     else
       if in_between.first.dtstart > dtstart
         before = Broadcast.find_in_range(dtstart, in_between.first.dtstart) 
-        unless dtstart >= before.first.dtstart
+        if dtstart < before.first.dtstart
           gaps.insert(0, Gap.new(:dtstart => dtstart, :dtend => before.first.dtstart)) 
         end
       end

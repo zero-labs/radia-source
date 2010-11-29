@@ -1,0 +1,29 @@
+== Scheduler
+== Install
+
+git clone http://github.com/zero-labs/radia-source $DIR
+cd $DIR
+git submodule init
+git submodule update
+
+create files (config/*.yml):
+ - mailer
+ - database
+ - users
+ - programs
+ - structure_template
+
+rake db:migrate
+rake radia:scheduler:users
+rake radia:scheduler:structure_templates
+
+== TODO
+ - Create the Time Tag class
+
+== Deprecated
+ - vendor/plugin/active_record_singleton
+
+
+== Bugs:
+ - Osso de Rodes (in ical) vs Osso De Rodes (in db, after import)
+ - Música de Peso vs Música De Peso

@@ -14,9 +14,9 @@ class RepetitionTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_ensure_presence_of_emission
+  def test_should_ensure_presence_of_original
     assert_no_difference 'Repetition.count' do
-      create_repetition :emission => nil
+      create_repetition :original => nil
     end
   end
   
@@ -31,8 +31,8 @@ class RepetitionTest < ActiveSupport::TestCase
   def create_repetition(opts = {})
     dtstart = DateTime.new(2008, 5, 5, 9, 0)
     dtend = DateTime.new(2008, 5, 5, 10, 0)
-    defaults = { :emission => broadcasts(:live1), :dtstart => dtstart, :dtend => dtend, 
-                 :program_schedule => ProgramSchedule.instance }
+    defaults = { :original => broadcasts(:live1), :dtstart => dtstart, :dtend => dtend, 
+                 :program_schedule => ProgramSchedule.active_instance }
     record = Repetition.new(defaults.merge(opts))
     record.save
     record

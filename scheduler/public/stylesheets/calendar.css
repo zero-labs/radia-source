@@ -40,7 +40,7 @@ th a {
   /*border-bottom: 1px solid #fff;*/
 }
 
-.otherMonth, .day, .specialDay, .emissionDay {
+.otherMonth, .day, .specialDay, .originalDay {
   padding: 0.1em 0.1em;
   text-align: center;
   font-size: 0.8em;
@@ -52,12 +52,12 @@ th a {
   background-color: #C2C2C2;
 }
 
-.day a:link, .day a:visited, .specialDay a:link, .specialDay a:visited, .emissionDay a:link, .emissionDay a:visited {
+.day a:link, .day a:visited, .specialDay a:link, .specialDay a:visited, .originalDay a:link, .originalDay a:visited {
 	text-decoration: none;
 	color: #000;
 }
 
-.day a:hover, .specialDay a:hover, .emissionDay a:hover {
+.day a:hover, .specialDay a:hover, .originalDay a:hover {
 	text-decoration: underline;
 }
 
@@ -84,7 +84,7 @@ th a {
   background-color: black;*/
 }
 
-.emissionDay {
+.originalDay {
   background-color: #999;
   font-weight: bold;
 }

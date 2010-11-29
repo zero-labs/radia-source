@@ -1,0 +1,6 @@
+<% index = original[:broadcast].id %>
+<%= hidden_field_tag "to_destroy[#{index}][program]", original[:program].id %>
+<%= hidden_field_tag "to_destroy[#{index}][type]", original[:type].id %>
+<%= hidden_field_tag "to_destroy[#{index}][dtstart]", original[:dtstart].utc %>
+<%= hidden_field_tag "to_destroy[#{index}][dtend]", original[:dtend].utc %>
+<li><%= DateTime.parse(original[:dtstart]).localtime.to_formatted_s(:long) + original[:program].name %></li>

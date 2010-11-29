@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090404204806) do
+ActiveRecord::Schema.define(:version => 20100908223952) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -60,15 +60,43 @@ ActiveRecord::Schema.define(:version => 20090404204806) do
     t.integer  "program_id"
     t.integer  "program_schedule_id"
     t.text     "description"
-    t.integer  "emission_id"
+    t.integer  "original_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",                :default => false
+  end
+
+  create_table "conflicts", :force => true do |t|
+    t.integer  "active_broadcast_id"
+    t.string   "action"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "conflicts_new_broadcasts", :id => false, :force => true do |t|
+    t.integer "conflict_id"
+    t.integer "new_broadcast_id"
   end
 
   create_table "conversations", :force => true do |t|
     t.string   "subject",    :default => ""
     t.datetime "created_at",                 :null => false
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.string   "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["locked_by"], :name => "index_delayed_jobs_on_locked_by"
 
   create_table "live_sources", :force => true do |t|
     t.integer "settings_id", :default => 1
@@ -133,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20090404204806) do
   create_table "program_schedules", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",     :default => false
   end
 
   create_table "programs", :force => true do |t|
@@ -147,7 +176,7 @@ ActiveRecord::Schema.define(:version => 20090404204806) do
     t.string   "name",       :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                  :null => false
+    t.integer  "user_id",                  :default => 1, :null => false
   end
 
   create_table "roles_users", :id => false, :force => true do |t|
@@ -174,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20090404204806) do
     t.string   "station_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "repetitions_url"
   end
 
   create_table "structure_templates", :force => true do |t|

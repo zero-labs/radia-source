@@ -11,6 +11,9 @@
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
+
+
+
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -28,8 +31,9 @@ Rails::Initializer.run do |config|
   # Required gems:
   
   config.gem 'vpim'
-  
   config.gem 'ruby-openid', :lib => 'openid'
+  #config.gem 'delayed_job'
+
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
@@ -44,7 +48,7 @@ Rails::Initializer.run do |config|
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
     :key => '_web_session',
-    :secret => 'bee5987501bf58fd554a9d75bb1c39bd3e6b22635ad26ebd8869a5866ef2e9593cd727fea5d3a29babf5ca927b3f20f15e7e74617ccec265c2d396675ea6fb3d'
+    :secret => 'b7289b29dc3a0a1d18e747d0b5f8298c93b40440efc4c07bd5a7e5c2a10c64e0577a275ff46bd1154e77b9e554d7609da32cf4f651b74e108608010ebcafa9fd'
   }
 
   # Use the database for sessions instead of the cookie-based default,
@@ -62,5 +66,9 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :structure_observer #, :user_observer
 
   # Make Active Record use UTC-base instead of local time
-  # config.active_record.default_timezone = :utc
+  config.active_record.default_timezone = :utc
+
+  require "#{RAILS_ROOT}/lib/radia_source/lightweight/init"
 end
+
+CALENDAR_MERGE_DIR = File.join(File.dirname(__FILE__), '../calendars')

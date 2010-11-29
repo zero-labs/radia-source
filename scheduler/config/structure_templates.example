@@ -1,0 +1,12 @@
+- 
+  name: "Live"
+  url: "http://www.google.com/calendar/..."
+  color: '#96F'
+- 
+  name: "Recorded"
+  url: "http://www.google.com/calendar/..."
+  color: '#69C'
+- 
+  name: "Playlist"
+  url: "http://www.google.com/calendar/..."
+  color: '#9C3'

@@ -3,6 +3,11 @@ class Broadcast < ActiveRecord::Base
   
   belongs_to :program_schedule
   
+  #TODO: dependent destroy and similar for the following 2 lines
+  has_and_belongs_to_many :conflicting_new_broadcasts, :class_name => "Conflict", :join_table => "conflicts_new_broadcasts", :foreign_key => "new_broadcast_id"
+  has_one :conflict,   :class_name => "Conflict", :foreign_key => "active_broadcast_id"
+
+  
   validates_presence_of :dtstart, :dtend, :program_schedule
   
   # Ensure that start datetime comes before end datetime
@@ -24,16 +29,32 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Finds all broadcasts within dtstart and dtend
-  def self.find_in_range(startdt, enddt)
-    find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
-                                startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
+  def self.find_in_range(startdt, enddt, act=true)
+    if act
+      find(:all, :conditions => ["program_schedule_id = :ps AND active = :active AND ((dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1))",
+           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => true }], :order => "dtstart ASC")
+    else
+      find(:all, :conditions => ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
+           {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
+    end
+    #find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
+    #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
+  end
+
+  def self.find_greater_than(startdt, active=true)
+    if active
+      find(:all, :conditions => ["(dtstart >= ? AND active = ?)" , startdt, "TRUE"], :order => "dtstart ASC")
+    else
+      find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
+    end
+
   end
   
   # Find all broadcasts on a certain date
-  def self.find_all_by_date(year, month = nil, day = nil)
+  def self.find_all_by_date(year, month = nil, day = nil, active=true)
     if !year.blank?
       from, to = self.time_delta(year, month, day)
-      find(:all, :conditions => ["dtstart BETWEEN ? AND ?", from, to], :order => "dtstart ASC")
+      find(:all, :conditions => ["dtstart BETWEEN ? AND ? AND active = ?", from, to, active], :order => "dtstart ASC")
     else
       find(:all, :order => "dtstart ASC")
     end
@@ -49,7 +70,7 @@ class Broadcast < ActiveRecord::Base
     (self.dtstart == dtstart) && (self.dtend == dtend)
   end
   
-  # Creates an array for params (to use the emission's date)
+  # Creates an array for params (to use the original's date)
   def to_param
     param_array
   end
@@ -88,6 +109,21 @@ class Broadcast < ActiveRecord::Base
     self.dtstart.min
   end
 
+  # Was the broadcast edited after creation? TODO: dirty bit
+  def dirty?
+    return false if created_at.nil?
+    return updated_at > created_at
+  end
+
+  def activate
+    self.reload
+    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.active }
+    if not ((b.size > 1) or (b.size == 1 and b.first != self))
+      self.active = true if (self.conflicting_new_broadcasts.empty? and self.conflict.nil?)
+      save!
+    end
+  end
+
   protected
 
   # Validation method.
@@ -100,8 +136,9 @@ class Broadcast < ActiveRecord::Base
   # Validation method.
   # Ensures that there aren't overlapping Broadcasts
   def does_not_conflict_with_others
-    b = Broadcast.find_in_range(dtstart, dtend)
-    if (b.size > 1) or (b.size == 1 and b.first != self) 
+    #b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.program_schedule.active }
+    b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.active }
+    if (b.size > 1) or (b.size == 1 and b.first != self)
       errors.add_to_base("There are other broadcasts within the given timeframe (#{dtstart} - #{dtend})")
     end
   end

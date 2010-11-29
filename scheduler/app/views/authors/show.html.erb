@@ -16,8 +16,8 @@
 <% @author.authorships.each do |a| %>
 	<h2><%= a.program.name %></h2>
 	<ul>
-	<% a.emissions(5).each do |e| %>
-		<li><%= link_to e.dtstart.to_formatted_s(:long), schedule_broadcast_path(e) %></li>
+	<% a.originals(5).each do |e| %>
+		<li><%= link_to e.dtstart.localtime.to_formatted_s(:long), schedule_broadcast_path(e) %></li>
 	<% end %>
 	</ul>
 <% end %>

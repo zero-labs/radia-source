@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   end
   
   def schedule
-    ProgramSchedule.instance
+    ProgramSchedule.active_instance
   end
   
   def active_nav

@@ -1,18 +1,18 @@
 class CreateBroadcasts < ActiveRecord::Migration
   def self.up
-    drop_table :emissions
+    drop_table :originals
     drop_table :repetitions
     
     create_table :broadcasts do |t|
       t.string :type # STI
       t.datetime :start, :end
       
-      # for emissions
-      t.belongs_to :emission_type, :program, :program_schedule
+      # for originals
+      t.belongs_to :original_type, :program, :program_schedule
       t.text     :description
       
       # for repetitions
-      t.belongs_to :emission
+      t.belongs_to :original
 
       t.timestamps
     end
@@ -20,8 +20,8 @@ class CreateBroadcasts < ActiveRecord::Migration
 
   def self.down
     
-    create_table :emissions, :force => true do |t|
-      t.belongs_to :emission_type, :program, :program_schedule
+    create_table :originals, :force => true do |t|
+      t.belongs_to :original_type, :program, :program_schedule
       t.datetime :start, :end
       t.boolean  :active, :default => true
       t.boolean  :flag, :default => false
@@ -30,7 +30,7 @@ class CreateBroadcasts < ActiveRecord::Migration
     end
     
     create_table :repetitions do |t|
-      t.belongs_to :emission
+      t.belongs_to :original
       t.datetime :start, :end
       t.timestamps
     end

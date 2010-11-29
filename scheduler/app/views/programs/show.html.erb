@@ -18,7 +18,7 @@
 <h3>Upcoming first-time broadcasts</h3>
 
 <ul>
-<% @program.upcoming_emissions.each do |e| %>
-	<li><%= link_to e.dtstart.to_formatted_s(:long), program_broadcast_path(@program, e) %></li>
+<% @program.upcoming_originals.each do |e| %>
+	<li><%= link_to e.dtstart.localtime.to_formatted_s(:long), program_broadcast_path(@program, e) %></li>
 <% end %>
 </ul>

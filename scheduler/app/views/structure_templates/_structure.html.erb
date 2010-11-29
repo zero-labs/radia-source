@@ -26,7 +26,7 @@
 	<div id="segment"></div>
 	<hr />
 	<div id="structure">
-		<%= render :partial => 'structure', :object => @structure_template.structure %>
+		<%= render :partial => 'contents', :locals => { :structure => @structure_template.structure } %>
 	</div>
 
 </fieldset>
