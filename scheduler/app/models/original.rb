@@ -24,6 +24,10 @@ class Original < Broadcast
   def modified?
     (self.created_at != self.updated_at) || (description != nil) || (structure.modified?)
   end
+
+  def dirty?
+    modified?
+  end
   
   # Audio assets for this emission
   def audio_assets

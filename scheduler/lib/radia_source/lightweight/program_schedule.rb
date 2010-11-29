@@ -84,6 +84,105 @@ module RadiaSource
       end
 
 
+      def load_calendars(templates, filenames = {})
+        # Generate a filename with the date of the merge
+        fname_prefix = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
+
+        calendars = {}
+        templates.each do |template|      
+          url = filenames.has_key?(template.name) ? filenames[template.name] : template.calendar_url
+
+          calendars[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
+        end
+
+        calendars["Repetitions"] = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
+        return calendars
+      end
+
+      def parse_calendars(calendars, dtstop)
+
+        #filter out programs
+        programs = []; to_ignore = [];
+        calendars.each do |kind, cals|
+          RadiaSource::ICal.get_program_names(cals).each do |pname|
+            program = Program.find_by_name(pname)
+            if program.nil?
+              to_ignore << pname
+            elsif not programs.include?(program)
+              programs << program
+            end
+          end
+        end
+
+        return {:ignored_programs => to_ignore } if not to_ignore.empty?
+
+        broadcasts = []; repetitions = []
+        now = Time.now
+
+        original_show_calendars = calendars.reject {|k,v| k == "Repetitions"} 
+        original_show_calendars.each do |kind, cals|
+          cals.each do |cal|
+            cal.events.each do |ev|
+              program = programs.select {|x| x.name.eql? ev.summary }[0]
+
+              ev.occurrences(dtstop) do |dtstart|
+                #ignore all ocurrences before now
+                next if dtstart < now
+
+                dtend = dtstart + ev.duration
+
+                bc = RadiaSource::LightWeight::Original.new({
+                  :program => program,
+                  :structure_template => StructureTemplate.first(:conditions => {:name => kind}),
+                  :dtstart => dtstart.utc,
+                  :dtend => dtend.utc })
+
+                  broadcasts << bc
+              end
+            end
+          end
+        end
+
+
+        ignored_repetitions = []
+        if calendars.has_key?("Repetitions") then
+          calendars["Repetitions"].each do |cal|
+            cal.events.each do |ev|
+              program = programs.find {|x| x.name.eql? ev.summary }
+
+              original_broadcasts = broadcasts.select { |bc| bc.program.eql?(program) and bc.kind_of?(RadiaSource::LightWeight::Original) }
+              ev.occurrences(dtstop) do |dtstart|
+                #ignore all ocurrences before now
+                next if dtstart < now
+
+                # Ensure the UTC time ref
+                dt = dtstart.utc
+                dtend = dt + ev.duration
+
+                # repetition is nonsense if there is no original which
+                # ends before the repetition starts
+                #TODO: What to do with ignored repetitions?
+                bcs = original_broadcasts.select { |bc| bc.dtend < dt }
+                if bcs.empty?
+                  ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
+                  next
+                end
+
+                original = bcs.max {|a,b| a.dtend <=> b.dtend } 
+                bc = RadiaSource::LightWeight::Repetition.new({
+                  :original => original,
+                  :dtstart => dt,
+                  :dtend => dtend.utc })
+                  repetitions << bc
+              end
+            end
+          end
+        end
+
+        return {:originals => broadcasts, :repetitions => repetitions }
+
+      end
+
       def save
         #Lets solve as much conflicts as possible
         tmp = @conflicts.select {|c| c.solvable? }
