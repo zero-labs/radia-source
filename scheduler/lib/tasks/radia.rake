@@ -154,5 +154,8 @@ namespace :radia do
     task :all => [:asset_service, :singles, :structure_templates, :users, :live_source, :playlist,:environment] do 
     end
     
+    desc "Calls minimum tasks to start working" 
+    task :min => ["programs:from_url",:settings, :structure_templates, :live_source, :environment] do 
+    end
   end
 end
