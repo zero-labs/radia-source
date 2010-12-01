@@ -13,10 +13,7 @@ module RadiaSource
       end
 
       def program
-        if @po.nil?
-          return @program
-        end
-        return @po.program
+        return po.nil? ? @program : @po.program
       end
 
       def program= x
@@ -26,12 +23,8 @@ module RadiaSource
         return @po.program = x
       end
 
-
       def structure_template
-        if @po.nil?
-          return @structure_template
-        end
-        return @po.structure_template
+        return po.nil? ? @structure_template : @po.structure_template
       end
 
       def structure_template= x
@@ -40,7 +33,41 @@ module RadiaSource
         end
         return @po.structure_template = x
       end
+
+      def similar? bc
+        return false unless bc.kind_of? self.class
+        super(bc) and @program == bc.program and @structure_template == bc.structure_template
+      end
+
+      def save
+        super do
+          if @po.nil?
+            @po = create_persistent_object(
+              :program_schedule => Kernel::ProgramSchedule.active_instance,
+              :dtstart => @dtstart, 
+              :dtend => @dtend,
+              :program => @program,
+              :structure_template => @structure_template )
+          end
+        end
+      end
+
+      def po!
+        if @po.nil?
+          @po = create_persistent_object(
+            :program_schedule => Kernel::ProgramSchedule.active_instance,
+            :dtstart => @dtstart, 
+            :dtend => @dtend,
+            :program => @program,
+            :structure_template => @structure_template )
+        end
+        @po
+      end 
+
     end
-  end
+
+    
+  #module ends here 
+  end 
 end
 

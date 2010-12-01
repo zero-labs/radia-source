@@ -20,11 +20,18 @@ module RadiaSource
       end
 
       def add_new_broadcast bc
-        @new_broadcasts << bc
+        #puts "Real conflict #{bc}"
+
+        #filters out any double event...
+        if @new_broadcasts.find{|x| x.similar?(bc)}.nil?
+          @new_broadcasts << bc
+        end
+        @new_broadcasts
+        puts "blash"
       end
 
       # A conflict is only automatically solved in two cases:
-      #  - the active broadcasts is the similar to the new one
+      #  - the active broadcast is the similar to the new one
       #  - if there is no active broadcast and there is only one
       #  new broadcast
       def solvable?

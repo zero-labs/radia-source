@@ -1,10 +1,6 @@
-require 'net/http'
-require 'uri'
 
-require 'rubygems'
-require 'vpim/icalendar'
-
-require File.join(File.dirname(__FILE__), "..", "radia_source", "ical")
+#require File.join(File.dirname(__FILE__), "..", "radia_source", "ical")
+require File.join(File.dirname(__FILE__), *%w(.. radia_source ical))
 
 module Jobs
 
@@ -15,15 +11,12 @@ module Jobs
       @dtend = args[:dtend]
     end
 
-
-    
-
-
     def perform
 
       program_schedule = RadiaSource::LightWeight::ProgramSchedule.instance
 
-      calendars = program_schedule.load_calendars StructureTemplate.find(:all)
+      calendars = RadiaSource::LightWeight::ProgramSchedule.load_calendars StructureTemplate.find(:all)
+      #TODO: break if calendars.has_key?(:__error)
 
       program_schedule.prepare_update
 
@@ -31,8 +24,10 @@ module Jobs
       rt = program_schedule.parse_calendars(calendars, @dtend)
 
       if rt.has_key?(:originals)
-        $dd = rt[:originals];
-        rt[:originals].each {|bc| program_schedule.add_broadcast bc }
+        #$dd = rt[:originals];
+        $drt=rt
+          rt[:originals].each {|bc| program_schedule.add_broadcast bc }
+          rt[:repetitions].each {|bc| program_schedule.add_broadcast bc }
         program_schedule.save
       else
         $drt=rt

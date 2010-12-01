@@ -24,10 +24,10 @@ module RadiaSource
         end
       end
 
-      def save
-        unless @po.nil?
-          return @po.save
-        end
+      def save(&b)
+        b.call unless b.nil?
+        return @po.save! unless @po.nil?
+        puts "Upss not saved! po must be nil..." 
         return false
       end
       
@@ -49,6 +49,11 @@ module RadiaSource
       alias :po=                :set_persistent_object 
       alias :persistent_object= :set_persistent_object 
       
+      def create_persistent_object(*arg)
+          classname = self.class.name.split("::")[-1]
+          Kernel.const_get(classname.to_s).create!(*arg)
+      end
+        
     end
   
   end

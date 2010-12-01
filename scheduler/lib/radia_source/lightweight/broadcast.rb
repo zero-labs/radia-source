@@ -23,7 +23,8 @@ module RadiaSource
       end
 
       def similar? bc
-        dtstart == bc.dtstart and dtend == bc.dtend and program == bc.program and bc.structure_template == structure_template
+        return false unless bc.kind_of? self.class
+        dtstart == bc.dtstart and dtend == bc.dtend 
       end
 
       # proxy methods
@@ -35,18 +36,21 @@ module RadiaSource
         @po.activate
       end
 
-      def save
-        if @po.nil?
-          classname = self.class.name.split("::")[-1]
-          @po = Kernel.const_get(classname.to_s).create(
+      def save(&b)
+        unless b.nil?
+          return super(&b)
+        else
+          super() do
+            if @po.nil?
+              @po = create_persistent_object(
                 :program_schedule => Kernel::ProgramSchedule.active_instance,
-                :program => @program,
-                :structure_template => @structure_template,
                 :dtstart => @dtstart, 
                 :dtend => @dtend )
+            end
+          end
         end
-        super()
       end
+
       def dirty?
         if @po.nil?
           return false

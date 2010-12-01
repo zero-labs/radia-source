@@ -41,6 +41,7 @@ module RadiaSource
         tmp = @broadcasts; 
         @broadcasts = []
         @to_destroy = tmp.reject {|bc| bc.dirty?}
+        puts tmp.count, @to_destroy.count
 
         # Get rid of unsolved, conflicts with unactivated broadcasts
         @conflicts = @conflicts.reject{|c| c.active_broadcast.nil?}
@@ -69,22 +70,22 @@ module RadiaSource
         # similar broadcasts. Let's see if we cand find 
         # something similar that we can reuse
 
-        tmp = @to_destroy.find {|broadcast| bc.similar? broadcast}
-        unless tmp.nil?
-          # POTENTIAL BUG! Should test kind_of? ActiveRecord::Base
-          # before assigment. Yet to_destroy list is constructed from
-          # dirty broadcasts that should allways be AR )
+        #tmp = @to_destroy.find {|broadcast| bc.similar? broadcast}
+        #unless tmp.nil?
+        #  # POTENTIAL BUG! Should test kind_of? ActiveRecord::Base
+        #  # before assigment. Yet to_destroy list is constructed from
+        #  # dirty broadcasts that should allways be AR )
 
-          bc.persistent_object = tmp.persistent_object
-          @to_destroy.delete(tmp)
-        end
+        #  bc.persistent_object = tmp.persistent_object
+        #  @to_destroy.delete(tmp)
+        #end
 
         @broadcasts << bc
         bc
       end
 
 
-      def load_calendars(templates, filenames = {})
+      def self.load_calendars(templates, filenames = {})
         # Generate a filename with the date of the merge
         fname_prefix = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
 
@@ -92,10 +93,18 @@ module RadiaSource
         templates.each do |template|      
           url = filenames.has_key?(template.name) ? filenames[template.name] : template.calendar_url
 
-          calendars[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
+          begin
+            calendars[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
+          rescue
+            return { :__error => "calendar for #{template.name} not available" }
+          end
         end
 
-        calendars["Repetitions"] = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
+        begin
+          calendars["Repetitions"] = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
+        rescue
+          return { :__error => "calendar for repetitions not available" }
+        end
         return calendars
       end
 
@@ -164,11 +173,20 @@ module RadiaSource
                 #TODO: What to do with ignored repetitions?
                 bcs = original_broadcasts.select { |bc| bc.dtend < dt }
                 if bcs.empty?
-                  ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
-                  next
+                  # Find if any of the older (unaffected by the import)
+                  # matches to use it as the original
+                  original = Kernel::Broadcast.find_first_sooner_than(dt, program, "Original")
+                  if original.nil?
+                    ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
+                    next
+                  else
+                    original = RadiaSource::LightWeight::Original.from_ar(original)
+                  end
+                else
+                  original = bcs.max {|a,b| a.dtend <=> b.dtend } 
                 end
 
-                original = bcs.max {|a,b| a.dtend <=> b.dtend } 
+                #puts "#{original.object_id.to_s(16)}, " +original.to_s + "."
                 bc = RadiaSource::LightWeight::Repetition.new({
                   :original => original,
                   :dtstart => dt,
@@ -179,7 +197,7 @@ module RadiaSource
           end
         end
 
-        return {:originals => broadcasts, :repetitions => repetitions }
+        return {:originals => broadcasts, :repetitions => repetitions, :ignored_repetitions => ignored_repetitions}
 
       end
 
@@ -196,6 +214,7 @@ module RadiaSource
 
         # Lets save
         @to_destroy.each { |bc| bc.destroy }
+        $destroy = @to_destroy
         @broadcasts.each { |bc| bc.save }
         @conflicts.each { |c| c.save }
         
@@ -215,7 +234,11 @@ module RadiaSource
 
       def load_persistent_objects(t1=Time.now)
         @broadcasts = Kernel::Broadcast.find_greater_than(t1, false).map do |bc|
-          Broadcast.from_ar(bc)
+          case bc.attributes["type"]
+          when "Original" then RadiaSource::LightWeight::Original.from_ar(bc)
+          when "Repetition" then RadiaSource::LightWeight::Repetition.from_ar(bc)
+          else RadiaSource::LightWeight::Broadcast.from_ar(bc)
+          end
         end
         @conflicts = Kernel::Conflict.all.map {|c| Conflict.from_ar(c) }
         #@conflicts = []
