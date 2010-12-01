@@ -26,7 +26,10 @@ class Original < Broadcast
   end
 
   def dirty?
-    modified?
+    ## **ATENTION** created_at != updated_at verification implies not
+    #reusing objects in the import process!!!
+    #modified? 
+    (description != nil) || (structure.modified?)
   end
   
   # Audio assets for this emission

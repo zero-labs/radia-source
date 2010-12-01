@@ -16,6 +16,10 @@ class Repetition < Broadcast
   def modified?
     false
   end
+
+  def dirty?
+    self.original.dirty?
+  end
   
   def to_xml(options = {})
     options[:indent] ||= 2
