@@ -43,10 +43,30 @@ class Broadcast < ActiveRecord::Base
 
   def self.find_greater_than(startdt, active=true)
     if active
-      find(:all, :conditions => ["(dtstart >= ? AND active = ?)" , startdt, "TRUE"], :order => "dtstart ASC")
+      find(:all, :conditions => ["(dtstart >= :dtstart AND active = :active)" , 
+           {:startdt =>startdt, :active=>true}], :order => "dtstart ASC")
     else
       find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
     end
+
+  end
+
+  def self.find_first_sooner_than(startdt, program, type=nil, active=true)
+
+    query = "dtend < :t AND program_id = :program"
+    values= {:t=>startdt, :program=>program.id} 
+
+    unless active.nil?
+      query += " AND active = :active"
+      values[:active] = active
+    end
+
+    unless type.nil?
+      query += " AND type = :type"
+      values[:type] = type
+    end
+
+    find(:all, :conditions => [query, values], :order => "dtstart DESC", :limit => 1)[0]
 
   end
   
