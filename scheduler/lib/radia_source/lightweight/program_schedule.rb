@@ -41,6 +41,7 @@ module RadiaSource
         tmp = @broadcasts; 
         @broadcasts = []
         @to_destroy = tmp.reject {|bc| bc.dirty?}
+        # TODO: this puts returns 0,0 at 2 time it runs
         puts tmp.count, @to_destroy.count
 
         # Get rid of unsolved, conflicts with unactivated broadcasts

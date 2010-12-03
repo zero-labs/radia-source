@@ -44,7 +44,7 @@ class Broadcast < ActiveRecord::Base
   def self.find_greater_than(startdt, active=true)
     if active
       find(:all, :conditions => ["(dtstart >= :dtstart AND active = :active)" , 
-           {:startdt =>startdt, :active=>true}], :order => "dtstart ASC")
+           {:dtstart =>startdt, :active=>true}], :order => "dtstart ASC")
     else
       find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
     end

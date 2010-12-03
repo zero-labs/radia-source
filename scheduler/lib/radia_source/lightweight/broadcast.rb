@@ -52,10 +52,12 @@ module RadiaSource
       end
 
       def dirty?
+        # only database objects can actually be dirty:
+        # before saving, every object is kind of virgin
         if @po.nil?
           return false
         end
-        return po.dirty?
+        return @po.dirty?
       end
 
       def dtstart
