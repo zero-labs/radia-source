@@ -181,7 +181,7 @@ module RadiaSource
                     ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
                     next
                   else
-                    original = RadiaSource::LightWeight::Original.from_ar(original)
+                    original = RadiaSource::LightWeight::Original.new_from_persistent_object(original)
                   end
                 else
                   original = bcs.max {|a,b| a.dtend <=> b.dtend } 
@@ -236,12 +236,12 @@ module RadiaSource
       def load_persistent_objects(t1=Time.now)
         @broadcasts = Kernel::Broadcast.find_greater_than(t1, false).map do |bc|
           case bc.attributes["type"]
-          when "Original" then RadiaSource::LightWeight::Original.from_ar(bc)
-          when "Repetition" then RadiaSource::LightWeight::Repetition.from_ar(bc)
-          else RadiaSource::LightWeight::Broadcast.from_ar(bc)
+          when "Original" then RadiaSource::LightWeight::Original.new_from_persistent_object(bc)
+          when "Repetition" then RadiaSource::LightWeight::Repetition.new_from_persistent_object(bc)
+          else RadiaSource::LightWeight::Broadcast.new_from_persistent_object(bc)
           end
         end
-        @conflicts = Kernel::Conflict.all.map {|c| Conflict.from_ar(c) }
+        @conflicts = Kernel::Conflict.all.map {|c| Conflict.new_from_persistent_object(c) }
         #@conflicts = []
       end
 

@@ -6,16 +6,17 @@ module RadiaSource
     # Currently it only implements the save & destroy methods
     
     class ARProxy
+
+      include RadiaSource::LightWeight::ActiveRecordMethods
       
       # ar means ActiveRecord
-      def self.from_ar(bc)
+      def self.new_from_persistent_object(bc)
         n = self.new()
         n.po= bc
         return n
       end
 
       def initialize(args=nil)
-
         # po: two letters meaning persistent object
         if args.nil?
           @po = nil
@@ -24,18 +25,6 @@ module RadiaSource
         end
       end
 
-      def save(&b)
-        b.call unless b.nil?
-        return @po.save! unless @po.nil?
-        puts "Upss not saved! po must be nil..." 
-        return false
-      end
-      
-      def destroy
-        unless po.nil?
-          @po.destroy
-        end
-      end
 
       def get_persistent_object; 
         @po; 

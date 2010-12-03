@@ -1,5 +1,6 @@
 
 path = File.dirname(__FILE__)
+require "#{path}/ar_methods"
 require "#{path}/ar_proxy"
 require "#{path}/program_schedule"
 require "#{path}/conflict"
