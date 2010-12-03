@@ -1,27 +1,34 @@
+
+path = File.dirname(__FILE__)
+require "#{path}/ar_methods"
+require "#{path}/object"
+
 module RadiaSource
   module LightWeight
 
     # This class is used as a proxy to the fat ActiveRecord Models
     # We need this to avoid using the AR models during the import process
-    # Currently it only implements the save & destroy methods
+    # Implements the followingmethods: save & destroy
+
+    # po: two letters meaning persistent object
     
     class ARProxy
+      @@instance_attributes = []
 
+      include RadiaSource::LightWeight::Object
       include RadiaSource::LightWeight::ActiveRecordMethods
       
-      # ar means ActiveRecord
       def self.new_from_persistent_object(bc)
         n = self.new()
         n.po= bc
         return n
       end
 
-      def initialize(args=nil)
-        # po: two letters meaning persistent object
-        if args.nil?
-          @po = nil
-        else
-          @po = args          
+      def initialize(args={})
+        @attributes = args
+
+        @@instance_attributes.each do |at| 
+          @attributes[at] = nil unless @attributes.has_key?(at)
         end
       end
 
