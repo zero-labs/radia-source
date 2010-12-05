@@ -27,17 +27,33 @@ module RadiaSource
       end
 
       def self.set_proxy_class klass=nil
+        return unless @@proxy_class.nil?
         if klass.nil? then
-          @@proxy_class = Kernel.const_get(self.class.name.split("::")[-1])
+          @@proxy_class = Kernel.const_get(self.name.split("::")[-1])
         else
           @@proxy_class = klass 
         end
         @@proxy_class
       end
 
-      def self.proxy_class
-        return @@proxy_class unless @@proxy_class.nil?
-        self.set_proxy_class
+      #def self.proxy_class
+      #  return @@proxy_class unless @@proxy_class.nil?
+      #  self.set_proxy_class
+      #end
+
+      def self.method_missing method_id, *args
+        if method_id == :proxy_class
+          self.set_proxy_class
+
+          #self.send :define_method, method_id do
+          #  @@proxy_class
+          #end
+
+          self.instance_eval { def proxy_class; @@proxy_class;end}
+          return self.proxy_class
+        else
+          super
+        end
       end
 
       def initialize(args={})
