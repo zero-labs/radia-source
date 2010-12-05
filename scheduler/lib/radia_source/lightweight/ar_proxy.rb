@@ -14,6 +14,7 @@ module RadiaSource
     
     class ARProxy
       @@instance_attributes = []
+      @@proxy_class = nil
 
       include RadiaSource::LightWeight::Object
       include RadiaSource::LightWeight::ActiveRecordMethods
@@ -21,7 +22,22 @@ module RadiaSource
       def self.new_from_persistent_object(bc)
         n = self.new()
         n.po= bc
+        self.set_proxy_class bc.class
         return n
+      end
+
+      def self.set_proxy_class klass=nil
+        if klass.nil? then
+          @@proxy_class = Kernel.const_get(self.class.name.split("::")[-1])
+        else
+          @@proxy_class = klass 
+        end
+        @@proxy_class
+      end
+
+      def self.proxy_class
+        return @@proxy_class unless @@proxy_class.nil?
+        self.set_proxy_class
       end
 
       def initialize(args={})
@@ -45,10 +61,6 @@ module RadiaSource
       alias :po=                :set_persistent_object 
       alias :persistent_object= :set_persistent_object 
       
-      def create_persistent_object(*arg)
-          classname = self.class.name.split("::")[-1]
-          Kernel.const_get(classname.to_s).create!(*arg)
-      end
         
     end
   

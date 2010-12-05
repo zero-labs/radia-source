@@ -86,14 +86,15 @@ class ARProxyTestObjectMethodsWithPersistence < Test::Unit::TestCase
   end
 
   def test_new_from_persistent_object
-    r = Dummy.create!(:name => "test_name")
+    r = Kernel::Dummy.create!(:name => "test_name")
     a = DummyProxy.new_from_persistent_object r
 
+    assert_equal DummyProxy.proxy_class, r.class
     assert_equal a.po, r
   end
 
   def test_proxy_reader
-    r = Dummy.create!(:name => "test_name")
+    r = Kernel::Dummy.create!(:name => "test_name")
     a = DummyProxy.new_from_persistent_object r
 
     # if the variable really exists
@@ -106,7 +107,7 @@ class ARProxyTestObjectMethodsWithPersistence < Test::Unit::TestCase
   end
 
   def test_proxy_writer
-    r = Dummy.create!(:name => "some name")
+    r = Kernel::Dummy.create!(:name => "some name")
     a = DummyProxy.new_from_persistent_object r
 
     # if the variable really exists
@@ -125,7 +126,14 @@ class ARProxyTestARMethods < Test::Unit::TestCase
   class DummyProxy < NS::ARProxy
     proxy_accessor :fail_var, :name
   end
-  class Dummy < Kernel::ActiveRecord::Base
+
+  #NOTE: Missing the Kernel namespace in the Dummy class redefinition spots
+  #      errors in the set proxy class. I'm not worried about this because
+  #      in rails all AR classes belong to the global namespace
+  #      This is related to the word Dummy pointing to the
+  #      ARProxyTestARMethods namespace and the method klass.class omits the
+  #      Kernel prefix
+  class Kernel::Dummy < Kernel::ActiveRecord::Base
       validates_presence_of :name
   end
   def setup
@@ -137,7 +145,7 @@ class ARProxyTestARMethods < Test::Unit::TestCase
   end
 
   def test_save
-      r = Dummy.create!(:name => "some name")
+      r = Kernel::Dummy.create!(:name => "some name")
       a = DummyProxy.new_from_persistent_object r
 
       assert_respond_to a, :save
@@ -154,7 +162,7 @@ class ARProxyTestARMethods < Test::Unit::TestCase
 
 
   def test_save!
-      r = Dummy.create!(:name => "some name")
+      r = Kernel::Dummy.create!(:name => "some name")
       a = DummyProxy.new_from_persistent_object r
 
       assert_respond_to a, :save!
@@ -182,4 +190,38 @@ class ARProxyTestARMethods < Test::Unit::TestCase
     assert_nil Dummy.find_by_id id 
   end
 
+end
+
+
+
+class ARProxyTestFromProxyToAR < Test::Unit::TestCase
+  class Kernel::Dummy < Kernel::ActiveRecord::Base
+      validates_presence_of :name
+  end
+  class DummyProxy < NS::ARProxy
+    proxy_accessor :fail_var, :name
+    set_proxy_class Kernel::Dummy
+  end
+
+  def setup
+    setup_db
+  end
+
+  def teardown
+    teardown_db
+  end
+
+  def test_set_proxy_class
+    assert_equal DummyProxy.proxy_class, Kernel::Dummy
+  end
+
+  def test_save!
+    a = DummyProxy.new(:name => "some name")
+    a.save!
+
+    assert_not_nil a.po
+    assert_equal DummyProxy.proxy_class, a.po.class
+    assert_equal 1, a.po.id
+    assert_equal "some name", a.po.name
+  end
 end

@@ -12,8 +12,16 @@ module RadiaSource
       module ClassMethods; end
 
       module InstanceMethods
+
+        def create()
+          self.po = self.class.proxy_class.create(@attributes)
+        end
+
         def save!(&b)
           b.call unless b.nil?
+          if @po.nil?
+            @po = self.create()
+          end
           return @po.save! unless @po.nil?
           puts "Upss not saved! po must be nil..."  #DEBUG
           return false
@@ -23,7 +31,6 @@ module RadiaSource
           begin
             self.save!(&b)
           rescue => e
-            puts e
             return false
           end
           return true
