@@ -4,6 +4,8 @@ module RadiaSource
     class Broadcast < ARProxy
       proxy_accessor :dtstart, :dtend
 
+      #set_proxy_class Kernel::Broadcast
+
       ### Instance methods
 
       def initialize(args={})
@@ -33,11 +35,6 @@ module RadiaSource
         @po.activate
       end
 
-      def save
-        @attributes[:program_schedule] = Kernel::ProgramSchedule.active_instance
-        super()         
-      end
-
       def dirty?
         # only database objects can actually be dirty:
         # before saving, every object is kind of virgin
@@ -45,6 +42,11 @@ module RadiaSource
           return false
         end
         return @po.dirty?
+      end
+
+      def create_persistent_object(args={})
+        args.update(:dtstart => dtstart, :dtend => dtend, :program_schedule => Kernel::ProgramSchedule.active_instance)
+        super(args)
       end
 
     end

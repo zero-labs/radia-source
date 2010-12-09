@@ -7,8 +7,8 @@ require 'active_record'
 require "#{File.dirname(__FILE__)}/../init" 
 NS = RadiaSource::LightWeight
 
-
 class TestNonPersistentBroadcast < Test::Unit::TestCase
+
 
   def test_dt_methods
     a = NS::Broadcast.new()
