@@ -58,14 +58,14 @@ class ARProxyTestObjectMethodsWithoutPersistence < Test::Unit::TestCase
   end
   def test_proxy_reader_without_persistent_object
     a = DummyProxy.new
-    assert a.respond_to? :fail_var
+    assert_respond_to a, :fail_var
     assert_equal a.fail_var, nil
   end
 
   def test_proxy_writer_without_persistent_object
     a = DummyProxy.new
-    assert a.respond_to? :name=
-    assert a.respond_to? :name
+    assert_respond_to a, :name=
+    assert_respond_to a, :name
     assert_equal a.name = "test_name", "test_name"
     assert_equal a.name, "test_name"
   end
@@ -73,7 +73,7 @@ class ARProxyTestObjectMethodsWithoutPersistence < Test::Unit::TestCase
   def test_proxy_accessor_without_persistent_object
     a = DummyProxy.new
 
-    assert a.respond_to? :some_var= and a.respond_to? :some_var
+    assert_respond_to a, :some_var= and a.respond_to? :some_var
     assert_equal a.some_var = "test_name", "test_name"
     assert_equal a.some_var, "test_name"
   end
@@ -298,7 +298,7 @@ class ARProxyTestFromProxyToARwithOtherProxies < Test::Unit::TestCase
     a.save!
 
     assert_not_nil a.owner
-    assert_equal "Owner", a.owner.class.name
+    assert_equal Kernel.const_get(:Owner), a.owner.class
     assert_equal o.po, a.owner
   end
 end
@@ -340,16 +340,16 @@ class TestNamespaceConflicts < Test::Unit::TestCase
   def test_non_problematic_save!
     d = NonProblematic::Dummy.new(:name => "some name")
 
-    assert d.kind_of? TestNamespaceConflicts::NonProblematic::Dummy
+    assert_kind_of TestNamespaceConflicts::NonProblematic::Dummy, d
 
-    assert  d.save!
-    assert d.po.kind_of? Kernel::Dummy
+    assert  d.save
+    assert_kind_of Kernel::Dummy, d.po
   end
 
   def test_good_defaults_save!
     o = NonProblematic::Owner.new
 
-    assert o.save!
-    assert o.po.kind_of? Kernel::Owner
+    assert o.save
+    assert_kind_of Kernel::Owner, o.po
   end
 end
