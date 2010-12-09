@@ -13,9 +13,15 @@ module RadiaSource
     # po: two letters meaning persistent object
     
     class ARProxy
+      class << self
+        attr_accessor :instance_attributes;
+        attr_writer :proxy_class 
+      end
+
+      # for some reason this initialization isn't doing anything. So some
+      # hacking is done on initialization instance method
       @instance_attributes = []
       @proxy_class = nil
-      class << self; attr_accessor :instance_attributes;attr_writer :proxy_class end
 
       include RadiaSource::LightWeight::Object
       include RadiaSource::LightWeight::ActiveRecordMethods
@@ -47,6 +53,7 @@ module RadiaSource
           self.set_proxy_class
 
           # runtime definition of the "proxy_class" class method
+          # at class "class instance" scope
           self.instance_eval { def proxy_class; @proxy_class;end}
           return self.proxy_class
         else
@@ -55,6 +62,13 @@ module RadiaSource
       end
 
       def initialize(args={})
+        #for some reason, @instance_attributes class variable (class instance
+        #variable scope) isn't being correctly initializated. So hacking is
+        #needed.
+
+        if self.class.instance_attributes.nil?
+          self.class.instance_attributes = []
+        end
         @attributes = args
 
         self.class.instance_attributes.each do |at| 

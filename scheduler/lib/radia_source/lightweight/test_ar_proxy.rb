@@ -302,3 +302,54 @@ class ARProxyTestFromProxyToARwithOtherProxies < Test::Unit::TestCase
     assert_equal o.po, a.owner
   end
 end
+
+
+
+class TestNamespaceConflicts < Test::Unit::TestCase
+  module Problematic
+    class Dummy < NS::ARProxy
+      proxy_accessor :owner, :name
+      set_proxy_class Dummy
+    end
+  end
+
+  module NonProblematic
+    class Dummy < NS::ARProxy
+      set_proxy_class Kernel::Dummy
+    end
+    class Owner < NS::ARProxy
+    end
+  end
+
+  def setup
+    setup_db
+  end
+
+  def teardown
+    teardown_db
+  end
+
+  def test_problematic_save!
+    d = Problematic::Dummy.new(:name => "some name")
+
+    assert d.kind_of? TestNamespaceConflicts::Problematic::Dummy
+
+    assert_raise NoMethodError do d.save!end
+  end
+
+  def test_non_problematic_save!
+    d = NonProblematic::Dummy.new(:name => "some name")
+
+    assert d.kind_of? TestNamespaceConflicts::NonProblematic::Dummy
+
+    assert  d.save!
+    assert d.po.kind_of? Kernel::Dummy
+  end
+
+  def test_good_defaults_save!
+    o = NonProblematic::Owner.new
+
+    assert o.save!
+    assert o.po.kind_of? Kernel::Owner
+  end
+end
