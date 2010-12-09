@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require File.expand_path(File.dirname(__FILE__) + 
         "/../vendor/plugins/declarative_authorization/lib/declarative_authorization/maintenance")
 require 'test_help'
-require 'singleton_helper'
+#require 'singleton_helper'
 
 
 class ActiveSupport::TestCase
