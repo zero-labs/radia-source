@@ -10,12 +10,12 @@ module RadiaSource
 
         def proxy_reader(*args)
           begin
-            @@instance_attributes.nil?
-          rescue
-            @@instance_attributes = []
+            self.instance_attributes.nil?
+          ensure
+            self.instance_attributes = []
           end
           args.each do |a|
-            @@instance_attributes << a unless @@instance_attributes.find a
+            self.instance_attributes << a unless self.instance_attributes.find a
             self.send :define_method, a do 
               if @po.nil?
                 @attributes[a]

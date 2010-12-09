@@ -18,6 +18,11 @@ def setup_db
       t.column :created_at, :datetime      
       t.column :updated_at, :datetime
     end
+
+    create_table :owners do |t|
+      t.column :name, :string
+      t.column :dummy_id, :integer
+    end
   end
 end
 
@@ -27,8 +32,14 @@ def teardown_db
   end
 end
 
-class Dummy < ActiveRecord::Base
+class Owner < ActiveRecord::Base
+  belongs_to :dummy
 end
+
+class Dummy < ActiveRecord::Base
+  has_one :owner
+end
+
 
 
 
@@ -40,6 +51,11 @@ class ARProxyTestObjectMethodsWithoutPersistence < Test::Unit::TestCase
     proxy_accessor :some_var
   end
 
+  def test_proxy_class_method
+    assert_raise NameError do
+      DummyProxy.proxy_class
+    end
+  end
   def test_proxy_reader_without_persistent_object
     a = DummyProxy.new
     assert a.respond_to? :fail_var
@@ -198,8 +214,12 @@ class ARProxyTestFromProxyToAR < Test::Unit::TestCase
   class Kernel::Dummy < Kernel::ActiveRecord::Base
       validates_presence_of :name
   end
+  class OwnerProxy < NS::ARProxy
+    proxy_accessor :name
+    set_proxy_class Owner
+  end
   class DummyProxy < NS::ARProxy
-    proxy_accessor :fail_var, :name
+    proxy_accessor :name
     set_proxy_class Kernel::Dummy
   end
 
@@ -223,5 +243,62 @@ class ARProxyTestFromProxyToAR < Test::Unit::TestCase
     assert_equal DummyProxy.proxy_class, a.po.class
     assert_equal 1, a.po.id
     assert_equal "some name", a.po.name
+  end
+end
+
+
+class ARProxyTestFromProxyToARwithOtherProxies < Test::Unit::TestCase
+  class OwnerProxy < NS::ARProxy
+    proxy_accessor :name, :dummy
+    set_proxy_class Owner
+  end
+
+  class DummyProxy < NS::ARProxy
+    proxy_accessor :owner, :name
+    set_proxy_class Dummy
+  end
+
+  def setup
+    setup_db
+  end
+
+  def teardown
+    teardown_db
+  end
+
+
+  def test_save!
+    a = DummyProxy.new(:name => "some name")
+    a.save!
+    o = OwnerProxy.new(:name => "owner's name", :dummy => a.po)
+    o.save!
+
+    assert_not_nil a.po
+    assert_equal DummyProxy.proxy_class, a.po.class
+    assert_equal 1, a.po.id
+    assert_equal "some name", a.po.name
+  end
+
+  def test_2_save!
+    a = DummyProxy.new(:name => "some name")
+    o = OwnerProxy.new(:name => "owner's name", :dummy => a)
+    o.save!
+
+    assert_not_nil a.po
+    assert_equal DummyProxy.proxy_class, a.po.class
+    assert_equal 1, a.po.id
+    assert_equal "some name", a.po.name
+    assert_equal o.po, a.owner
+  end
+
+  def test_3_save!
+    o = OwnerProxy.new(:name => "owner's name")
+    a = DummyProxy.new(:name => "some name", :owner => o)
+    o.save!
+    a.save!
+
+    assert_not_nil a.owner
+    assert_equal "Owner", a.owner.class.name
+    assert_equal o.po, a.owner
   end
 end

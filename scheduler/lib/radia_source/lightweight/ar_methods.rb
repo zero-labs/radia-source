@@ -13,14 +13,11 @@ module RadiaSource
 
       module InstanceMethods
 
-        def create()
-          self.po = self.class.proxy_class.create(@attributes)
-        end
 
         def save!(&b)
           b.call unless b.nil?
           if @po.nil?
-            @po = self.create()
+            @po = self.create_persistent_object
           end
           return @po.save! unless @po.nil?
           puts "Upss not saved! po must be nil..."  #DEBUG

@@ -13,8 +13,9 @@ module RadiaSource
     # po: two letters meaning persistent object
     
     class ARProxy
-      @@instance_attributes = []
-      @@proxy_class = nil
+      @instance_attributes = []
+      @proxy_class = nil
+      class << self; attr_accessor :instance_attributes;attr_writer :proxy_class end
 
       include RadiaSource::LightWeight::Object
       include RadiaSource::LightWeight::ActiveRecordMethods
@@ -27,13 +28,13 @@ module RadiaSource
       end
 
       def self.set_proxy_class klass=nil
-        return unless @@proxy_class.nil?
+        return unless @proxy_class.nil?
         if klass.nil? then
-          @@proxy_class = Kernel.const_get(self.name.split("::")[-1])
+          k = Kernel.const_get(self.name.split("::")[-1])
         else
-          @@proxy_class = klass 
+          k = klass 
         end
-        @@proxy_class
+        self.proxy_class =  k
       end
 
       #def self.proxy_class
@@ -45,11 +46,8 @@ module RadiaSource
         if method_id == :proxy_class
           self.set_proxy_class
 
-          #self.send :define_method, method_id do
-          #  @@proxy_class
-          #end
-
-          self.instance_eval { def proxy_class; @@proxy_class;end}
+          # runtime definition of the "proxy_class" class method
+          self.instance_eval { def proxy_class; @proxy_class;end}
           return self.proxy_class
         else
           super
@@ -59,7 +57,7 @@ module RadiaSource
       def initialize(args={})
         @attributes = args
 
-        @@instance_attributes.each do |at| 
+        self.class.instance_attributes.each do |at| 
           @attributes[at] = nil unless @attributes.has_key?(at)
         end
       end
@@ -76,7 +74,27 @@ module RadiaSource
       end
       alias :po=                :set_persistent_object 
       alias :persistent_object= :set_persistent_object 
+
+
+      def create_persistent_object(args={})
+        ar_attributes = {}
+        @attributes.each do |key,val|
+          if val.kind_of?(ARProxy)
+            ar_attributes[key] = val.po!
+          else
+            ar_attributes[key] = val
+          end
+        end
+        self.class.proxy_class.create!(ar_attributes.merge(args))
+      end
       
+      def po!
+        if @po.nil?
+          @po = create_persistent_object()
+        else
+          @po
+        end
+      end 
         
     end
   
