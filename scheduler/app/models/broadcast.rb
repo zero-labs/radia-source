@@ -144,6 +144,10 @@ class Broadcast < ActiveRecord::Base
     end
   end
 
+  def pp
+    "#{dtstart}-#{dtend} :: "
+  end
+
   protected
 
   # Validation method.
