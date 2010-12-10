@@ -300,6 +300,10 @@ class ARProxyTestFromProxyToARwithOtherProxies < Test::Unit::TestCase
     assert_not_nil a.owner
     assert_equal Kernel.const_get(:Owner), a.owner.class
     assert_equal o.po, a.owner
+
+    o2 = Kernel::Owner.find_by_name "owner's name"
+    assert_equal o2, a.owner
+    assert_equal o2.name, a.owner.name
   end
 end
 
