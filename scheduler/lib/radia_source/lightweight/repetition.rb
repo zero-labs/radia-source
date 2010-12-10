@@ -3,36 +3,33 @@ module RadiaSource
 
     class Repetition < Broadcast
 
-      attr_accessor :original
+      proxy_accessor :original
+
       def initialize args=nil
         super(args)
-        @original = args[:original] unless args.nil?
       end
 
-      def save
-        super do
-          puts "#{@original.object_id.to_s(16)},#{@original}, #{@dtstart}.."
-          @po = create_persistent_object(
-            :program_schedule => Kernel::ProgramSchedule.active_instance,
-            :dtstart => @dtstart, 
-            :dtend => @dtend,
-            :original => @original.po!)
-        end
-      end
+      #def save
+      #  super do
+      #    puts "#{@original.object_id.to_s(16)},#{@original}, #{@dtstart}.."
+      #    @po = create_persistent_object(
+      #      :program_schedule => Kernel::ProgramSchedule.active_instance,
+      #      :dtstart => @dtstart, 
+      #      :dtend => @dtend,
+      #      :original => @original.po!)
+      #  end
+      #end
 
       # this code might have some issues:
-      # - a dirty repetitions is one that points
+      # - a dirty repetition is one that points
       #   to a dirty original
       # - new (unsaved) repetions might point to 
       #   saved originals
       def dirty?
         if @po.nil?
           #if @original.nil? This should __never__ occur
-          @original.dirty?
+          original.dirty?
         else
-          if original.nil?
-            puts @po.id
-          end
           @po.dirty?
         end
       end
@@ -50,8 +47,9 @@ module RadiaSource
         original.program
       end
 
-      def original
-        return @po.nil? ? @original : @po.original
+      def create_persistent_object args={}
+        args.update :original => original.po!
+        super args
       end
 
       def to_s
