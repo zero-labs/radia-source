@@ -81,6 +81,9 @@ class Broadcast < ActiveRecord::Base
   end
   
   ### Instance methods
+  def intersects? bc
+    not (bc.dtend <= self.dtstart or bc.dtstart >= self.dtend)
+  end
   
   def same_time?(other)
     (self.dtstart == other.dtstart) && (self.dtend == other.dtend)
