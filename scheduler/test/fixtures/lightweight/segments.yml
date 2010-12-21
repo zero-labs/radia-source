@@ -1,0 +1,7 @@
+seg1_o1_structure:
+    position: 1
+    structure: o1_structure
+    fill: true
+    audio_asset: authored_single_unavailable
+
+    

@@ -1,0 +1,7 @@
+live:
+    name: 'Live'
+    color: '#AAA'
+    
+recorded:
+    name: 'Recorded'
+    color: '#444'

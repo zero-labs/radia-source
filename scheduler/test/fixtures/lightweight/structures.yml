@@ -1,0 +1,10 @@
+recorded_structure:
+    playable: recorded (StructureTemplate)
+o1_structure:
+    playable: original1 (Broadcast)
+o2_structure:
+    playable: original2 (Broadcast)
+o1_rep_structure:
+    playable: repetition_o1 (Broadcast)
+conflict_w_o1_structure:
+    playable: original_conflicts_w_o1 (Broadcast)
