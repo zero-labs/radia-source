@@ -38,6 +38,7 @@ live1:
     structure_template: live
     dtstart: 2008-01-07 22:00:00
     dtend: 2008-01-07 23:00:00
+    active: true
 
 # it's on a monday
 live2:
@@ -47,6 +48,7 @@ live2:
     structure_template: live
     dtstart: 2008-01-14 22:00:00
     dtend: 2008-01-14 23:00:00
+    active: true
 
 # it's on a thursday
 live3:
@@ -56,6 +58,7 @@ live3:
     structure_template: live
     dtstart: 2008-02-21 22:00:00
     dtend: 2008-02-21 23:00:00
+    active: true
 
 # it's on a tuesday
 recorded1:
@@ -65,6 +68,7 @@ recorded1:
     structure_template: recorded
     dtstart: 2008-02-26 22:00:00
     dtend: 2008-02-26 23:00:00
+    active: true
 
 # Program 2
 program_2_live_1:
@@ -75,6 +79,7 @@ program_2_live_1:
     structure_template: live
     dtstart: 2008-03-01 21:00:00
     dtend: 2008-03-01 22:00:00
+    active: true
     
 program_2_recorded_1:
     type: Original
@@ -83,6 +88,7 @@ program_2_recorded_1:
     structure_template: recorded
     dtstart: 2008-03-04 05:00:00
     dtend: 2008-03-04 06:00:00
+    active: true
 
 
 # Repetitions
@@ -92,9 +98,11 @@ program_2_repeat_1:
     original: program_2_live_1
     dtstart: 2008-03-02 01:00:00
     dtend: 2008-03-02 02:00:00
+    active: true
     
 program_2_repeat_2:
     type: Repetition
     original: program_2_live_1
     dtstart: 2008-03-03 02:00:00
     dtend: 2008-03-03 03:00:00
+    active: true
