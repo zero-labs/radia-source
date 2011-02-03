@@ -1,4 +1,4 @@
 conflict1:
     active_broadcast: original1
-    new_broadcasts: - original_conflicts_w_o1
+    broadcasts: - original_conflicts_w_o1
 

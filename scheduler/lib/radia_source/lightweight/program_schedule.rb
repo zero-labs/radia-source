@@ -42,7 +42,7 @@ module RadiaSource
         @broadcasts = []
         @to_destroy = tmp.reject {|bc| bc.dirty?}
         # TODO: this puts returns 0,0 at 2 time it runs
-        puts tmp.count, @to_destroy.count
+        #puts tmp.count, @to_destroy.count
 
         # Get rid of unsolved, conflicts with unactivated broadcasts
         @conflicts = @conflicts.reject{|c| c.active_broadcast.nil?}
@@ -85,35 +85,49 @@ module RadiaSource
         bc
       end
 
+      def add_conflict(params)
+        if params.has_key? :conflict
+          if @conflicts.find {|c| c.active_broadcast == params[:conflict].active_broadcast}.nil?
+            @conflicts << params[:conflict]
+          end
+        else
+          @conflicts << RadiaSource::LightWeight::Conflict.new(params)
+        end
+      end
+
+
 
       def self.load_calendars(templates, filenames = {})
         # Generate a filename with the date of the merge
         fname_prefix = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
 
-        calendars = {}
+        originals = {}; errors = []
         templates.each do |template|      
           url = filenames.has_key?(template.name) ? filenames[template.name] : template.calendar_url
 
           begin
-            calendars[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
+            originals[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
           rescue
-            return { :__error => "calendar for #{template.name} not available" }
+            errors <<  "calendar for #{template.name} not available"
           end
         end
 
         begin
-          calendars["Repetitions"] = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
+          repetitions = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
         rescue
-          return { :__error => "calendar for repetitions not available" }
+           errors << "calendar for repetitions not available"
         end
-        return calendars
+        unless errors.empty?
+          return {:errors => errors}
+        end
+        return { :originals => originals,  :repetitions => repetitions }
       end
 
-      def parse_calendars(calendars, dtstop)
+      def parse_calendars(calendars, dtstop, now=Time.now.utc)
 
         #filter out programs
         programs = []; to_ignore = [];
-        calendars.each do |kind, cals|
+        (calendars[:originals].merge({:repetitions => calendars[:repetitions]})).each do |kind, cals|
           RadiaSource::ICal.get_program_names(cals).each do |pname|
             program = Program.find_by_name(pname)
             if program.nil?
@@ -124,13 +138,11 @@ module RadiaSource
           end
         end
 
-        return {:ignored_programs => to_ignore } if not to_ignore.empty?
 
         broadcasts = []; repetitions = []
-        now = Time.now
+        
 
-        original_show_calendars = calendars.reject {|k,v| k == "Repetitions"} 
-        original_show_calendars.each do |kind, cals|
+        calendars[:originals].each do |kind, cals|
           cals.each do |cal|
             cal.events.each do |ev|
               program = programs.select {|x| x.name.eql? ev.summary }[0]
@@ -155,50 +167,48 @@ module RadiaSource
 
 
         ignored_repetitions = []
-        if calendars.has_key?("Repetitions") then
-          calendars["Repetitions"].each do |cal|
-            cal.events.each do |ev|
-              program = programs.find {|x| x.name.eql? ev.summary }
+        calendars[:repetitions].each do |cal|
+          cal.events.each do |ev|
+            program = programs.find {|x| x.name.eql? ev.summary }
 
-              original_broadcasts = broadcasts.select { |bc| bc.program.eql?(program) and bc.kind_of?(RadiaSource::LightWeight::Original) }
-              ev.occurrences(dtstop) do |dtstart|
-                #ignore all ocurrences before now
-                next if dtstart < now
+            original_broadcasts = broadcasts.select { |bc| bc.program.eql?(program) }
+            ev.occurrences(dtstop) do |dtstart|
+              #ignore all ocurrences before now
+              next if dtstart < now
 
-                # Ensure the UTC time ref
-                dt = dtstart.utc
-                dtend = dt + ev.duration
+              # Ensure the UTC time ref
+              dt = dtstart.utc
+              dtend = dt + ev.duration
 
-                # repetition is nonsense if there is no original which
-                # ends before the repetition starts
-                #TODO: What to do with ignored repetitions?
-                bcs = original_broadcasts.select { |bc| bc.dtend < dt }
-                if bcs.empty?
-                  # Find if any of the older (unaffected by the import)
-                  # matches to use it as the original
-                  original = Kernel::Broadcast.find_first_sooner_than(dt, program, "Original")
-                  if original.nil?
-                    ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
-                    next
-                  else
-                    original = RadiaSource::LightWeight::Original.new_from_persistent_object(original)
-                  end
+              # repetition is nonsense if there is no original which
+              # ends before the repetition starts
+              #TODO: What to do with ignored repetitions?
+              bcs = original_broadcasts.select { |bc| bc.dtend < dt }
+              if bcs.empty?
+                # Find if any of the older (unaffected by the import)
+                # matches to use it as the original
+                original = Kernel::Original.find_first_sooner_than(dt, program, "Original")
+                if original.nil?
+                  ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
+                  next
                 else
-                  original = bcs.max {|a,b| a.dtend <=> b.dtend } 
+                  original = RadiaSource::LightWeight::Original.new_from_persistent_object(original)
                 end
-
-                #puts "#{original.object_id.to_s(16)}, " +original.to_s + "."
-                bc = RadiaSource::LightWeight::Repetition.new({
-                  :original => original,
-                  :dtstart => dt,
-                  :dtend => dtend.utc })
-                  repetitions << bc
+              else
+                original = bcs.max {|a,b| a.dtend <=> b.dtend } 
               end
+
+              #puts "#{original.object_id.to_s(16)}, " +original.to_s + "."
+              bc = RadiaSource::LightWeight::Repetition.new({
+                :original => original,
+                :dtstart => dt,
+                :dtend => dtend.utc })
+                repetitions << bc
             end
           end
         end
 
-        return {:originals => broadcasts, :repetitions => repetitions, :ignored_repetitions => ignored_repetitions}
+        return {:originals => broadcasts, :repetitions => repetitions, :ignored_repetitions => ignored_repetitions, :ignored_programs => to_ignore}
 
       end
 
@@ -226,7 +236,7 @@ module RadiaSource
       def find_or_create_conflict_by_active_broadcast(bc)
         tmp = @conflicts.find { |c| c.active_broadcast.eql?(bc) }
         if tmp.nil?
-          return Conflict.new(:active_broadcast => bc)
+          return RadiaSource::LightWeight::Conflict.new(:active_broadcast => bc)
         end
         return tmp
       end
@@ -243,16 +253,6 @@ module RadiaSource
         end
         @conflicts = Kernel::Conflict.all.map {|c| Conflict.new_from_persistent_object(c) }
         #@conflicts = []
-      end
-
-      def add_conflict(params)
-        if params.has_key? :conflict
-          if @conflicts.find {|c| c.active_broadcast == params[:conflict].active_broadcast}.nil?
-            @conflicts << params[:conflict]
-          end
-        else
-          @conflicts << Conflict.new(params)
-        end
       end
 
     end

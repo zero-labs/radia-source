@@ -18,7 +18,7 @@ class TestNonPersistentConflict < Test::Unit::TestCase
     a = NS::Conflict.new
 
     assert_respond_to a, :active_broadcast
-    assert_respond_to a, :new_broadcasts
+    assert_respond_to a, :broadcasts
 
   end
 
@@ -30,7 +30,7 @@ class TestNonPersistentConflict < Test::Unit::TestCase
   end
 
   def test_intersection2
-    c = NS::Conflict.new(:new_broadcasts => [@@reference_broadcast])
+    c = NS::Conflict.new(:broadcasts => [@@reference_broadcast])
 
     assert c.intersects? @@conflicting_broadcast
   end
@@ -45,7 +45,7 @@ class TestNonPersistentConflict < Test::Unit::TestCase
   end
 
   def test_1_solvable?
-    c = NS::Conflict.new(:new_broadcasts => [@@reference_broadcast])
+    c = NS::Conflict.new(:broadcasts => [@@reference_broadcast])
 
     assert c.solvable?
 

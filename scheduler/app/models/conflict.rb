@@ -1,49 +1,97 @@
+
+
 class Conflict < ActiveRecord::Base
-  include ActiveRecordEnumerable
 
-  has_and_belongs_to_many  :new_broadcasts, :class_name =>"Broadcast", :join_table => "conflicts_new_broadcasts", :association_foreign_key => "new_broadcast_id"
-  belongs_to :active_broadcast, :class_name => "Broadcast", :foreign_key => "active_broadcast_id"
+  has_and_belongs_to_many :broadcasts, :join_table => "conflicts_broadcasts"
+  belongs_to :active_broadcast, :class_name => "Broadcast"
 
-  enumerate :action, :as => RadiaSource::ProgramSchedule::Migrate.Actions, :default => RadiaSource::ProgramSchedule::Migrate.DefaultAction
+  before_validation :set_time_boundaries
 
-  def find_or_create_conflict_by_old_broadcast(bc)
-    conflict = find(:first, :conditions => {:old_broadcast_id => bc.id})
+  validates_presence_of :dtstart, :dtend
 
-    if conflict.nil?
-      conflict = Conflict.create
-      bc.conflicting_old_broadcast = conflict
-      bc.save
-    end
+  validate :start_date_is_before_end_date
 
-    return conflict
+  def intersects? bc
+    not (bc.dtend <= self.dtstart or bc.dtstart >= self.dtend)
   end
 
-  def self.find_in_range(startdt, enddt, old=false)
-    if old
-      b_ids = Conflict.all(:select => "old_broadcast_id")
-
-      return [] if b_ids.empty?
-      broadcasts = Broadcast.find(:all, :select => "id", :conditions =>
-                            ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtstart < :t2) AND old_broadcast_id IN :ids",
-                            {:t1 => startdt, :t2 => enddt, :ids => b_ids}])
-      return Conflict.all(:conditions => { :old_broadcast_id => broadcasts })
-      
-
+  def add_broadcast bc
+    if bc.active?
+      if self.active_broadcast.nil?
+        self.active_broadcast = bc 
+        bc
+      end
     else
-      broadcasts =  Broadcast.find(:all, :select => "id", :conditions => 
-                            ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtstart < :t2)",
-                            {:t1 => startdt, :t2 => enddt}])
-      return Conflict.all(:conditions => { :old_broadcast_id => broadcasts })
+      unless self.broadcasts.include? bc
+        self.broadcasts << bc 
+        self.broadcasts
+      end
+    end
+  end
+
+  def remove_broadcast bc
+    unless self.active_broadcast == bc
+      self.broadcasts.delete bc
+    else
+      self.active_broadcast = nil
     end
 
-    #return find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
-    #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
+    if self.all_broadcasts.length <= 1
+      self.destroy
+      return true
+    else 
+      return self.save
+    end
   end
 
-  def has_dirty_broadcast?
-    return false if self.conflicting_old_broadcast.nil?
-    return self.conflicting_old_broadcast.dirty?
+
+  protected  
+
+  def all_broadcasts
+    #[self.active_broadcast, self.broadcasts].flatten
+    [self.active_broadcast] + self.broadcasts
+  end
+
+  def set_time_boundaries
+    unless self.active_broadcast.nil?
+      self.dtstart = self.active_broadcast.dtstart
+      self.dtend = self.active_broadcast.dtend
+    else
+      tmp = self.broadcasts.max{|x,y| x.dtstart <=> y.dtstart}
+      self.dtstart = tmp.dtstart unless tmp.nil?
+      tmp = self.broadcasts.min{|x,y| x.dtend <=> y.dtend}
+      self.dtend = tmp.dtend unless tmp.nil?
+    end
   end
 
 
+
+  def update_time_boundaries bc
+    if self.active_broadcast.nil?
+      if self.dtstart.nil? and self.dtend.nil?
+        self.dtstart = bc.dtstart
+        self.dtend = bc.dtend
+      else
+        self.dtstart, self.dtend = Conflict::find_intersection(self.dtstart, self.dtend, bc.dtstart, bc.dtend)
+      end
+    else
+      self.dtstart = self.active_broadcast.dtstart
+      self.dtend = self.active_broadcast.dtend
+    end
+  end
+
+  def self.find_intersection s1, e1, s2, e2
+    return nil if e2 <= s1 or s2 >= e1
+    start = s1 >= s2 ? s1 : s2
+    eend = e1 <= e2 ? e1 : e2
+    return start,eend
+  end
+  
+  # Validation method.
+  # Ensures that start date comes before end date
+  def start_date_is_before_end_date
+    return if self.dtstart.nil? or self.dtend.nil?
+    errors.add(:dtend, "date/time can't be before start date/time") unless self.dtstart <= self.dtend
+  end
 end
+

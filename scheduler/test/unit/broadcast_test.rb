@@ -3,17 +3,23 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BroadcastTest < ActiveSupport::TestCase
 
   def test_should_require_start_and_end_date
-    assert_no_difference 'Broadcast.count' do
+    assert_raise ActiveRecord::RecordInvalid  do
       create_broadcast(:dtstart => nil, :dtend => nil)
+    end
+
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtstart => nil)
+    end
+
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtend => nil)
     end
   end
 
   def test_should_ensure_start_before_end
-    assert_no_difference 'Broadcast.count' do
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 14, 00), 
-      :dtend => DateTime.new(2008, 01, 01, 13, 00))
+                       :dtend => DateTime.new(2008, 01, 01, 13, 00))
     end
   end
   
@@ -32,58 +38,100 @@ class BroadcastTest < ActiveSupport::TestCase
   end
 
   def test_should_ensure_broadcasts_dont_overlap
-    create_broadcast
+    create_broadcast(:active => true)
     
     # partially inside
-    assert_no_difference 'Broadcast.count' do
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 11, 30), 
-                       :dtend => DateTime.new(2008, 01, 01, 12, 05))
+                       :dtend => DateTime.new(2008, 01, 01, 12, 05), :active => true)
     end
 
     # at exactly the same times
-    assert_no_difference 'Broadcast.count' do
-      create_broadcast 
+    assert_raise ActiveRecord::RecordInvalid do
+      create_broadcast(:active => true)
     end
     
     # inside interval
-    assert_no_difference 'Broadcast.count' do
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 12, 10), 
-                       :dtend => DateTime.new(2008, 01, 01, 12, 30))
+                       :dtend => DateTime.new(2008, 01, 01, 12, 30), :active =>true)
     end
     
     # partially outside
-    assert_no_difference 'Broadcast.count' do
+    assert_raise ActiveRecord::RecordInvalid do
       create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 12, 30), 
-                       :dtend => DateTime.new(2008, 01, 01, 13, 05))
+                       :dtend => DateTime.new(2008, 01, 01, 13, 05), :active => true)
     end
   end
   
-  def test_should_create_broadcasts
-    # broadcast before
+  def test_should_create_broadcasts_and_conflicts
+    # broadcast befores
     create_broadcast
+
     # another broadcast, after the one that'll be created
     create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 14, 00), 
                      :dtend => DateTime.new(2008, 01, 01, 15, 00))
+
+    b1 = nil, b2 = nil
     assert_difference 'Broadcast.count' do
       # new broadcast, exactly inside open interval
-      create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 13, 00), 
-      :dtend => DateTime.new(2008, 01, 01, 14, 00))
+      b1 = create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 13, 00), 
+                            :dtend => DateTime.new(2008, 01, 01, 14, 00))
     end
+
+    b1.activate
+    assert b1.active
+    assert_equal 0, b1.conflicts.count
+
+    # test for active/inactive conflict case
+    assert_difference 'Broadcast.count' do
+      # new (conflicting) broadcast
+      b2 = create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 13, 00), 
+                            :dtend => DateTime.new(2008, 01, 01, 13, 30))
+    end
+
+    assert !b2.active
+    assert b1.main_conflict
+    assert_equal 1, b2.conflicts.count
+    assert b2.conflicts.include? b1.main_conflict
+
+    # test for inactive broadcasts conflicts
+    b3 = b4 = nil
+    assert_difference 'Broadcast.count', 2 do
+      b3 = create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 16, 00),
+                            :dtend => DateTime.new(2008, 01, 01, 16, 10))
+
+      b4 = create_broadcast(:dtstart => DateTime.new(2008, 01, 01, 16, 05),
+                            :dtend => DateTime.new(2008, 01, 01, 16, 15))
+    end
+
+    b3.save!; b4.save!
+    b3.reload; b4.reload
+
+    assert !(b3.active or b4.active)
+    assert_nil b3.main_conflict
+    assert_nil b4.main_conflict
+
+    assert_equal 1, b3.conflicts.count
+    assert_equal 1, b4.conflicts.count
+
+    assert_equal b3.conflicts.first, b4.conflicts.first
+
   end
   
   def test_should_find_correct_number_in_range    
     # There shouldn't be any broadcasts
     assert_equal 0, Broadcast.find_in_range(range_dates[:a], range_dates[:f]).size
-    create_broadcast(:dtstart => (range_dates[:a] - 360), :dtend => (range_dates[:a] + 60)) 
+    create_broadcast(:dtstart => (range_dates[:a] - 360), :dtend => (range_dates[:a] + 60), :active => true) 
     assert_equal 1, Broadcast.find_in_range(range_dates[:a], range_dates[:f]).size
     
-    create_broadcast(:dtstart => range_dates[:b] + 60, :dtend => range_dates[:c] - 60)    
+    create_broadcast(:dtstart => range_dates[:b] + 60, :dtend => range_dates[:c] - 60, :active => true)
     assert_equal 2, Broadcast.find_in_range(range_dates[:a], range_dates[:f]).size 
     
-    create_broadcast(:dtstart => range_dates[:c], :dtend => range_dates[:d])               
+    create_broadcast(:dtstart => range_dates[:c], :dtend => range_dates[:d], :active => true)
     assert_equal 3, Broadcast.find_in_range(range_dates[:a], range_dates[:f]).size
     
-    create_broadcast(:dtstart => range_dates[:d], :dtend => range_dates[:e] - 60)
+    create_broadcast(:dtstart => range_dates[:d], :dtend => range_dates[:e] - 60, :active => true)
     assert_equal 4, Broadcast.find_in_range(range_dates[:a], range_dates[:f]).size
   end
   
@@ -92,21 +140,21 @@ class BroadcastTest < ActiveSupport::TestCase
     assert_equal 0, Broadcast.find_in_range(range_dates[:b], range_dates[:c]).size
     
     # Broadcast ends after A, should appear in [a, b]
-    create_broadcast(:dtstart => (range_dates[:a] - 360), :dtend => (range_dates[:a] + 60)) 
+    create_broadcast(:dtstart => (range_dates[:a] - 360), :dtend => (range_dates[:a] + 60), :active => true)
     assert_equal 1, Broadcast.find_in_range(range_dates[:a], range_dates[:b]).size
     
     # Broadcast begins before D, ends after e, should appear in [d, e]
-    create_broadcast(:dtstart => range_dates[:d] - 60, :dtend => range_dates[:e] + 60)
+    create_broadcast(:dtstart => range_dates[:d] - 60, :dtend => range_dates[:e] + 60, :active => true)
     assert_equal 1, Broadcast.find_in_range(range_dates[:d], range_dates[:e]).size
   end
   
   def test_range_should_find_broadcast_within_interval
     # Broadcast between B and C (with blank space around it)
-    create_broadcast(:dtstart => range_dates[:b] + 60, :dtend => range_dates[:c] - 60)      
+    create_broadcast(:dtstart => range_dates[:b] + 60, :dtend => range_dates[:c] - 60, :active => true)
     assert_equal 1, Broadcast.find_in_range(range_dates[:b], range_dates[:c]).size
     
     # Broadcast is between C and D (exactly)
-    create_broadcast(:dtstart => range_dates[:c], :dtend => range_dates[:d])               
+    create_broadcast(:dtstart => range_dates[:c], :dtend => range_dates[:d], :active => true)
     assert_equal 1, Broadcast.find_in_range(range_dates[:c], range_dates[:d]).size
     assert_equal 1, Broadcast.find_in_range(range_dates[:c] - 10, range_dates[:d]).size
     assert_equal 1, Broadcast.find_in_range(range_dates[:c], range_dates[:d] + 10).size
@@ -126,7 +174,7 @@ class BroadcastTest < ActiveSupport::TestCase
                 :dtend => DateTime.new(2008, 01, 01, 13, 00),
                 :program_schedule => ProgramSchedule.active_instance}
     record = Broadcast.new(defaults.merge(options))
-    record.save
+    record.save!
     record
   end
 end

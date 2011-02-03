@@ -2,14 +2,14 @@ module RadiaSource
   module LightWeight
 
     class Broadcast < ARProxy
-      proxy_accessor :dtstart, :dtend
+      proxy_accessor :dtstart, :dtend, :active
 
       #set_proxy_class Kernel::Broadcast
 
       ### Instance methods
 
       def initialize(args={})
-        super(args)
+        super({:active => false}.update(args))
       end
 
       def intersects? bc
@@ -45,7 +45,8 @@ module RadiaSource
       end
 
       def create_persistent_object(args={})
-        args.update(:dtstart => dtstart, :dtend => dtend, :program_schedule => Kernel::ProgramSchedule.active_instance)
+        args.update(:dtstart => dtstart, :dtend => dtend, :active => active,
+                    :program_schedule => Kernel::ProgramSchedule.active_instance)
         super(args)
       end
 

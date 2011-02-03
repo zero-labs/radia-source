@@ -68,14 +68,15 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
 
   create_table "conflicts", :force => true do |t|
     t.integer  "active_broadcast_id"
-    t.string   "action"
+    t.datetime "dtstart"
+    t.datetime "dtend"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "conflicts_new_broadcasts", :id => false, :force => true do |t|
+  create_table "conflicts_broadcasts", :id => false, :force => true do |t|
     t.integer "conflict_id"
-    t.integer "new_broadcast_id"
+    t.integer "broadcast_id"
   end
 
   create_table "conversations", :force => true do |t|

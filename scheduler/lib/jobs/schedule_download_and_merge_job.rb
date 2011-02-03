@@ -15,8 +15,10 @@ module Jobs
 
       program_schedule = RadiaSource::LightWeight::ProgramSchedule.instance
 
+      
+
       calendars = RadiaSource::LightWeight::ProgramSchedule.load_calendars StructureTemplate.find(:all)
-      #TODO: break if calendars.has_key?(:__error)
+      #TODO: break if calendars.has_key?(:errors)
 
       program_schedule.prepare_update
 
