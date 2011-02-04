@@ -4,8 +4,7 @@ class Broadcast < ActiveRecord::Base
   belongs_to :program_schedule
   
   #TODO: dependent destroy and similar for the following 2 lines
-  has_and_belongs_to_many :conflicts, :join_table => "conflicts_broadcasts"
-  has_one :main_conflict, :class_name => "Conflict", :foreign_key => "active_broadcast_id"
+  belongs_to :conflict
 
   
   validates_presence_of :dtstart, :dtend, :program_schedule

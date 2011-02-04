@@ -2,8 +2,7 @@
 
 class Conflict < ActiveRecord::Base
 
-  has_and_belongs_to_many :broadcasts, :join_table => "conflicts_broadcasts"
-  belongs_to :active_broadcast, :class_name => "Broadcast"
+  has_many :broadcasts
 
   before_validation :set_time_boundaries
 
@@ -65,27 +64,6 @@ class Conflict < ActiveRecord::Base
   end
 
 
-
-  def update_time_boundaries bc
-    if self.active_broadcast.nil?
-      if self.dtstart.nil? and self.dtend.nil?
-        self.dtstart = bc.dtstart
-        self.dtend = bc.dtend
-      else
-        self.dtstart, self.dtend = Conflict::find_intersection(self.dtstart, self.dtend, bc.dtstart, bc.dtend)
-      end
-    else
-      self.dtstart = self.active_broadcast.dtstart
-      self.dtend = self.active_broadcast.dtend
-    end
-  end
-
-  def self.find_intersection s1, e1, s2, e2
-    return nil if e2 <= s1 or s2 >= e1
-    start = s1 >= s2 ? s1 : s2
-    eend = e1 <= e2 ? e1 : e2
-    return start,eend
-  end
   
   # Validation method.
   # Ensures that start date comes before end date

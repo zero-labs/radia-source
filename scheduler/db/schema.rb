@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100908223952) do
+ActiveRecord::Schema.define(:version => 20110204004047) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -17,17 +17,15 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
     t.string   "protocol"
     t.string   "uri"
     t.string   "login"
+    t.boolean  "default",     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "default",     :default => false
   end
 
   create_table "audio_assets", :force => true do |t|
     t.boolean  "authored",       :default => false
     t.string   "type"
     t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.float    "length"
     t.string   "md5_hash"
     t.string   "deadline"
@@ -35,6 +33,8 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
     t.string   "retrieval_uri"
     t.datetime "delivered_at"
     t.integer  "creator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "authorships", :force => true do |t|
@@ -61,22 +61,9 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
     t.integer  "program_schedule_id"
     t.text     "description"
     t.integer  "original_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.boolean  "active",                :default => false
-  end
-
-  create_table "conflicts", :force => true do |t|
-    t.integer  "active_broadcast_id"
-    t.datetime "dtstart"
-    t.datetime "dtend"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "conflicts_broadcasts", :id => false, :force => true do |t|
-    t.integer "conflict_id"
-    t.integer "broadcast_id"
   end
 
   create_table "conversations", :force => true do |t|
@@ -162,7 +149,6 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
   create_table "program_schedules", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",     :default => false
   end
 
   create_table "programs", :force => true do |t|
@@ -175,9 +161,9 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
 
   create_table "roles", :force => true do |t|
     t.string   "name",       :limit => 40
+    t.integer  "user_id",                  :default => 1, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                  :default => 1, :null => false
   end
 
   create_table "roles_users", :id => false, :force => true do |t|
@@ -202,9 +188,9 @@ ActiveRecord::Schema.define(:version => 20100908223952) do
 
   create_table "settings", :force => true do |t|
     t.string   "station_name"
+    t.string   "repetitions_url"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "repetitions_url"
   end
 
   create_table "structure_templates", :force => true do |t|
