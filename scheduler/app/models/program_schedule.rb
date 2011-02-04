@@ -8,9 +8,9 @@ class ProgramSchedule < ActiveRecord::Base
   has_many :programs, :through => :originals
   
   def self.active_instance
-    s = ProgramSchedule.find(:first, :conditions => { :active => true })
+    s = ProgramSchedule.first
     if s.nil?
-      s = ProgramSchedule.create(:active => true)
+      s = ProgramSchedule.create!()
     end
     return s
   end
