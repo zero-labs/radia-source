@@ -15,11 +15,11 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if using_open_id?
-      open_id_authentication
-    else
+    ##if using_open_id?
+    ##  open_id_authentication
+    ##else
       password_authentication(params[:login], params[:password], params[:remember_me] == "1")
-    end
+    ##end
   end
 
   def destroy
