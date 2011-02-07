@@ -11,11 +11,16 @@ class Broadcast < ActiveRecord::Base
   
   # Ensure that start datetime comes before end datetime
   validate :start_date_is_before_end_date
+
+  # ensure that active==true and conflicts != nil do not happen
+  validate :not_active_with_conflicts
   
   # Ensure that there aren't any (active) broadcasts in this timeframe
   validate :does_not_conflict_with_others
 
-  after_save :create_conflicts
+  # use after create since dtstart/dtend (so their influence on conflicts) are supposed to be 
+  # unmutable.  after save is complex to use and easily takes to infinite loops
+  after_create :create_conflicts
   
   ### Class methods
   
@@ -43,9 +48,9 @@ class Broadcast < ActiveRecord::Base
   end
 
   def self.find_greater_than(startdt, active=true)
-    if active
+    unless active.nil?
       find(:all, :conditions => ["(dtstart >= :dtstart AND active = :active)" , 
-           {:dtstart =>startdt, :active=>true}], :order => "dtstart ASC")
+           {:dtstart => startdt, :active => active}], :order => "dtstart ASC")
     else
       find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
     end
@@ -146,10 +151,9 @@ class Broadcast < ActiveRecord::Base
   def activate
     b = Broadcast.find_in_range(dtstart, dtend)
     if not ( b.size > 1 or (b.size == 1 and b.first != self))
-      if self.conflicts.empty?
+      if self.conflict.nil?
         self.active = true 
-        save!
-        return true
+        return save!
       else
         # TODO: something is not running correctly: If there are active
         # broadcasts, the conflicts variable shouldnt be empty
@@ -172,8 +176,13 @@ class Broadcast < ActiveRecord::Base
     errors.add(:dtend, "date/time can't be before start date/time") unless self.dtstart <= self.dtend
   end
   
+  def not_active_with_conflicts
+    if self.active and not self.conflict.nil?
+      errors.add_to_base("An active broadcast cannot be active and hava a conflict")
+    end
+  end
   # Validation method.
-  # Ensures that there aren't overlapping Broadcasts
+  # Ensures that there aren't overlapping active Broadcasts
   def does_not_conflict_with_others
     #b = Broadcast.find_in_range(dtstart, dtend).select {|x| x.program_schedule.active }
     b = Broadcast.find_in_range(dtstart, dtend)
@@ -187,55 +196,39 @@ class Broadcast < ActiveRecord::Base
   # callback after create
 
   def create_conflicts
+    
+    tmp = Conflict.find_in_range(self.dtstart, self.dtend)
 
-    Broadcast.find_in_range(dtstart, dtend, active=nil).each do |bc| 
-      next if self == bc
-      self.add_new_conflicting_broadcast bc
+    # first we try to merge all conflicts that exist in this timeframe
+    conf = Conflict.merge self, tmp
+
+    # then we add all broadcasts that weren't conflicting previously
+    bcs = Broadcast.find_in_range(dtstart, dtend, active=false).select do |bc| 
+      self != bc and bc.conflict.nil?
     end
 
-    # Activate by default code:
-    #if self.conflicts.empty?
-    #  self.active = true
-    #  self.class.update_all({:active => true},{:id => self.id})
-    #end
 
-  end
-
-
-  # if I'm an active broadcast the conflicting broadcast will be
-  # added to the main_conflict broadcast list. Otherwise, search
-  def add_new_conflicting_broadcast bc
-    if bc.active?
-      if bc.main_conflict.nil?
-        bc.main_conflict = Conflict.new
+    unless bcs.empty?
+      if conf.nil?
+        conf = Conflict.create!
+        self.conflict = conf
+        #ActiveRecord::Base.connection.update_sql("UPDATE broadcasts SET conflict_id=#{conf.id} 
+        #WHERE id=#{self.id};")
+        #ActiveRecord::Base.connection.execute(Broadcast.send :sanitize_sql_array,
+        #  ["UPDATE broadcasts SET conflict_id=? WHERE id=?;",conf.id, self.id])
+        #self.update_attribute(:conflict, conf)
+        
+        conf.add_broadcast(self) #use only in after_create (not in after_save)
       end
-      bc.main_conflict.add_broadcast(self)
-      bc.main_conflict.save!
-    else
 
-      tmp = bc.conflicts.detect { |c| c.intersects? self }
-
-      if tmp.nil?
-        # He doesn't have a conflict that intersects me? What if I have any
-        # conflict that intersects him?
-        tmp = self.conflicts.detect { |c| c.intersects? bc }
-
-        # Humm... not? so it must be a new conflict...
-        if tmp.nil?
-          tmp = Conflict.new
-          tmp.add_broadcast(bc)
-          tmp.add_broadcast(self) 
-        else
-          tmp.add_broadcast(bc)
-        end
-      else
-        tmp.add_broadcast(self)
+      bcs.each do |bc|
+        #bc.update_attribute(:conflict, conf)
+        conf.add_broadcast bc
       end
-      tmp.save!
+
+      conf.save!
     end
   end
-
-
 
   def param_array
     @param_array ||=

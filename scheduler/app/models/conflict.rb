@@ -6,64 +6,53 @@ class Conflict < ActiveRecord::Base
 
   before_validation :set_time_boundaries
 
-  validates_presence_of :dtstart, :dtend
-
+  validates_presence_of :dtstart, :dtend, :if => Proc.new {|c| c.broadcasts.length > 0} 
   validate :start_date_is_before_end_date
+
+
+  def self.find_in_range(startdt, enddt)
+    Conflict.find(:all, :conditions => ["NOT (dtend <= :t1 OR dtstart >= :t2)", {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
+  end
+
+  def self.merge(bc, conflicts)
+    if conflicts.length > 0
+      # first conflict is reused. Others are dumped
+      # all of their broadcasts are moved to the first
+
+      fc = conflicts.first
+
+      conflicts.drop(1).each do |c|
+        c.broadcasts.each {|b| fc.add_broadcast b}
+        c.destroy 
+      end
+      fc.add_broadcast bc
+      return fc
+    else
+      return nil
+    end
+  end
 
   def intersects? bc
     not (bc.dtend <= self.dtstart or bc.dtstart >= self.dtend)
   end
 
   def add_broadcast bc
-    if bc.active?
-      if self.active_broadcast.nil?
-        self.active_broadcast = bc 
-        bc
-      end
-    else
-      unless self.broadcasts.include? bc
-        self.broadcasts << bc 
-        self.broadcasts
-      end
+    unless self.broadcasts.include? bc
+      self.broadcasts << bc 
     end
+    self.broadcasts
   end
 
-  def remove_broadcast bc
-    unless self.active_broadcast == bc
-      self.broadcasts.delete bc
-    else
-      self.active_broadcast = nil
-    end
-
-    if self.all_broadcasts.length <= 1
-      self.destroy
-      return true
-    else 
-      return self.save
-    end
-  end
 
 
   protected  
 
-  def all_broadcasts
-    #[self.active_broadcast, self.broadcasts].flatten
-    [self.active_broadcast] + self.broadcasts
-  end
-
   def set_time_boundaries
-    unless self.active_broadcast.nil?
-      self.dtstart = self.active_broadcast.dtstart
-      self.dtend = self.active_broadcast.dtend
-    else
-      tmp = self.broadcasts.max{|x,y| x.dtstart <=> y.dtstart}
-      self.dtstart = tmp.dtstart unless tmp.nil?
-      tmp = self.broadcasts.min{|x,y| x.dtend <=> y.dtend}
-      self.dtend = tmp.dtend unless tmp.nil?
-    end
+    tmp = self.broadcasts.min{|x,y| x.dtstart <=> y.dtstart}
+    self.dtstart = tmp.dtstart unless tmp.nil?
+    tmp = self.broadcasts.max{|x,y| x.dtend <=> y.dtend}
+    self.dtend = tmp.dtend unless tmp.nil?
   end
-
-
   
   # Validation method.
   # Ensures that start date comes before end date

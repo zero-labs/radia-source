@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110204004047) do
+ActiveRecord::Schema.define(:version => 20110204014611) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -62,6 +62,14 @@ ActiveRecord::Schema.define(:version => 20110204004047) do
     t.text     "description"
     t.integer  "original_id"
     t.boolean  "active",                :default => false
+    t.integer  "conflict_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "conflicts", :force => true do |t|
+    t.datetime "dtstart"
+    t.datetime "dtend"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -115,21 +123,6 @@ ActiveRecord::Schema.define(:version => 20110204004047) do
   create_table "messages_recipients", :id => false, :force => true do |t|
     t.integer "message_id",   :null => false
     t.integer "recipient_id", :null => false
-  end
-
-  create_table "open_id_authentication_associations", :force => true do |t|
-    t.integer "issued"
-    t.integer "lifetime"
-    t.string  "handle"
-    t.string  "assoc_type"
-    t.binary  "server_url"
-    t.binary  "secret"
-  end
-
-  create_table "open_id_authentication_nonces", :force => true do |t|
-    t.integer "timestamp",  :null => false
-    t.string  "server_url"
-    t.string  "salt",       :null => false
   end
 
   create_table "playlist_elements", :force => true do |t|

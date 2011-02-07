@@ -79,9 +79,7 @@ class BroadcastTest < ActiveSupport::TestCase
                             :dtend => DateTime.new(2008, 01, 01, 14, 00))
     end
 
-    b1.activate
-    assert b1.active
-    assert_equal 0, b1.conflicts.count
+    assert b1.activate
 
     # test for active/inactive conflict case
     assert_difference 'Broadcast.count' do
@@ -90,10 +88,10 @@ class BroadcastTest < ActiveSupport::TestCase
                             :dtend => DateTime.new(2008, 01, 01, 13, 30))
     end
 
+    b1.reload
     assert !b2.active
-    assert b1.main_conflict
-    assert_equal 1, b2.conflicts.count
-    assert b2.conflicts.include? b1.main_conflict
+    assert_nil b1.conflict
+    assert_nil b2.conflict
 
     # test for inactive broadcasts conflicts
     b3 = b4 = nil
@@ -108,14 +106,12 @@ class BroadcastTest < ActiveSupport::TestCase
     b3.save!; b4.save!
     b3.reload; b4.reload
 
-    assert !(b3.active or b4.active)
-    assert_nil b3.main_conflict
-    assert_nil b4.main_conflict
+    assert_not_nil b3.conflict
+    assert_not_nil b4.conflict
 
-    assert_equal 1, b3.conflicts.count
-    assert_equal 1, b4.conflicts.count
+    assert_equal b3.conflict, b4.conflict
 
-    assert_equal b3.conflicts.first, b4.conflicts.first
+    assert_equal 2, b3.conflict.broadcasts.count
 
   end
   
