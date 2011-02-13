@@ -140,7 +140,7 @@ class Broadcast < ActiveRecord::Base
 
   # Was the broadcast edited after creation? TODO: dirty bit
   def dirty?
-    return false if created_at.nil?
+    return nil if created_at.nil?
     return updated_at > created_at
   end
 
