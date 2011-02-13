@@ -117,7 +117,7 @@ namespace :radia do
       s.station_name = settings["station_name"]
       s.repetitions_url = settings["repetitions_url"]
 
-      exit(-1) unless s.save
+      s.save!
     end
 
     desc "Creates singles"
