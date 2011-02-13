@@ -5,7 +5,7 @@ module RadiaSource
 
       proxy_accessor :original
 
-      def initialize args=nil
+      def initialize args={}
         super(args)
       end
 

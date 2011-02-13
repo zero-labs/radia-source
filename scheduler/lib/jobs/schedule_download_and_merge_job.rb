@@ -28,8 +28,8 @@ module Jobs
       if rt.has_key?(:originals)
         #$dd = rt[:originals];
         $drt=rt
-          rt[:originals].each {|bc| program_schedule.add_broadcast bc }
-          rt[:repetitions].each {|bc| program_schedule.add_broadcast bc }
+          rt[:originals].each {|bc| program_schedule.add_broadcast! bc }
+          rt[:repetitions].each {|bc| program_schedule.add_broadcast! bc }
         program_schedule.save
       else
         $drt=rt

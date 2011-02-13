@@ -1,13 +1,12 @@
-require 'test_helper'
+require File.join(File.dirname(__FILE__),'test_helper')
 
 NS = RadiaSource::LightWeight
 
 
-class ProgramSchedule < ActiveSupport::TestCase
+class ProgramScheduleTest < ActiveSupport::TestCase
   fixtures :all
 
   def setup
-    
     #for this test the time reference is UTC 2010-12-11 12:00
     set_time_reference(Time.mktime(2010, 12, 11, 12, 00), delta=0.minutes)
 
@@ -15,50 +14,49 @@ class ProgramSchedule < ActiveSupport::TestCase
     @ps.load_persistent_objects @time_reference
   end
 
+  def test_move_to_limbo
+    b = NS::Broadcast.new_from_persistent_object(
+      Kernel::Broadcast.create!(:program_schedule=>Kernel::ProgramSchedule.active_instance,
+                                :dtstart => @time_reference + 1.day, :dtend => @time_reference + 2.day)
+    )
+
+    # ATENTION. the ids 1 and 2 are conventions: there isn't any code that
+    # enforces these ids. Maybe we should make some constants (TODO).
+
+    assert_not_nil b.po
+    assert_equal 1, b.po.program_schedule.id
+    assert NS::ProgramSchedule.move_to_limbo(b)
+    assert_equal 2, b.po.program_schedule.id
+
+  end
+
   def test_load_persistent_objects
 
-    assert_equal Kernel::Broadcast.count,
+    assert_equal Kernel::Broadcast.find_greater_than(@time_reference, :active=>true).count,
       @ps.broadcasts.count
-    assert_equal Kernel::Conflict.count, @ps.conflicts.count
+    assert_equal Kernel::Broadcast.find_greater_than(@time_reference, :active=>false).count,
+      @ps.instance_variable_get(:@inactive_broadcasts).count
+    #assert_equal Kernel::Conflict.count, @ps.conflicts.count
 
-    assert_equal Kernel::Original.count,
+    assert_equal Kernel::Original.find_greater_than(@time_reference, :active=>true).count,
       @ps.broadcasts.find_all{|x| x.kind_of?(NS::Original)}.count
-    assert_equal Kernel::Repetition.count,
+    #assert_equal Kernel::Repetition.find(:all, :conditions => {:active => true}).count,
+    assert_equal Kernel::Repetition.find_greater_than(@time_reference, :active=>true).count,
       @ps.broadcasts.find_all{|x| x.kind_of?(NS::Repetition)}.count
     
   end
-
-
-  def test_find_or_create_conflict_by_active_broadcast
-    assert @ps.find_or_create_conflict_by_active_broadcast broadcasts(:original1)
-    assert @ps.find_or_create_conflict_by_active_broadcast broadcasts(:original2)
-  end
-
-  def test_add_conflict
-
-    a_bcs, na_bcs = get_active_broadcasts
-
-    assert_no_difference '@ps.conflicts.count' do
-      @ps.add_conflict:conflict => (@ps.find_or_create_conflict_by_active_broadcast a_bcs[0])
-    end
-
-    assert_difference '@ps.conflicts.count' do
-      @ps.add_conflict:conflict => (@ps.find_or_create_conflict_by_active_broadcast na_bcs[0])
-    end
-  end
   
-  def test_add_broadcast
-  end
-
-
   def test_prepare_update
     @ps.prepare_update
 
-    assert_equal Broadcast.count, @ps.to_destroy.count
-    assert_equal Conflict.count, @ps.conflicts.count
+    assert_equal Broadcast.find_greater_than(@time_reference, :active=>true).select{|x| not x.dirty?}.count, @ps.to_destroy.count
+    assert_equal Broadcast.find_greater_than(@time_reference, :active=>true).select{|x| x.dirty?}.count, @ps.to_move.count
+    assert_equal 0, @ps.broadcasts.count
+
   end
 
   def test_parse_calendars1
+    @ps.prepare_update
     rt = @ps.parse_calendars(get_calendars(1), @time_reference+2.months, @time_reference) 
 
     assert_equal 0, rt[:ignored_programs].count
@@ -75,6 +73,7 @@ class ProgramSchedule < ActiveSupport::TestCase
 
 
   def test_parse_calendars2
+    @ps.prepare_update
     rt = @ps.parse_calendars(get_calendars(2), @time_reference+2.months, @time_reference) 
 
     assert_equal 0, rt[:ignored_programs].count
@@ -100,23 +99,46 @@ class ProgramSchedule < ActiveSupport::TestCase
   end
 
   def test_add_broadcasts_cal3
+    @ps.prepare_update
     rt = @ps.parse_calendars(get_calendars(3), @time_reference+2.months, @time_reference) 
 
     assert_equal CAL3_TOTAL_ORIGINALS, rt[:originals].count
     assert_equal CAL3_TOTAL_REPETITIONS, rt[:repetitions].count
-    nconflicts = @ps.conflicts.count
-
+    
 
     assert_difference '@ps.broadcasts.count', CAL3_TOTAL_ORIGINALS+CAL3_TOTAL_REPETITIONS do
-      rt[:originals].each{|bc| @ps.add_broadcast bc}
-      rt[:repetitions].each{|bc| @ps.add_broadcast bc}
+      rt[:originals].each{|bc| @ps.add_broadcast! bc}
+      rt[:repetitions].each{|bc| @ps.add_broadcast! bc}
     end
 
-    assert_equal nconflicts+CAL3_TOTAL_ORIGINALS+CAL3_TOTAL_REPETITIONS-1, @ps.conflicts.count
+    assert_equal CAL3_TOTAL_ORIGINALS+CAL3_TOTAL_REPETITIONS-1, @ps.instance_variable_get(:@timeframes).count
 
-    tmp =@ps.conflicts.find_all {|x| x.new_broadcasts.count > 1 }
-    assert_equal 1, tmp.count
-    assert_equal Time.mktime(2010,12,31,15,00),  tmp.first.new_broadcasts.first.dtstart 
+  end
+
+  def test_save_cal1
+    rt = @ps.parse_calendars(get_calendars(1), @time_reference+2.months, @time_reference) 
+
+    tmp = Broadcast.find :all, :conditions => {:program_schedule_id => 1, :active => true}
+
+    old_broadcasts_count = tmp.count
+    limbo_broadcasts_count = Broadcast.find(:all, :conditions => {:program_schedule_id => 2}).count
+    dirty_broadcasts_count = tmp.select {|x| x.dirty?}.count
+
+
+    assert_difference '@ps.broadcasts.count', CAL1_TOTAL_ORIGINALS+CAL1_TOTAL_REPETITIONS do
+      rt[:originals].each{|bc| @ps.add_broadcast! bc}
+      rt[:repetitions].each{|bc| @ps.add_broadcast! bc}
+    end
+
+    @ps.save
+
+    assert_equal 0, Kernel::Conflict.count
+    assert_equal 0, (Kernel::Broadcast.all :conditions => {:program_schedule_id => 1, :active => false}).count
+
+    assert_equal limbo_broadcasts_count+dirty_broadcasts_count, (Broadcast.all  :conditions=>{:program_schedule_id=>2}).count
+    assert_equal CAL1_TOTAL_ORIGINALS+CAL1_TOTAL_REPETITIONS, (Broadcast.all :conditions=>{:program_schedule_id=>1, :active=>true}).count
+
+
 
   end
 
@@ -136,16 +158,16 @@ class ProgramSchedule < ActiveSupport::TestCase
     end
   end
 
-  def get_active_broadcasts
-    cfs = Kernel::Conflict.all
+  #### def get_active_broadcasts
+  ####   cfs = Kernel::Conflict.all
 
-    # all conflicting active broadcasts 
-    a_bcs = cfs.map{|x| x.active_broadcast}.select{|x| !x.nil?}
+  ####   # all conflicting active broadcasts 
+  ####   a_bcs = cfs.map{|x| x.active_broadcast}.select{|x| !x.nil?}
 
-    # all non conflicting active broadcasts
-    na_bcs= Kernel::Broadcast.all.select{|x| ! a_bcs.include?(x) }
-    return a_bcs, na_bcs
-  end
+  ####   # all non conflicting active broadcasts
+  ####   na_bcs= Kernel::Broadcast.all.select{|x| ! a_bcs.include?(x) }
+  ####   return a_bcs, na_bcs
+  #### end
 
   def get_calendars n
     require 'vpim'

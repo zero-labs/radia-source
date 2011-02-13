@@ -1,29 +1,35 @@
 original1:
     type: Original
+    program_schedule_id: 1
     dtstart: 2010-12-11 13:00
     dtend: 2010-12-11 13:30
-    program_id: program_1
+    program: program_1
     structure_template:  recorded
     active: true
 original2:
     type: Original
-    program_id: program_2
+    program_schedule_id: 1
+    program: program_2
     dtstart: 2010-12-11 13:30
     dtend: 2010-12-11 14:00
     structure_template:  recorded
     active: true
+    description: "With Love, From Paris"
 repetition_o1:
     type: Repetition
+    program_schedule_id: 1
     dtstart: 2010-12-12 13:30
     dtend: 2010-12-12 14:00
     original: original2
     active: true
 original_conflicts_w_o1:
     type: Original
-    program_id: program_1
+    program_schedule_id: 1
+    program: program_1
     dtstart: 2010-12-11 13:50
     dtend: 2010-12-11 14:30
     structure_template:  recorded
     active: false
+    conflict: conflict1
 
 

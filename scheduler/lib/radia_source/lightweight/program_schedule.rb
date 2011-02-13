@@ -6,10 +6,20 @@ module RadiaSource
       require 'singleton'
       include Singleton
 
-      attr_accessor :broadcasts, :conflicts, :to_destroy
+      attr_accessor :broadcasts, :to_move, :to_destroy
+
+      def self.move_to_limbo(proxy_bc)
+        bc = proxy_bc.po
+        if bc.kind_of? ActiveRecord::Base
+          bc.update_attribute :program_schedule, Kernel::ProgramSchedule.limbo_instance
+          true
+        else
+          false
+        end
+      end
+
 
       ### Instance methods
-      #
 
       def initialize(t1=Time.now,persist=true)
         @last_update = t1
@@ -17,9 +27,10 @@ module RadiaSource
         if persist
           self.load_persistent_objects(@last_update) 
         else
+          @active_broadcasts = []
           @broadcasts= []
           @to_destroy= []
-          @conflicts = []
+          @timeframes= []
         end
       end
 
@@ -37,40 +48,28 @@ module RadiaSource
       #  conflicts are created
 
       def prepare_update
-        # All elder broadcasts are trash...
-        tmp = @broadcasts; 
-        @broadcasts = []
+        # All elder broadcasts and conflicts are trash...
+        tmp = @broadcasts
         @to_destroy = tmp.reject {|bc| bc.dirty?}
-        # TODO: this puts returns 0,0 at 2 time it runs
-        #puts tmp.count, @to_destroy.count
-
-        # Get rid of unsolved, conflicts with unactivated broadcasts
-        @conflicts = @conflicts.reject{|c| c.active_broadcast.nil?}
-
-        # Clean all unactivated broadcasts from remaining conflicts
-        @conflicts.each {|c| c.new_broadcasts = [] }
+        @broadcasts = []
 
         # unless somebody used them
-        tmp.select { |bc| bc.dirty? }.each do |bc|
-          self.add_conflict( :conflict => find_or_create_conflict_by_active_broadcast(bc) )
-        end
+        @to_move = tmp.select { |bc| bc.dirty? }
       end
 
-      def add_broadcast bc
+      def add_broadcast! bc
 
-        # Find intersection with a known conflict
-        tmp = @conflicts.select { |c| c.intersects?(bc) }
-        
-        if tmp.empty?
-          self.add_conflict(:new_broadcasts => [bc])
-        else
-          tmp.each { |c| c.add_new_broadcast bc }
+        # If any of the old broadcasts is similar, than it is 
+        # re-used. This is done here automatically since the
+        # user will probably do it manually
+
+        tmp = @to_move.find {|broadcast| bc.similar? broadcast}
+        unless tmp.nil? or tmp.po.nil?
+          bc.persistent_object = tmp.persistent_object
+          @to_move.delete(tmp)
         end
 
-        # if possible, avoid destroying and re-creating
-        # similar broadcasts. Let's see if we cand find 
-        # something similar that we can reuse
-
+        #
         #tmp = @to_destroy.find {|broadcast| bc.similar? broadcast}
         #unless tmp.nil?
         #  # POTENTIAL BUG! Should test kind_of? ActiveRecord::Base
@@ -81,21 +80,26 @@ module RadiaSource
         #  @to_destroy.delete(tmp)
         #end
 
+        self.add_timeframe_from_broadcast bc
+
         @broadcasts << bc
         bc
       end
 
-      def add_conflict(params)
-        if params.has_key? :conflict
-          if @conflicts.find {|c| c.active_broadcast == params[:conflict].active_broadcast}.nil?
-            @conflicts << params[:conflict]
-          end
+      def add_timeframe_from_broadcast bc
+        new_frame = TimeFrame.new :broadcast => bc
+        
+        # Find intersection with  known timeframes
+        tframes = @timeframes.select { |tf| tf.intersects?(new_frame) }
+         
+        if tframes.empty?
+          @timeframes << new_frame
         else
-          @conflicts << RadiaSource::LightWeight::Conflict.new(params)
+          tmp = TimeFrame.merge new_frame, tframes
+          @timeframes.reject! {|tf| tframes.include?(tf) } 
+          @timeframes << tmp
         end
       end
-
-
 
       def self.load_calendars(templates, filenames = {})
         # Generate a filename with the date of the merge
@@ -127,6 +131,7 @@ module RadiaSource
 
         #filter out programs
         programs = []; to_ignore = [];
+
         (calendars[:originals].merge({:repetitions => calendars[:repetitions]})).each do |kind, cals|
           RadiaSource::ICal.get_program_names(cals).each do |pname|
             program = Program.find_by_name(pname)
@@ -145,7 +150,8 @@ module RadiaSource
         calendars[:originals].each do |kind, cals|
           cals.each do |cal|
             cal.events.each do |ev|
-              program = programs.select {|x| x.name.eql? ev.summary }[0]
+              program = programs.find {|x| x.name == ev.summary }
+              next if program.nil?
 
               ev.occurrences(dtstop) do |dtstart|
                 #ignore all ocurrences before now
@@ -169,7 +175,8 @@ module RadiaSource
         ignored_repetitions = []
         calendars[:repetitions].each do |cal|
           cal.events.each do |ev|
-            program = programs.find {|x| x.name.eql? ev.summary }
+            program = programs.find {|x| x.name == ev.summary }
+            next if program.nil?
 
             original_broadcasts = broadcasts.select { |bc| bc.program.eql?(program) }
             ev.occurrences(dtstop) do |dtstart|
@@ -213,46 +220,47 @@ module RadiaSource
       end
 
       def save
-        #Lets solve as much conflicts as possible
-        tmp = @conflicts.select {|c| c.solvable? }
-        tmp.each do |c| 
-          c.solved_to_destroy.each do |bc| 
-            @broadcasts.delete(bc)
-            bc.destroy
+        # kill all inactive broadcasts
+        #@conflicts.each {|c| c.destroy} #do we need this ? Some callback of broadcast should do it
+        Kernel::Conflict.delete_all
+        @inactive_broadcasts.each {|x| x.destroy }
+
+        # fails if any timeframe with more than one broadcast
+        tmp = @timeframes.select {|tf| tf.broadcasts.length > 1}
+        if tmp.empty? # All right!
+          @broadcasts.each {|bc| bc.save }
+          @to_move.each { |x| self.class.move_to_limbo(x) }
+
+          Kernel::Broadcast.delete @to_destroy.map{|x| x.po.id }
+          @broadcasts.each {|bc| bc.activate }
+          return true
+        else
+          tmp.each do |tf|
+            tf.broadcasts.each {|x| x.save}
           end
-          @conflicts.delete(c)
+          return false
         end
-
-        # Lets save
-        @to_destroy.each { |bc| bc.destroy }
-        $destroy = @to_destroy
-        @broadcasts.each { |bc| bc.save }
-        @conflicts.each { |c| c.save }
-        
-        @broadcasts.each { |bc| bc.activate }
       end
 
 
-      def find_or_create_conflict_by_active_broadcast(bc)
-        tmp = @conflicts.find { |c| c.active_broadcast.eql?(bc) }
-        if tmp.nil?
-          return RadiaSource::LightWeight::Conflict.new(:active_broadcast => bc)
-        end
-        return tmp
-      end
 
       #protected
 
       def load_persistent_objects(t1=Time.now)
-        @broadcasts = Kernel::Broadcast.find_greater_than(t1, false).map do |bc|
-          case bc.attributes["type"]
-          when "Original" then RadiaSource::LightWeight::Original.new_from_persistent_object(bc)
-          when "Repetition" then RadiaSource::LightWeight::Repetition.new_from_persistent_object(bc)
-          else RadiaSource::LightWeight::Broadcast.new_from_persistent_object(bc)
+        def load_broadcasts(t1, activeness)
+          Kernel::Broadcast.find_greater_than(t1, {:active => activeness}).map do |bc|
+            case bc.attributes["type"]
+            when "Original" then RadiaSource::LightWeight::Original.new_from_persistent_object(bc)
+            when "Repetition" then RadiaSource::LightWeight::Repetition.new_from_persistent_object(bc)
+            else RadiaSource::LightWeight::Broadcast.new_from_persistent_object(bc)
+            end
           end
         end
-        @conflicts = Kernel::Conflict.all.map {|c| Conflict.new_from_persistent_object(c) }
-        #@conflicts = []
+
+        @inactive_broadcasts = load_broadcasts(t1, false)
+        @broadcasts = load_broadcasts(t1, true)
+        #@conflicts = Kernel::Conflict.all.map {|c| Conflict.new_from_persistent_object(c) }
+        @timeframes = []
       end
 
     end

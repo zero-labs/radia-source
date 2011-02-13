@@ -2,6 +2,8 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../../../config/environment")
 require 'test_help'
 
+CAL1_TOTAL_ORIGINALS = 4
+CAL1_TOTAL_REPETITIONS = 4
 CAL3_TOTAL_ORIGINALS = 21
 CAL3_TOTAL_REPETITIONS = 4
 

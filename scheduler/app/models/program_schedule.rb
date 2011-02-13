@@ -8,12 +8,13 @@ class ProgramSchedule < ActiveRecord::Base
   has_many :programs, :through => :originals
   
   def self.active_instance
-    s = ProgramSchedule.first
-    if s.nil?
-      s = ProgramSchedule.create!()
-    end
-    return s
+    self.find_or_create_by_id 1
   end
+
+  def self.limbo_instance
+    self.find_or_create_by_id 2
+  end
+
   
   # Expects a Hash with the following key-value pairs:
   # * :calendar => iCalendar file

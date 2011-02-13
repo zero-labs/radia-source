@@ -228,10 +228,11 @@ class Broadcast < ActiveRecord::Base
       if conf.nil?
         conf = Conflict.create!
         self.conflict = conf
-        #ActiveRecord::Base.connection.update_sql("UPDATE broadcasts SET conflict_id=#{conf.id} 
-        #WHERE id=#{self.id};")
+        #ActiveRecord::Base.connection.update_sql("UPDATE broadcasts SET conflict_id=#{conf.id} WHERE id=#{self.id};")
+        #
         #ActiveRecord::Base.connection.execute(Broadcast.send :sanitize_sql_array,
         #  ["UPDATE broadcasts SET conflict_id=? WHERE id=?;",conf.id, self.id])
+        #
         #self.update_attribute(:conflict, conf)
         
         conf.add_broadcast(self) #use only in after_create (not in after_save)

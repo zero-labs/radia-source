@@ -17,31 +17,24 @@ class TestNonPersistentConflict < Test::Unit::TestCase
   def test_broadcast_methods
     a = NS::Conflict.new
 
-    assert_respond_to a, :active_broadcast
     assert_respond_to a, :broadcasts
 
   end
 
 
-  def test_intersection1
-    c = NS::Conflict.new(:active_broadcast => @@reference_broadcast)
-    
-    assert c.intersects?(@@conflicting_broadcast)
-  end
-
   def test_intersection2
-    c = NS::Conflict.new(:broadcasts => [@@reference_broadcast])
+    c = NS::Conflict.new :broadcasts => [@@reference_broadcast]
 
     assert c.intersects? @@conflicting_broadcast
   end
 
-  def test_add_new_broadcast
-    c = NS::Conflict.new :active_broadcast => @@reference_broadcast
+  def test_add_broadcast
+    c = NS::Conflict.new 
 
-    assert_equal 1, (c.add_new_broadcast @@conflicting_broadcast).count
+    assert_equal 1, (c.add_broadcast @@conflicting_broadcast).count
 
     #test the filter
-    assert_equal 1, (c.add_new_broadcast @@conflicting_broadcast).count
+    assert_equal 1, (c.add_broadcast @@conflicting_broadcast).count
   end
 
   def test_1_solvable?
@@ -49,8 +42,8 @@ class TestNonPersistentConflict < Test::Unit::TestCase
 
     assert c.solvable?
 
-    c = NS::Conflict.new(:active_broadcast => @@reference_broadcast)
-    c.add_new_broadcast @@reference_broadcast
+    c = NS::Conflict.new
+    c.add_broadcast @@reference_broadcast
 
     assert c.solvable?
     

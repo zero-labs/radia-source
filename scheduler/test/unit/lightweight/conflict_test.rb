@@ -15,12 +15,11 @@ class ConflictTest < ActiveSupport::TestCase
   end
 
   def test_save
-    c = NS::Conflict.new(:active_broadcast => @@reference_broadcast)
+    c = NS::Conflict.new
     
-    assert_equal @@reference_broadcast, c.active_broadcast
 
-    c.add_new_broadcast @@conflicting_broadcast
-    c.add_new_broadcast @@yet_another_broadcast
+    c.add_broadcast @@conflicting_broadcast
+    c.add_broadcast @@yet_another_broadcast
 
     assert c.save!
 
