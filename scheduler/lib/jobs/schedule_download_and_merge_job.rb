@@ -25,11 +25,9 @@ module Jobs
       #TODO: break if bc_hashes.has_key? "ignored_programs"
       rt = program_schedule.parse_calendars(calendars, @dtend)
 
-      if rt.has_key?(:originals)
-        #$dd = rt[:originals];
-        $drt=rt
-          rt[:originals].each {|bc| program_schedule.add_broadcast! bc }
-          rt[:repetitions].each {|bc| program_schedule.add_broadcast! bc }
+      if rt.has_key?(:originals) and rt.has_key?(:repetitions)
+        rt[:originals].each {|bc| program_schedule.add_broadcast! bc }
+        rt[:repetitions].each {|bc| program_schedule.add_broadcast! bc }
         program_schedule.save
       else
         $drt=rt
