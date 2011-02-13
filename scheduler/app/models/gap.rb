@@ -14,13 +14,20 @@ class Gap < Broadcast
     if active
       query << "A.active = ? AND B.active = A.active AND "
     end
+    # MATH NOTE: if we assume dtsart < dtend  (see Broadcast validations!)
+    # then the following line can be simplified and written as the last
+    # statement, i.e., A.dtend < B.dtstart
+    #query << "A.dtend < B.dtstart AND "
     query << "A.dtstart <> B.dtstart AND A.dtend <> B.dtend AND A.dtend < B.dtstart AND "
     query << "B.dtstart = (SELECT min(c.dtstart) FROM broadcasts c WHERE c.dtstart > a.dtstart) AND "
     query << "A.dtend >= ? AND B.dtstart <= ?"
     query << "order by dtstart"
 
+    
+    tmp = find_by_sql([query, ProgramSchedule.active_instance.id, true, date_start, date_end])
+    # tmp.each {|x| p "|#{x.pp}|"}
     if active
-      all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, true, date_start, date_end]))
+      all_gaps(date_start, date_end, tmp)
     else
       all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, date_start, date_end]))
     end

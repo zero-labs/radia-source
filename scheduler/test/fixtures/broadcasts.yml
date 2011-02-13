@@ -1,34 +1,40 @@
 # Generic broadcasts to test gap detection
 
 gap_test1:
-    dtstart: 2007-01-03 8:00
-    dtend: 2007-01-03 10:00
+    dtstart: 2007-01-03 08:00:00
+    dtend: 2007-01-03 10:00:00
     program_schedule_id: 1
+    active: true
 
 gap_test2:
-    dtstart: 2007-01-03 10:05
-    dtend: 2007-01-03 10:30
+    dtstart: 2007-01-03 10:05:00
+    dtend: 2007-01-03 10:30:00
     program_schedule_id: 1
+    active: true
     
 gap_test3:
-    dtstart: 2007-01-03 10:30
-    dtend: 2007-01-03 11:00
+    dtstart: 2007-01-03 10:30:00
+    dtend: 2007-01-03 11:00:00
     program_schedule_id: 1
+    active: true
 
 gap_test4:
-    dtstart: 2007-01-03 11:00
-    dtend: 2007-01-03 11:30
+    dtstart: 2007-01-03 11:00:00
+    dtend: 2007-01-03 11:30:00
     program_schedule_id: 1
+    active: true
     
 gap_test5:
-    dtstart: 2007-01-03 12:00
-    dtend: 2007-01-03 13:00
+    dtstart: 2007-01-03 12:00:00
+    dtend: 2007-01-03 13:00:00
     program_schedule_id: 1
+    active: true
 
 gap_test6:
-    dtstart: 2007-01-03 13:05
+    dtstart: 2007-01-03 13:05:00
+    dtend: 2007-01-03 14:00:00
     program_schedule_id: 1
-    dtend: 2007-01-03 14:00
+    active: true
 
 # Originals
 live1:
