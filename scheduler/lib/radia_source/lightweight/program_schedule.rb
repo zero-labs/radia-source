@@ -64,7 +64,7 @@ module RadiaSource
         # user will probably do it manually
 
         tmp = @to_move.find {|broadcast| bc.similar? broadcast}
-        unless tmp.nil? or tmp.po.nil?
+        unless tmp.nil? or tmp.po.nil? or tmp.kind_of? Repetition
           bc.persistent_object = tmp.persistent_object
           @to_move.delete(tmp)
         end
