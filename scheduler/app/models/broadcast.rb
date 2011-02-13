@@ -47,29 +47,45 @@ class Broadcast < ActiveRecord::Base
     #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
   end
 
-  def self.find_greater_than(startdt, active=true)
-    unless active.nil?
-      find(:all, :conditions => ["(dtstart >= :dtstart AND active = :active)" , 
-           {:dtstart => startdt, :active => active}], :order => "dtstart ASC")
-    else
-      find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
+  def self.find_greater_than(startdt, user_options={})
+    options = { :active => true, :program_schedule_id => 1 }.update(user_options)
+
+    query = 'dtstart >= :dtstart'
+    values= {:dtstart => startdt}
+
+    unless options[:active].nil?
+      query << " AND active = :active"
+      values[:active] = options[:active]
     end
 
+    unless options[:program_schedule_id].nil?
+      query << " AND program_schedule_id=:program_schedule_id"
+      values[:program_schedule_id] = options[:program_schedule_id]
+    end
+
+    ## unless active.nil?
+    ##   find(:all, :conditions => ["(dtstart >= :dtstart AND active = :active)" , 
+    ##        {:dtstart => startdt, :active => options[:active] } ], :order => "dtstart ASC")
+    ## else
+    ##   find(:all, :conditions => ["(dtstart >= ?)" , startdt], :order => "dtstart ASC")
+    ## end
+    find(:all, :conditions => [query, values], :order=> "dtstart ASC")
   end
 
-  def self.find_first_sooner_than(startdt, program, type=nil, active=true)
+  def self.find_first_sooner_than(startdt, program, user_options={})
+    options = {:type=>nil, :active=>true}.update user_options
 
     query = "dtend < :t AND program_id = :program"
     values= {:t=>startdt, :program=>program.id} 
 
-    unless active.nil?
+    unless options[:active].nil?
       query += " AND active = :active"
-      values[:active] = active
+      values[:active] = options[:active]
     end
 
-    unless type.nil?
+    unless options[:type].nil?
       query += " AND type = :type"
-      values[:type] = type
+      values[:type] = options[:type]
     end
 
     find(:all, :conditions => [query, values], :order => "dtstart DESC", :limit => 1)[0]

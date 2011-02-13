@@ -187,7 +187,7 @@ module RadiaSource
               if bcs.empty?
                 # Find if any of the older (unaffected by the import)
                 # matches to use it as the original
-                original = Kernel::Original.find_first_sooner_than(dt, program, "Original")
+                original = Kernel::Original.find_first_sooner_than(dt, program, :type => 'Original')
                 if original.nil?
                   ignored_repetitions << { :program => program.name, :dtstart => dt, :dtend => dtend}
                   next
