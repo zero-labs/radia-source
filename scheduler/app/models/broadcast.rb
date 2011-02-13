@@ -35,10 +35,10 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Finds all broadcasts within dtstart and dtend
-  def self.find_in_range(startdt, enddt, active=true)
-    unless active.nil?
+  def self.find_in_range(startdt, enddt, activ=true)
+    unless activ.nil?
       find(:all, :conditions => ["program_schedule_id = :ps AND active = :active AND ((dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1))",
-           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => active }], :order => "dtstart ASC")
+           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => activ }], :order => "dtstart ASC")
     else
       find(:all, :conditions => ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
            {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
