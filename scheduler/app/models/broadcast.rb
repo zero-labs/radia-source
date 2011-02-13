@@ -35,14 +35,32 @@ class Broadcast < ActiveRecord::Base
   end
   
   # Finds all broadcasts within dtstart and dtend
-  def self.find_in_range(startdt, enddt, activ=true)
-    unless activ.nil?
-      find(:all, :conditions => ["program_schedule_id = :ps AND active = :active AND ((dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1))",
-           {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => activ }], :order => "dtstart ASC")
-    else
-      find(:all, :conditions => ["(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)",
-           {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
+  def self.find_in_range(startdt, enddt, user_options = {})
+    options = {:active => true, :program_schedule_id => ProgramSchedule.active_instance.id }.update user_options
+
+
+    query = '(dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1)'
+    values = {:t1 => startdt, :t2 => enddt}
+
+    unless options[:active].nil?
+      query << " AND active = :active"
+      values[:active] = options[:active]
     end
+
+    unless options[:program_schedule_id].nil?
+      query << " AND program_schedule_id=:program_schedule_id"
+      values[:program_schedule_id] = options[:program_schedule_id]
+    end
+
+    find(:all, :conditions => [query, values], :order=> "dtstart ASC")
+
+    ## unless activ.nil?
+    ##   find(:all, :conditions => ["program_schedule_id = :ps AND active = :active AND ((dtstart < :t1 AND dtend > :t1) OR (dtstart >= :t1 AND dtend <= :t2) OR (dtstart < :t2 AND dtend > :t1))",
+    ##        {:t1 =>startdt, :t2 => enddt, :ps => ProgramSchedule.active_instance.id, :active => activ }], :order => "dtstart ASC")
+    ## else
+    ##   find(:all, :conditions => [,
+    ##        {:t1 =>startdt, :t2 => enddt}], :order => "dtstart ASC")
+    ## end
     #find(:all, :conditions => ["(dtstart < ? AND dtend > ?) OR (dtstart >= ? AND dtend <= ?) OR (dtstart < ? AND dtend > ?)", 
     #                            startdt, startdt, startdt, enddt, enddt, startdt], :order => "dtstart ASC")
   end
@@ -219,7 +237,7 @@ class Broadcast < ActiveRecord::Base
     conf = Conflict.merge self, tmp
 
     # then we add all broadcasts that weren't conflicting previously
-    bcs = Broadcast.find_in_range(dtstart, dtend, active=false).select do |bc| 
+    bcs = Broadcast.find_in_range(dtstart, dtend, :active=>false).select do |bc| 
       self != bc and bc.conflict.nil?
     end
 
