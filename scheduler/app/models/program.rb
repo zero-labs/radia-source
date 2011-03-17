@@ -20,6 +20,8 @@ class Program < ActiveRecord::Base
   has_many :authorships, :dependent => :destroy
   has_many :authors, :through => :authorships, :class_name => 'User', :source => :user
 
+  before_create :update_cleanname
+
   def dd
     self.destroy
   end
@@ -27,6 +29,11 @@ class Program < ActiveRecord::Base
   # Generate URLs based on the program's urlname
   def to_param
     self.urlname
+  end
+
+  def self.find_by_similar_name(name)
+    tmp = self.name_janitor(name)
+    self.find :all, :conditions => { :simple_name => tmp }
   end
 
   # Tests if the program has an original on a given date (includes repetitions)
@@ -70,6 +77,18 @@ class Program < ActiveRecord::Base
   end
   
   protected
+
+  def self.urlnameify(text)
+    t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
+    t = t.to_s.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
+    (t.blank?) ? '-' : t
+  end
+
+  # this is cleans a string (removing spaces)
+  def self.name_janitor(text)
+    t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
+    t.to_s.downcase.strip.gsub(/[^-_[:alnum:]]/, '')
+  end
   
   def find_broadcasts_by_date_on_collection(kollection, year, month = nil, day = nil)
     if !year.blank?
@@ -78,5 +97,9 @@ class Program < ActiveRecord::Base
     else
       kollection.find(:all)
     end
+  end
+
+  def update_cleanname
+    self.simple_name = self.class.name_janitor(self.name)
   end
 end

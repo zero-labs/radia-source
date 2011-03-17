@@ -16,12 +16,18 @@ class ProgramTest < ActiveSupport::TestCase
   def test_should_create_correct_urlnames
     p1 = Program.new(:name => 'First program')
     p2 = Program.new(:name => 'Comunicação Típica') # program with unicode characters
-    p1.save
-    p2.save
+    p1.save!
+    p2.save!
+
     assert_equal "first-program", p1.urlname
     unless p2.urlname == "comunicacao-tipica"
       Kernel.warn "Your radia-source doesn't convert latin names"
       assert_equal "comunicao-tpica", p2.urlname
     end
+  end
+
+  def test_should_find_programs_by_similar_names
+    assert Program.find_by_similar_name('Programação Variável')
+    assert Program.find_by_similar_name("programacao variavel")
   end
 end

@@ -1,4 +1,4 @@
 
 class ScheduleUpdateLog < Kernel::OperationLog
-  validates_inclusion_of :status, :in  => [:initializing, :downloading, :parsing, :processing, :persisting, :completed, :failed]
+  validates_inclusion_of :status, :in  => [:initialized, :downloading, :parsing, :processing, :saving, :completed, :failed]
 end
