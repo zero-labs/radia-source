@@ -32,8 +32,8 @@ ActionController::Routing::Routes.draw do |map|
     end
     
     schedule.resources :editors
-    schedule.load_calendar 'load', :controller => 'program_schedule', :action => 'load_schedule', :conditions => { :method => :post }
     schedule.gaps 'gaps', :controller => 'gaps'
+    schedule.resources :update_logs, :controller => 'schedule_update_logs'
   end
     
   # Programs, with nested resources

@@ -1,13 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  dtstart: 2011-02-17 22:56:02
-  dtend: 2011-02-17 22:56:02
-  errors: MyText
-  status: MyString
-
-two:
-  dtstart: 2011-02-17 22:56:02
-  dtend: 2011-02-17 22:56:02
-  errors: MyText
-  status: MyString
+#one:
+#  dtstart: 2011-02-17 22:56:02
+#  dtend: 2011-02-17 22:56:02
+#  operation_errors: MyText
+#  status: :initializing
+#
+#two:
+#  dtstart: 2011-02-17 22:56:02
+#  dtend: 2011-02-17 22:56:02
+#  operation_errors: MyText
+#  status: :initializing

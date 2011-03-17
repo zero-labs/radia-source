@@ -24,9 +24,10 @@ class ProgramScheduleController < ApplicationController
   def edit
     @schedule = schedule
   end
-  
-  # POST /schedule/load
-  def load_schedule
+
+  # PUT /schedule
+  def update
+    
     @schedule = schedule
     
     # dtstart = (params[:start] ? ProgramSchedule.get_datetime(params[:start]) : Time.now)
@@ -34,27 +35,10 @@ class ProgramScheduleController < ApplicationController
 
     j = Jobs::ScheduleDownloadAndMergeJob.new(:dtend => dtend)
     j.perform #sync
-    #Delayed::Job.enqueue(j) #async
+    #Delayed::Job.enqueue(j) # TODO change to async
 
-    flash[:notice] = "A job to perform this task has been scheduled"
-    render :action => 'edit'
-    
-    #if !(@result = @schedule.load_calendar(params[:new_schedule])).nil?
-    #  render :action => 'load'
-    #else
-    #  flash[:error] = "There were problems with the given parameters"
-    #  redirect_to :action => 'edit'
-    #end
-  end
-
-  # PUT /schedule
-  def update
-    @schedule = schedule
-    if @schedule.update_originals(params[:to_create], params[:to_destroy])
-      redirect_to :action => 'show'
-    else
-      redirect_to :action => 'edit'
-    end
+    flash[:notice] = "The schedule is being updated"
+    redirect_to :action => 'show'
   end
 
   protected

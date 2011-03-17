@@ -1,0 +1,18 @@
+<% 
+	@pagetitle = "Update logs"
+	add_crumb("Schedule", schedule_path)
+	add_crumb("Update", edit_schedule_path)	
+	add_crumb("Logs", schedule_update_logs_path, true)	
+%>
+
+
+<% content_for :sidebar do %>
+	<%= render :partial => 'sidebar' %>
+<% end %>
+
+<table>
+	<%= header_row_for_update_logs if @update_logs.size > 0 %>
+	<% @update_logs.each do |l| %>
+		<%= row_for_update_log(l) %>
+	<% end %>
+</table>

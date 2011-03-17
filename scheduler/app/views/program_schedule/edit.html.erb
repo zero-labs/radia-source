@@ -1,7 +1,7 @@
 <% 
 	@pagetitle = "Update program schedule"
 	add_crumb("Schedule", schedule_path)
-	add_crumb("Update from calendar", edit_schedule_path, true)	
+	add_crumb("Update", edit_schedule_path, true)	
 %>
 
 
@@ -12,7 +12,7 @@
 	Select the calendar files representing the type of programs you want to update.
 </p>
 
-<% form_tag schedule_load_calendar_path, { :multipart => true, :method => :post } do -%>
+<% form_tag schedule_path, { :multipart => true, :method => :put } do -%>
 <div class="prepend-3 span-11 append-3">
 
 	<p>
