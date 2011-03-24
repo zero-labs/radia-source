@@ -31,7 +31,6 @@ Rails::Initializer.run do |config|
   # Required gems:
   
   config.gem 'vpim'
-  config.gem 'ruby-openid', :lib => 'openid'
   #config.gem 'delayed_job'
 
 

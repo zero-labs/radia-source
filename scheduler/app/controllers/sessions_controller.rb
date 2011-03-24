@@ -40,21 +40,6 @@ class SessionsController < ApplicationController
   
   protected
   
-  # OpenID authentication
-  def open_id_authentication
-    authenticate_with_open_id(params[:openid_url], :required => [:fullname, :email]) do |result, identity_url|
-      if result.successful?
-        if self.current_user = User.find_by_identity_url(identity_url)
-          successful_login
-        else
-          failed_login "Sorry, no user by that identity URL exists (#{identity_url})."
-        end
-      else
-        failed_login result.message
-      end
-    end
-  end
-  
   # Method called if using normal authentication
   def password_authentication(login, password, remember_me)
     self.current_user = User.authenticate(login, password)

@@ -43,11 +43,6 @@ body
 	text-decoration: underline;
 }
 
-#openid_url {
-  background: url(/images/login-bg.gif) no-repeat #FFF left;
-  padding-left: 20px;
-}
-
 #login_area label
 {
 	margin-right: 10px;

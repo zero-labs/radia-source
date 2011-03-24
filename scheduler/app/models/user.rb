@@ -17,8 +17,6 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => true
-  #validates_uniqueness_of   :identity_url, :on => :save
-  #validates_presence_of     :identity_url
   
   before_save :encrypt_password
   before_create :make_activation_code 

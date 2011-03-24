@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110217225602) do
+ActiveRecord::Schema.define(:version => 20110324195033) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -221,7 +221,6 @@ ActiveRecord::Schema.define(:version => 20110217225602) do
     t.string   "name"
     t.string   "login"
     t.string   "email"
-    t.string   "identity_url"
     t.string   "remember_token"
     t.string   "crypted_password",          :limit => 40
     t.string   "salt",                      :limit => 40
