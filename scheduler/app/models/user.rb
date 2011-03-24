@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation, :identity_url, :name
+  attr_accessible :login, :email, :password, :password_confirmation, :name
   
   has_many :authorships, :dependent => :destroy
   has_many :programs, :through => :authorships
@@ -120,10 +120,6 @@ class User < ActiveRecord::Base
   # TODO Replace this with actual password generator
   def generate_password
     self.password = "1234"
-  end
-  
-  def self.get(identity_url)
-    find(:first, :conditions => ["identity_url = ?", identity_url])
   end
   
   # Gives a role to the user
