@@ -24,7 +24,8 @@ namespace :radia do
           ical = RadiaSource::ICal::get_calendar(struct["url"])
           program_names = RadiaSource::ICal::get_program_names(ical)
           program_names.each do |e|
-            Program.find_or_create_by_name(e)
+            tmp = Program.find_by_similar_name(e)
+            Program.create!(:name => e) if tmp.nil? or tmp.empty?
           end
         end
       end
@@ -70,18 +71,18 @@ namespace :radia do
       live.save
       
       # Playlist broadcast
-      info = calendars.select {|x| x["name"] == "Playlist"}[0]
-      exit 1 if info.nil?
-      b = Structure.create
-      
-      asset = Playlist.find_or_create_by_title('Some playlist!')
-      
-      segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
-      segment.save
-      
-      #playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
-      playlist = StructureTemplate.new(:name => info['name'], :color => info['color'], :calendar_url => info['url'], :structure => b)
-      playlist.save
+      ##info = calendars.select {|x| x["name"] == "Playlist"}[0]
+      ##exit 1 if info.nil?
+      ##b = Structure.create
+      ##
+      ##asset = Playlist.find_or_create_by_title('Some playlist!')
+      ##
+      ##segment = Segment.new(:fill => true, :audio_asset => asset, :structure => b)
+      ##segment.save
+      ##
+      ###playlist = StructureTemplate.new(:name => 'Playlist', :color => '#9C3', :structure => b)
+      ##playlist = StructureTemplate.new(:name => info['name'], :color => info['color'], :calendar_url => info['url'], :structure => b)
+      ##playlist.save
 
       
     end

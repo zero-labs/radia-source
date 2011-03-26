@@ -1,3 +1,5 @@
+
+
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProgramTest < ActiveSupport::TestCase
@@ -15,13 +17,47 @@ class ProgramTest < ActiveSupport::TestCase
 
   def test_should_create_correct_urlnames
     p1 = Program.new(:name => 'First program')
-    p2 = Program.new(:name => 'Comunicação Típica') # program with unicode characters
-    p1.save
-    p2.save
+    p1.save!
+
     assert_equal "first-program", p1.urlname
+
+    # program with unicode characters
+    p2 = Program.new(:name => 'Comunicação Típica') 
+    p2.save!
+
     unless p2.urlname == "comunicacao-tipica"
       Kernel.warn "Your radia-source doesn't convert latin names"
       assert_equal "comunicao-tpica", p2.urlname
     end
+
   end
+
+  def test_should_create_correct_search_name
+    # program with unicode characters
+    program= Program.create!(:name => 'Comunicação Típica') 
+
+    assert_equal "comunicacaotipica", program.simple_name
+  end
+
+  def test_should_find_programs_by_similar_names
+    assert Program.find_by_similar_name('Programação Variável')
+    assert Program.find_by_similar_name("programacao variavel")
+  end
+
+  def test_should_get_correct_summary
+
+    require "#{RAILS_ROOT}/lib/radia_source/ical.rb"
+    program_name = "Transição Aleatória"
+  
+    resp = get_calendar_http_response
+    cal = RadiaSource::ICal::parse_calendar resp.body
+
+    imported_name =RadiaSource::ICal::get_program_names(cal).find do |x|
+      x =~ /transi/i
+    end
+
+    assert_equal program_name, imported_name 
+
+  end
+
 end

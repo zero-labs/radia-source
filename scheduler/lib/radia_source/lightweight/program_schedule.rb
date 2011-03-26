@@ -50,11 +50,11 @@ module RadiaSource
       def prepare_update
         # All elder broadcasts and conflicts are trash...
         tmp = @broadcasts
-        @to_destroy = tmp.reject {|bc| bc.dirty?}
+        @to_destroy = tmp.select  {|bc| !bc.dirty? or  bc.kind_of? Repetition }
         @broadcasts = []
 
         # unless somebody used them
-        @to_move = tmp.select { |bc| bc.dirty? }
+        @to_move = tmp.select { |bc| bc.dirty? and not bc.kind_of? Repetition }
       end
 
       def add_broadcast! bc
@@ -112,33 +112,39 @@ module RadiaSource
           begin
             originals[template.name] = RadiaSource::ICal::get_calendar(url, "#{fname_prefix}_#{template.name}")
           rescue
-            errors <<  "calendar for #{template.name} not available"
+            errors << template.name
           end
         end
 
         begin
           repetitions = RadiaSource::ICal::get_calendar(Settings.instance.repetitions_url, "#{fname_prefix}_repetitions.ics")
         rescue
-           errors << "calendar for repetitions not available"
+          errors << 'repetitions'
         end
-        unless errors.empty?
-          return {:errors => errors}
+
+        if not errors.empty?
+          raise CalendarFetchFailedException errors
         end
+
         return { :originals => originals,  :repetitions => repetitions }
       end
 
       def parse_calendars(calendars, dtstop, now=Time.now.utc)
 
         #filter out programs
-        programs = []; to_ignore = [];
+        programs = []; to_ignore = []; ignored_program_names = []
 
         (calendars[:originals].merge({:repetitions => calendars[:repetitions]})).each do |kind, cals|
           RadiaSource::ICal.get_program_names(cals).each do |pname|
-            program = Program.find_by_name(pname)
-            if program.nil?
-              to_ignore << pname
-            elsif not programs.include?(program)
-              programs << program
+            similar_programs = Kernel::Program.find_by_similar_name(pname)
+            if similar_programs.nil? or similar_programs.empty?
+              ignored_program_names << pname
+            else
+              if similar_programs.length > 1
+                to_ignore << "#{pname} -> " + similar_programs.map{|x| x.name}.join(',')
+              else
+                programs << similar_programs.first unless programs.include?(similar_programs)
+              end
             end
           end
         end
@@ -151,11 +157,15 @@ module RadiaSource
           cals.each do |cal|
             cal.events.each do |ev|
               program = programs.find {|x| x.name == ev.summary }
-              next if program.nil?
 
               ev.occurrences(dtstop) do |dtstart|
                 #ignore all ocurrences before now
                 next if dtstart < now
+
+                if program.nil?
+                  to_ignore << ev.summary unless to_ignore.include? ev.summary
+                  next
+                end
 
                 dtend = dtstart + ev.duration
 
@@ -182,6 +192,11 @@ module RadiaSource
             ev.occurrences(dtstop) do |dtstart|
               #ignore all ocurrences before now
               next if dtstart < now
+
+              if program.nil?
+                to_ignore << ev.summary unless to_ignore.include? ev.summary
+                next
+              end
 
               # Ensure the UTC time ref
               dt = dtstart.utc
@@ -215,7 +230,12 @@ module RadiaSource
           end
         end
 
-        return {:originals => broadcasts, :repetitions => repetitions, :ignored_repetitions => ignored_repetitions, :ignored_programs => to_ignore}
+        if not to_ignore.empty?
+          raise UnknownProgramException.new(programs = {:ignored_programs => to_ignore,
+                                            :ignored_repetitions => ignored_repetitions})
+        end
+
+        return {:originals => broadcasts, :repetitions => repetitions, :ignored_repetitions => ignored_repetitions}
 
       end
 
@@ -225,7 +245,7 @@ module RadiaSource
         Kernel::Conflict.delete_all
         @inactive_broadcasts.each {|x| x.destroy }
 
-        # fails if any timeframe with more than one broadcast
+        # the whole process fails if there is any timeframe with more than one broadcast
         tmp = @timeframes.select {|tf| tf.broadcasts.length > 1}
         if tmp.empty? # All right!
           @broadcasts.each {|bc| bc.save }
