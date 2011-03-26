@@ -79,15 +79,14 @@ class Program < ActiveRecord::Base
   protected
 
   def self.urlnameify(text)
-    t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
-    t = t.to_s.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
+    t = self.translit text
+    t = t.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
     (t.blank?) ? '-' : t
   end
 
   # this is cleans a string (removing spaces)
   def self.name_janitor(text)
-    t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
-    t.to_s.downcase.strip.gsub(/[^-_[:alnum:]]/, '')
+    self.translit(text).downcase.strip.gsub(/[^-_[:alnum:]]/, '')
   end
   
   def find_broadcasts_by_date_on_collection(kollection, year, month = nil, day = nil)
@@ -102,4 +101,11 @@ class Program < ActiveRecord::Base
   def update_cleanname
     self.simple_name = self.class.name_janitor(self.name)
   end
+
+  def self.translit input
+      #t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
+      #t.to_s
+      GLib.convert(input, 'ASCII//TRANSLIT', 'utf-8')
+  end
+
 end
