@@ -9,7 +9,6 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110221235323) do
 ActiveRecord::Schema.define(:version => 20110324195033) do
 
   create_table "asset_services", :force => true do |t|
