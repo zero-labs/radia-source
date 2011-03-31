@@ -19,9 +19,13 @@ class ProgramTest < ActiveSupport::TestCase
     p1.save
     p2.save
     assert_equal "first-program", p1.urlname
+    assert_equal 'comunicacao-tipica', p2.urlname
     unless p2.urlname == "comunicacao-tipica"
       Kernel.warn "Your radia-source doesn't convert latin names"
       assert_equal "comunicao-tpica", p2.urlname
     end
   end
+  
+  t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv('Comunicação Típica')  
+  puts t
 end

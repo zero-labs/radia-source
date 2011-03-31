@@ -9,6 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+ActiveRecord::Schema.define(:version => 20110221235323) do
 ActiveRecord::Schema.define(:version => 20110324195033) do
 
   create_table "asset_services", :force => true do |t|
@@ -160,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20110324195033) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "simple_name"
   end
 
   create_table "roles", :force => true do |t|
@@ -221,6 +223,7 @@ ActiveRecord::Schema.define(:version => 20110324195033) do
     t.string   "name"
     t.string   "login"
     t.string   "email"
+    t.string   "identity_url"
     t.string   "remember_token"
     t.string   "crypted_password",          :limit => 40
     t.string   "salt",                      :limit => 40

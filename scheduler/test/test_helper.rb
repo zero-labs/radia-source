@@ -27,4 +27,8 @@ class ActiveSupport::TestCase
     klass.delete_all
   end
   
+  def get_calendar_http_response
+    require 'yaml'
+    return YAML::load_file(File.dirname(__FILE__) + '/util/calendar_http_request.yml')
+  end
 end

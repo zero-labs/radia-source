@@ -7,4 +7,5 @@ require "#{path}/timeframe"
 require "#{path}/broadcast"
 require "#{path}/original"
 require "#{path}/repetition"
+require "#{path}/exceptions"
 

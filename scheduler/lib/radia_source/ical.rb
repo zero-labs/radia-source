@@ -21,12 +21,16 @@ module RadiaSource
         res = Net::HTTP.start(url.host, url.port) do |http|
           http.request(req)
         end
-        calendar = Vpim::Icalendar.decode(res.body)
+        calendar = self.parse_calendar res.body
         if not name.empty? then
           filename = File.join(CALENDAR_MERGE_DIR, "#{name}.ics")
           File.open(filename, 'w') { |f| f.write(calendar) }
         end
         calendar
+    end
+
+    def self.parse_calendar ical_stream
+      return Vpim::Icalendar.decode(ical_stream)
     end
   end
 end
