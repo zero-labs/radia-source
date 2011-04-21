@@ -34,8 +34,8 @@ class ProgramScheduleController < ApplicationController
     dtend = ProgramSchedule.get_datetime(params["new_schedule"]["end"])
 
     j = Jobs::ScheduleDownloadAndMergeJob.new(:dtend => dtend)
-    j.perform #sync
-    #Delayed::Job.enqueue(j) # TODO change to async
+    #j.perform #sync
+    Delayed::Job.enqueue(j) # TODO change to async
 
     flash[:notice] = "The schedule is being updated"
     redirect_to :action => 'show'
