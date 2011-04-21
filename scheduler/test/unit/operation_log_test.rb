@@ -17,6 +17,11 @@ class OperationLogTest < ActiveSupport::TestCase
                           :dtstart => Time.now, 
                           :dtend => 1.hour.from_now, 
                           :operation_errors => 'Messages')
-    assert op.save 
+    assert op.save
+  end
+
+  def test_status_create!
+    assert = OperationLog.create!(:status => 'initializing',
+                          :dtstart => Time.now)
   end
 end
