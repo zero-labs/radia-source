@@ -123,7 +123,7 @@ module RadiaSource
         end
 
         if not errors.empty?
-          raise CalendarFetchFailedException errors
+          raise CalendarFetchFailedException.new(errors)
         end
 
         return { :originals => originals,  :repetitions => repetitions }

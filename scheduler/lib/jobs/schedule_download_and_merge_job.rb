@@ -48,7 +48,6 @@ module Jobs
         log.operation_errors = e.to_operation_log_msg
         puts e
         puts e.backtrace
-        return false
       ensure
         log.dtend = Time.now;
         log.save!
