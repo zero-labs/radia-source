@@ -276,6 +276,58 @@ span.broadcast_status_pending {
 	list-style: none;
 }
 
+/** ScheduleUpdate Log **/
+.dialog {
+  overflow:scroll;
+  display:none;
+}
+
+
+.log_status span:before {
+  letter-spacing:0.5ex;
+  content:"\00A0\00A0"; /*\00A0 <- unicode(&nbsp;)*/
+}
+
+span.ok:before {
+  background-color:#9c3;
+}
+
+span.warning:before {
+  background-color:#ffd700;
+}
+
+span.serious:before {
+  background-color:#fa8072;
+}
+
+span.unknown:before {
+  background-color:#ddd;
+}
+
+table.operation_log {
+  border-collapse:collapse;
+}
+
+table.operation_log tr {
+  border-spacing:1em;
+  padding:11em;
+}
+
+table.operation_log tfoot {
+  border-top:2px solid black;
+}
+
+table.operation_log thead {
+  border-bottom:2px solid black;
+}
+
+table.operation_log tfoot tr td {
+  text-align:center;
+}
+table.operation_log tfoot tr td span.log_status span {
+  margin-right:2em;
+}
+
 /*** Misc ***/
 .read {
 	font-weight: normal;

@@ -1,3 +1,23 @@
+<% content_for :head do %>
+<script>
+  function show_dialog(logid)
+  {
+    var xpath ='div#{id}.log_description'.replace(/{id}/, logid);
+    $j(xpath).dialog({modal:true, width:600, height:300})
+    return false;
+  }
+
+  $j(document).ready(function() {
+    $j('.opener').each(function() {
+      $j(this).bind('click', function(x) {
+        show_dialog($j(this).attr('logid'));
+        return false;
+      });
+    });
+  });
+</script>
+<% end %>
+
 <% 
 	@pagetitle = "Update logs"
 	add_crumb("Schedule", schedule_path)
@@ -10,9 +30,52 @@
 	<%= render :partial => 'sidebar' %>
 <% end %>
 
-<table>
-	<%= header_row_for_update_logs if @update_logs.size > 0 %>
-	<% @update_logs.each do |l| %>
-		<%= row_for_update_log(l) %>
-	<% end %>
+<table class='operation_log'>
+  <% if @update_logs.size > 0 %>
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>Status</td>
+        <td>Start date</td>
+        <td>End date</td>
+        <td>Error Description</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @update_logs.reverse.each_with_index do |l,idx| %>
+        <tr class='<%= (idx % 2) == 0?'even':'odd'%>'>
+          <td class='log_id'><%= l.id %></td>
+          <td class='log_status'>
+            <span class='<%= l.level.to_s%>'>
+              <%= l.status.to_s %>
+            </span>
+          </td>
+          <td class='date'><%= format_datetime l.dtstart %></td>
+          <td class='date'><%= format_datetime l.dtend %></td>
+          <td class='message'>
+            <a class='opener' logid='<%=l.id%>' href='#update_log_<%=l.id%>'>
+              <%= log_resumed_message(l) %>
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan='5'>
+          <span class='log_status'>
+            <span class="ok">OK</span>
+            <span class="warning">Warning</span>
+            <span class="serious">Serious</span>
+            <span class="unknown">Unknown</span>
+          </span>
+        </td>
+      </tr>
+    </tfoot>
+  <% end %>
 </table>
+
+<% @update_logs.each do |log| %>
+  <% next if log.operation_errors.nil? %>
+  <%=  log_popup(log) %>
+<% end %>
