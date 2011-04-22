@@ -24,8 +24,9 @@ module Jobs
         if not rt[:ignored_repetitions].empty?
           err = { :ignored_programs =>rt[:ignored_programs], :ignored_repetitions=> rt[:ignored_repetitions] }
           log.operation_errors = err.to_yaml
+          log.message = :ignored_repetitions
+          log.level = :warning
         end
-
 
         if not rt.has_key?(:originals) and not rt.has_key?(:repetitions)
           keys = [:originals, :repetitions].select { |x| rt.has_key? x }
@@ -40,14 +41,17 @@ module Jobs
         log.status = :saving
         if program_schedule.save
           log.status = :completed
+          log.level = :ok if not log.operation_errors
         else
           raise RadiaSource::LightWeight::ImportException.new("saving failed (#{__FILE__}:#{__LINE__})")
         end
       rescue RadiaSource::LightWeight::ImportException => e
         log.status = :failed
+        log.level = :serious
         log.operation_errors = e.to_operation_log_msg
-        puts e
-        puts e.backtrace
+        log.message = e.class.name
+        #puts e
+        #puts e.backtrace
       ensure
         log.dtend = Time.now;
         log.save!

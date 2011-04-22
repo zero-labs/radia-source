@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110324195033) do
+ActiveRecord::Schema.define(:version => 20110421191432) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -133,6 +133,8 @@ ActiveRecord::Schema.define(:version => 20110324195033) do
     t.text     "operation_errors"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "level"
+    t.string   "message"
   end
 
   create_table "playlist_elements", :force => true do |t|

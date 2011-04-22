@@ -25,7 +25,7 @@ module RadiaSource
       end
 
       def to_operation_log_msg
-        'calendars not available: ' + @calendars.join(', ')
+        @calendars.to_yaml
       end
     end
 

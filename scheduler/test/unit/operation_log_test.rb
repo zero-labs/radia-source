@@ -8,7 +8,7 @@ class OperationLogTest < ActiveSupport::TestCase
                           :dtstart => Time.now, 
                           :dtend => 1.hour.from_now,
                           :operation_errors => 'Messages')
-    assert op.save
+    assert op.save!
     assert op.status.kind_of?(Symbol) 
   end
   
@@ -17,11 +17,39 @@ class OperationLogTest < ActiveSupport::TestCase
                           :dtstart => Time.now, 
                           :dtend => 1.hour.from_now, 
                           :operation_errors => 'Messages')
-    assert op.save
+    assert op.save!
+  end
+
+  def test_string_description
+    
+    assert o=OperationLog.create!(:description => 'foo bar')
+    assert_equal 'foo bar', o.description.to_s
+
+    assert o=OperationLog.create!(:description => :foobar)
+    assert_equal :foobar, o.description
   end
 
   def test_status_create!
-    assert = OperationLog.create!(:status => 'initializing',
+    assert OperationLog.create!(:status => 'initializing',
                           :dtstart => Time.now)
+  end
+
+  def test_level_enumeration
+
+    assert_raise ActiveRecord::RecordInvalid do
+      OperationLog.create!(:level => :some_level)
+    end
+
+    assert o=OperationLog.create!
+    assert_equal :unknown, o.level
+
+    assert o=OperationLog.create!(:level=>:serious)
+    assert_equal :serious, o.level
+
+    assert o=OperationLog.create!(:level=>:ok)
+    assert_equal :ok, o.level
+
+    assert o=OperationLog.create!(:level=>:warning)
+    assert_equal :warning, o.level
   end
 end
