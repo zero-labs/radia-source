@@ -57,13 +57,13 @@ EOT
     when /CalendarFetchFailedException/
       return calendars_fetch_failed(update_log)
     when /UnknownProgramException/
-      return YAML::load(update_log.operation_errors)
+      return unknown_programs(update_log)
     end
   end
 
   def ignored_repetitions(update_log)
     s =<<EOC
-    <table id='tbl'>
+    <table>
       <thead>
         <tr>
           <th>%{program_name}</th>
@@ -102,5 +102,13 @@ EOT
     tmp.each { |x| s << "<li>#{x}</li>" }
     s << '</ul>'
     return {:title=>'Calendars Unreachable', :content => s}
+  end
+
+  def unknown_programs(update_log)
+    tmp = YAML::load(update_log.operation_errors)
+    s = "<ul>"
+    tmp.each { |x| s << "<li>#{x}</li>" }
+    s << '</ul>'
+    return {:title=>'Unkown Program Names', :content => s}
   end
 end
