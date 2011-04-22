@@ -15,8 +15,16 @@
 	<%= stylesheet_link_tag 'display', :media => 'screen, projection' %>
 	<%= stylesheet_link_tag 'navigation', :media => 'screen, projection' %>
 	<%= stylesheet_link_tag 'calendar', :media => 'screen, projection' %>
+
+    <%= stylesheet_link_tag 'rs0/jquery-ui-1.8.11.custom.css', :media => 'screen' %>
+
 	<%= javascript_include_tag :defaults %>
-	
+    <%= javascript_include_tag 'j/jquery-1.5.1.min.js' %>
+    <%= javascript_include_tag 'j/jquery-ui-1.8.11.custom.min.js' %>
+    <script>
+      var $j = jQuery.noConflict();
+    </script>
+
 	<!--[if lt IE 8]>
 	    <style type="text/css" media="screen">
 	      #calendars li a, #calendars table {
@@ -28,4 +36,5 @@
 	    <link rel="stylesheet" href="stylesheets/ie6.css" type="text/css" media="screen" title="ie6" charset="utf-8"/>
 	  <![endif]-->
 	
+      <%= yield :head %>
 </head>
