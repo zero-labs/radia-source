@@ -1,9 +1,7 @@
-require File.join(File.dirname(__FILE__),'test_helper')
-
-NS = RadiaSource::LightWeight
+require File.dirname(__FILE__) +'/test_helper'
 
 
-class ProgramScheduleTest < ActiveSupport::TestCase
+class NS::ProgramScheduleTest < NS::TestCase
   fixtures :all
 
   def setup
@@ -49,8 +47,8 @@ class ProgramScheduleTest < ActiveSupport::TestCase
   def test_prepare_update
     @ps.prepare_update
 
-    assert_equal Broadcast.find_greater_than(@time_reference, :active=>true).select{|x| not x.dirty?}.count, @ps.to_destroy.count
-    assert_equal Broadcast.find_greater_than(@time_reference, :active=>true).select{|x| x.dirty?}.count, @ps.to_move.count
+    assert_equal 2, @ps.to_destroy.count
+    assert_equal 1, @ps.to_move.count
     assert_equal 0, @ps.broadcasts.count
 
   end
@@ -59,7 +57,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
     @ps.prepare_update
     rt = @ps.parse_calendars(get_calendars(1), @time_reference+2.months, @time_reference) 
 
-    assert_equal 0, rt[:ignored_programs].count
+    assert_nil rt[:ignored_programs]
 
     assert rt.has_key?(:originals)
     assert rt.has_key?(:repetitions)
@@ -76,7 +74,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
     @ps.prepare_update
     rt = @ps.parse_calendars(get_calendars(2), @time_reference+2.months, @time_reference) 
 
-    assert_equal 0, rt[:ignored_programs].count
+    assert_nil rt[:ignored_programs]
 
     assert rt.has_key?(:originals)
     assert rt.has_key?(:repetitions)
@@ -104,7 +102,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
 
     assert_equal CAL3_TOTAL_ORIGINALS, rt[:originals].count
     assert_equal CAL3_TOTAL_REPETITIONS, rt[:repetitions].count
-    
+ 
 
     assert_difference '@ps.broadcasts.count', CAL3_TOTAL_ORIGINALS+CAL3_TOTAL_REPETITIONS do
       rt[:originals].each{|bc| @ps.add_broadcast! bc}
@@ -112,7 +110,6 @@ class ProgramScheduleTest < ActiveSupport::TestCase
     end
 
     assert_equal CAL3_TOTAL_ORIGINALS+CAL3_TOTAL_REPETITIONS-1, @ps.instance_variable_get(:@timeframes).count
-
   end
 
   def test_save_cal1
@@ -122,8 +119,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
 
     old_broadcasts_count = tmp.count
     limbo_broadcasts_count = Broadcast.find(:all, :conditions => {:program_schedule_id => 2}).count
-    dirty_broadcasts_count = tmp.select {|x| x.dirty?}.count
-
+    dirty_broadcasts_count = tmp.select {|x| x.dirty? and x.kind_of?(Repetition)}.count
 
     assert_difference '@ps.broadcasts.count', CAL1_TOTAL_ORIGINALS+CAL1_TOTAL_REPETITIONS do
       rt[:originals].each{|bc| @ps.add_broadcast! bc}
@@ -135,10 +131,8 @@ class ProgramScheduleTest < ActiveSupport::TestCase
     assert_equal 0, Kernel::Conflict.count
     assert_equal 0, (Kernel::Broadcast.all :conditions => {:program_schedule_id => 1, :active => false}).count
 
-    assert_equal limbo_broadcasts_count+dirty_broadcasts_count, (Broadcast.all  :conditions=>{:program_schedule_id=>2}).count
+    assert_equal limbo_broadcasts_count+dirty_broadcasts_count, (Broadcast.all :conditions=>{:program_schedule_id=>2}).count
     assert_equal CAL1_TOTAL_ORIGINALS+CAL1_TOTAL_REPETITIONS, (Broadcast.all :conditions=>{:program_schedule_id=>1, :active=>true}).count
-
-
 
   end
 
@@ -172,7 +166,7 @@ class ProgramScheduleTest < ActiveSupport::TestCase
   def get_calendars n
     require 'vpim'
     require 'radia_source/ical'
-    path_base = (File.expand_path File.dirname(__FILE__)) + (File.join %W(#{File::SEPARATOR}.. .. calendars lightweight #{File::SEPARATOR}))
+    path_base = File.join %W(#{RAILS_ROOT} test calendars lightweight #{File::SEPARATOR})
 
     #ics = %x(ls #{path_base}/*ics).split
 

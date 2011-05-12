@@ -28,7 +28,7 @@ original_conflicts_w_o1:
     program: program_1
     dtstart: 2010-12-11 13:50
     dtend: 2010-12-11 14:30
-    structure_template:  recorded
+    structure_template: recorded
     active: false
     conflict: conflict1
 

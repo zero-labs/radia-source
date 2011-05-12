@@ -1,17 +1,27 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../../../config/environment")
+RAILS_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../../") unless defined?(RAILS_ROOT)
+
+require "#{RAILS_ROOT}/config/environment"
 require 'test_help'
 
 CAL1_TOTAL_ORIGINALS = 4
 CAL1_TOTAL_REPETITIONS = 4
 CAL3_TOTAL_ORIGINALS = 21
 CAL3_TOTAL_REPETITIONS = 4
+NS=RadiaSource::LightWeight
 
-class ActiveSupport::TestCase
-  
-  self.fixture_path = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/lightweight")
-  self.use_transactional_fixtures = true
-  self.use_instantiated_fixtures  = false
+#class NS::TestCase<ActiveSupport::TestCase
+ class NS::TestCase 
+  #self.fixture_path = File.expand_path(RAILS_ROOT + "/test/fixtures/lightweight")
+
+  def self.fixtures(*dummy)
+  end
+    def self.fixture_path
+      File.expand_path(RAILS_ROOT + "/test/fixtures/lightweight")
+    end
+
+  # self.use_transactional_fixtures = true
+  # self.use_instantiated_fixtures  = false
 
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #

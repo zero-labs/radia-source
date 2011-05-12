@@ -1,8 +1,7 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.dirname(__FILE__) +'/test_helper'
 
-NS=RadiaSource::LightWeight
 
-class BroadcastTest < ActiveSupport::TestCase
+class LBroadcastTest < NS::TestCase
 
   def test_proxy_class
     assert_equal Kernel.const_get(:Broadcast), NS::Broadcast.proxy_class
