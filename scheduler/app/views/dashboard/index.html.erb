@@ -15,7 +15,7 @@
 		<span class="as_label">Now playing: </span><%= current_broadcast %>
 	</div>
 	<div class="span-9 last">
-		<span class="as_label">Status: </span><%= status_icon %>
+      <%= status_icon(ProgramSchedule.active_instance.now_playing) %>
 	</div>
 </div>
 

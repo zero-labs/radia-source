@@ -130,4 +130,22 @@ module ApplicationHelper
     end
     image_tag "icons/#{icon}.png", :class => 'img_icon'
   end
+
+  def status_icon(broadcast = nil)
+    b = broadcast.nil? ? ProgramSchedule.active_instance.now_playing : broadcast
+    color = case b.status
+    when :pending
+      'red'
+    when :delivered
+      'yellow'
+    when :available
+      'green'
+    when :partial
+      'yellow'
+    end
+    out = "\n<span class=\"as_label\">Status:</span>\n"
+    out << image_tag( "icons/#{color}_status.png", :class => 'img_icon', :size => '10x10')
+    out << " #{b.pretty_print_status}<br/><br/>"
+    
+  end
 end
