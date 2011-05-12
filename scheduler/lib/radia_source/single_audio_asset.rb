@@ -42,6 +42,10 @@ module RadiaSource
       def delivered?
         !self.delivered_at.nil?
       end
+
+      def archived?
+        !self.archived_at.nil?
+      end
       
       protected 
 

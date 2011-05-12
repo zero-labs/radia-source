@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110421191432) do
+ActiveRecord::Schema.define(:version => 20110512190416) do
 
   create_table "asset_services", :force => true do |t|
     t.integer  "settings_id", :default => 1
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(:version => 20110421191432) do
     t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "archived_at"
+    t.string   "archival_uri"
   end
 
   create_table "authorships", :force => true do |t|
@@ -224,6 +226,7 @@ ActiveRecord::Schema.define(:version => 20110421191432) do
     t.string   "name"
     t.string   "login"
     t.string   "email"
+    t.string   "identity_url"
     t.string   "remember_token"
     t.string   "crypted_password",          :limit => 40
     t.string   "salt",                      :limit => 40
