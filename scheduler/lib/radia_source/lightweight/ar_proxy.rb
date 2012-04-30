@@ -6,6 +6,9 @@ require "#{path}/object"
 module RadiaSource
   module LightWeight
 
+    class ProxyClassUndefined < Exception
+    end
+
     # This class is used as a proxy to the fat ActiveRecord Models
     # We need this to avoid using the AR models during the import process
     # Implements the followingmethods: save & destroy
@@ -99,6 +102,9 @@ module RadiaSource
             ar_attributes[key] = val
           end
         end
+
+        self.class.set_proxy_class() if self.class.proxy_class.nil?
+        raise ProxyClassUndefined.new if self.class.proxy_class.nil?
         self.class.proxy_class.create!(ar_attributes.merge(args))
       end
       

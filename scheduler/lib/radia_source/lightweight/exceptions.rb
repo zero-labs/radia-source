@@ -35,6 +35,14 @@ module RadiaSource
         @unknown_programs = programs
       end
 
+      def message
+        s = ''
+        @unknown_programs.each do |x,y|
+          s += "- #{x}:\n" + y.join("\n  * ")
+        end
+        "programs not found: \n" + s
+      end
+
       def to_operation_log_msg
         @unknown_programs.to_yaml
       end

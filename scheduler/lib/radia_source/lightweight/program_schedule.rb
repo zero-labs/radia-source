@@ -50,7 +50,7 @@ module RadiaSource
       def prepare_update
         # All elder broadcasts and conflicts are trash...
         tmp = @broadcasts
-        @to_destroy = tmp.select  {|bc| !bc.dirty? or  bc.kind_of? Repetition }
+        @to_destroy = tmp.select  {|bc| !bc.dirty? or bc.kind_of?(Repetition) }
         @broadcasts = []
 
         # unless somebody used them
@@ -249,7 +249,9 @@ module RadiaSource
         tmp = @timeframes.select {|tf| tf.broadcasts.length > 1}
         if tmp.empty? # All right!
           @broadcasts.each {|bc| bc.save }
-          @to_move.each { |x| self.class.move_to_limbo(x) }
+          r = @to_move.map { |x|  self.class.move_to_limbo(x) }
+          # r is an array with all true entries
+          
 
           Kernel::Broadcast.delete @to_destroy.map{|x| x.po.id }
           @broadcasts.each {|bc| bc.activate }
