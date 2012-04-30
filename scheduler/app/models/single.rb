@@ -46,6 +46,8 @@ class Single < AudioAsset
         #xml.tag!(:available, self.available, :type => :boolean)
         #xml.tag!(:deadline, self.deadline, :type => :string)
         xml.tag!(:length, self.length, :type => :float)
+        xml.tag!('delivered_at', self.delivered_at, :type => :datetime)
+        xml.tag!('archival_uri', self.archival_uri, :type => :string)
         xml.tag!('retrieval-uri', self.retrieval_uri, :type => :string)
       end
     end
