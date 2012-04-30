@@ -11,7 +11,7 @@ class Gap < Broadcast
     query << "FROM broadcasts A, broadcasts B "
     query << "WHERE A.program_schedule_id = B.program_schedule_id AND "
     query << "A.program_schedule_id = ? AND "
-    if active
+    if not active.nil?
       query << "A.active = ? AND B.active = A.active AND "
     end
     # MATH NOTE: if we assume dtsart < dtend  (see Broadcast validations!)
@@ -24,12 +24,13 @@ class Gap < Broadcast
     query << "order by dtstart"
 
     
-    tmp = find_by_sql([query, ProgramSchedule.active_instance.id, true, date_start, date_end])
-    # tmp.each {|x| p "|#{x.pp}|"}
-    if active
-      all_gaps(date_start, date_end, tmp)
-    else
+    if active.nil?
       all_gaps(date_start, date_end, find_by_sql([query, ProgramSchedule.active_instance.id, date_start, date_end]))
+      # tmp.each {|x| p "|#{x.pp}|"}
+    else
+      tmp = find_by_sql([query, ProgramSchedule.active_instance.id, active, date_start, date_end])
+      all_gaps(date_start, date_end, tmp)
+
     end
   end
 
